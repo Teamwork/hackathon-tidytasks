@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" type="text/css" href="css/header.css">
+        <link rel="stylesheet" href="css/bs.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <script src="https://unpkg.com/jquery@3.2.1/dist/jquery.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <!-- <meta http-equiv="refresh" content="5">  -->
+        <script>
+            $(function(){
+                console.log("poop")
+                $('img.svg-icon').each(function () {
+                    var $e = $(this);
+                    var imgURL = $e.prop('src');
+                  
+                    $.get(imgURL, function (data) {
+                      // Get the SVG tag, ignore the rest
+                      var $svg = $(data).find('svg');
+                  
+                      // change the color
+                      $svg.find('path').attr('fill', '#FFF');
+                  
+                      $e.prop('src', "data:image/svg+xml;base64," + window.btoa($svg.prop('outerHTML')));
+                    });
+                  
+                  });
+            })
+        </script>
+    </head>
+    <body>
+
+        <div class="container-fullwidth">
+
+            <div class="row">
+                <div class="col-lg-12">
+              
+                    <div class="bs-component">
+                        <nav class="navbar navbar-expand-lg navbar-dark">
+                                <a class="navbar-date" href="#">20 NOV 2017</a>
+                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                
+                                
+                                <div class="collapse navbar-collapse">
+                                    <ul class="navbar-nav navbar-right">
+                                    </ul>
+                                </div>
+                                <ul class="navbar-nav navbar-right">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#"> <img class="svg-icon" src="/images/icons/search.svg" /></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#"><img class="svg-icon" src="/images/icons/plus.svg" /></a>
+                                    </li>
+                                    <!-- <li class="nav-item">
+                                        <a class="nav-link">
+                                        </a>
+                                    </li> -->
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                            <img data-bind="attr:{ 'src': ko.unwrap(avatarUrl) }" onerror="this.src='//cdn.teamwork.com/images/noPhoto2.png'" style="width: 25px; height: 25px; border-radius: 50%; background: #FFF; border: 1px solid #CCC; float: left; padding: 0px; margin: 0 10px 0 0;" src="https://s3.amazonaws.com/TWFiles/1/userAvatar/tf_517FFC77-DE9A-897F-82DA2C894375D160.tim-gunn-project-runwa-2-325.jpg">
+                                        </a>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 35px, 0px); top: 20px; left: auto; right: 0px; will-change: transform; ">
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Separated link</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </nav>
+                    </div>
+        
+                </div>
+            </div>
+
+
+        </div>
+
+    </body>
+</html>

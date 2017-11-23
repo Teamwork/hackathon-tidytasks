@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Taskotron</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/header.css">
+    <link rel="stylesheet" href="css/bs.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+     <meta http-equiv="refresh" content="10">
+  </head>
+  <body>
+    
+    <div class="container" style="margin-top: 40px;">
+
+
+        <!--   HEADER   -->
+            
+        <div class="bs-component" data-bind="visible: showHeader">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-date" href="#">24 NOV 2017</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav navbar-right">
+                    </ul>
+                </div>
+                <ul class="navbar-nav navbar-right">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"> <img class="svg-icon" src="/images/icons/search.svg" /></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><img class="svg-icon" src="/images/icons/plus.svg" /></a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link">
+                        </a>
+                    </li> -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <img style="width: 25px; height: 25px; border-radius: 50%; background: #FFF; border: 1px solid #CCC; float: left; padding: 0px; margin: 0 10px 0 0;" src="https://s3.amazonaws.com/TWFiles/1/userAvatar/tf_517FFC77-DE9A-897F-82DA2C894375D160.tim-gunn-project-runwa-2-325.jpg">
+                        </a>
+                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 35px, 0px); top: 20px; left: auto; right: 0px; will-change: transform; ">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Separated link</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!--   LOGIN -->
+
+        <div class="bs-component login-container" data-bind="visible: showPage == 'login'">
+            <img src="images/projects-monotone-light.svg"> 
+            <h1>Get focused today.</h1>
+            <div class="form-group">
+                <input class="form-control login-input" id="site-address" placeholder="Site address">
+                <input class="form-control login-input" id="API-key" placeholder="API key">
+                <button id="sign-in" type="submit" class="enabled">SIGN IN</button>
+            </div>  
+        </div>
+
+    
+        <!--  DASHBOARD -->
+        
+        <div class="bs-component" data-bind="visible: showPage == 'dashboard-projects'">
+            <div class="tasks-grid" data-bind="foreach: projects">
+                <div class="task-card">
+                    <div class="card border-light">
+                        <div class="card-body">
+                            <div class="title" data-bind="text: name"></div>
+                            <div class="tasks" data-bind="text: counttasks() "></div>
+                            <div class="progress-percent">25%</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+
+        <!-- data-bind="attr:{ 'src': ko.unwrap(avatarUrl) }"  -->
+  
+    </div>
+     
+
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+    <!-- We are using Node.js <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>. -->
+
+    <script src="js/jquery.js"></script>
+    <script src="js/knockout.js"></script>
+    <script src="js/lodash.core.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src='js/app.js'></script>
+    <script>
+        // this function turns black svg icons white
+        $(function(){
+            console.log("poop")
+            $('img.svg-icon').each(function () {
+                var $e = $(this);
+                var imgURL = $e.prop('src');
+                
+                $.get(imgURL, function (data) {
+                    // Get the SVG tag, ignore the rest
+                    var $svg = $(data).find('svg');
+                
+                    // change the color
+                    $svg.find('path').attr('fill', '#FFF');
+                
+                    $e.prop('src', "data:image/svg+xml;base64," + window.btoa($svg.prop('outerHTML')));
+                });
+                
+            });
+        })
+    </script>
+
+    <!-- <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+    </script> -->
+
+  </body>
+</html>
