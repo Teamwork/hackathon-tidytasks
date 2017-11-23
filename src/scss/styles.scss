@@ -55,3 +55,36 @@ html, body {
         }
     }
 } 
+
+.tasks-grid {
+    padding: 20px;
+    display: flex;
+    overflow: scroll;
+
+    .task-card {
+        flex-shrink: 0;
+        margin-top: 20px;
+        margin-right: 20px;
+        width: 180px;
+        height: 200px;
+        overflow: scroll;
+        display: flex;
+        flex-direction: column;
+
+        .tasks {
+            height: 100px;
+            flex: 1;
+        }
+
+        .progress-percent {
+            text-align: right;
+        }
+    }
+
+}
+
+@media (min-width: 600px) {
+    .tasks-grid {
+        flex-wrap: wrap;
+    }
+}

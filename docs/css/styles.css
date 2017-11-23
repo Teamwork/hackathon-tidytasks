@@ -41,3 +41,26 @@ html, body {
       color: #31b3f9; }
       .login-container .form-group #sign-in.enabled {
         background-color: white; }
+
+.tasks-grid {
+  padding: 20px;
+  display: flex;
+  overflow: scroll; }
+  .tasks-grid .task-card {
+    flex-shrink: 0;
+    margin-top: 20px;
+    margin-right: 20px;
+    width: 180px;
+    height: 200px;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column; }
+    .tasks-grid .task-card .tasks {
+      height: 100px;
+      flex: 1; }
+    .tasks-grid .task-card .progress-percent {
+      text-align: right; }
+
+@media (min-width: 600px) {
+  .tasks-grid {
+    flex-wrap: wrap; } }
