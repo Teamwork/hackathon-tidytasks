@@ -5,39 +5,25 @@ html, body {
     color: white;
 }
 
-.group { 
-    position:relative; 
-    margin-bottom: 35px; 
-    margin-left: 40px;
-  }
-  
-.inputMaterial {
-    font-size:18px;
-    padding:10px 10px 10px 5px;
-    display:block;
-    width:300px;
-    border:none;
-    border-bottom:1px solid white;
-    background: transparent;
-}
-  
-.inputMaterial:focus { 
-    outline:none;
-}
-  
-label {
+.container {
     color: white;
-    font-size:14px;
-    font-weight:normal;
-    position:absolute;
-    pointer-events:none;
-    left:5px;
-    top:20px;
-    transition:0.2s ease all; 
-}
-  
-  /* active state */
-.inputMaterial:focus ~ label, .inputMaterial:valid ~ label {
-    top:-20px;
-    font-size:14px;
+    font-family: "Open Sans";
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .login-input
+        width: 100%;
+        &::placeholder {
+            color: white;
+        }
+    }
+
+    #sign-in {
+        width: 96px;
+        height: 28px;
+        border-radius: 2px;
+        background-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1);
+    }
 }

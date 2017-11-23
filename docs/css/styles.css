@@ -1,0 +1,20 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, #3b93f7, #25dafc);
+  color: white; }
+
+.container {
+  color: white;
+  font-family: "Open Sans";
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
+  .container .login-input::placeholder {
+    color: white; }
+  .container #sign-in {
+    width: 96px;
+    height: 28px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1); }

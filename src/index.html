@@ -3,27 +3,16 @@
 <head>
 <title>Page Title</title>
 <link rel="stylesheet" type="text/css" href="css/styles.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+<link rel="stylesheet" href="css/bs.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 <body>
 
     <div class="container">
         <h1>Get focused today.</h1>
-        <form action="" method="post">
-            <div class="group">      
-                <input class="inputMaterial" type="text" required>
-                <span class="highlight"></span>
-                <span class="bar"></span>
-                <label>Site address</label>
-            </div>
-                <div class="group">      
-                <input class="inputMaterial" type="password" required>
-                <span class="highlight"></span>
-                <span class="bar"></span>
-                <label>API key</label>
-            </div>
-            <button id="buttonlogintoregister" type="submit">Login</button>
-        </form>
+        <input class="form-control login-input" id="site-address" placeholder="Site address">
+        <input class="form-control login-input" id="API-key" placeholder="API key">
+        <button id="sign-in" type="submit">SIGN IN</button>
     </div>
 
 </body>
