@@ -144,6 +144,32 @@ html, body {
             text-decoration: underline;
             cursor: pointer; }
 
+.add-task-container {
+  height: 100%;
+  background: white;
+  font-family: "Open Sans"; }
+  .add-task-container .add-task {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    max-width: 400px;
+    margin: auto; }
+    .add-task-container .add-task label, .add-task-container .add-task .actions {
+      margin-top: 20px; }
+    .add-task-container .add-task select, .add-task-container .add-task input {
+      height: 32px;
+      border: solid 1px #c8c8c8;
+      border-radius: 4px;
+      background-color: transparent; }
+    .add-task-container .add-task .actions {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end; }
+      .add-task-container .add-task .actions .btn-cancel {
+        color: #c8c8c8;
+        box-shadow: none;
+        cursor: pointer; }
+
 @media (min-width: 600px) {
   .tasks-grid {
     flex-wrap: wrap; }

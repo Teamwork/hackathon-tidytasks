@@ -215,6 +215,43 @@ html, body {
     }
 }
 
+.add-task-container {
+    height: 100%;
+    background: white;
+    font-family: "Open Sans";
+
+    .add-task {
+        display: flex;
+        flex-direction: column;
+        width: 75%;
+        max-width: 400px;
+        margin: auto;
+
+        label, .actions {
+            margin-top: 20px;
+        }
+
+        select, input {
+            height: 32px;
+            border: solid 1px rgb(200, 200, 200);
+            border-radius: 4px;
+            background-color: transparent;
+        }
+
+        .actions {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+
+            .btn-cancel {
+                color: rgb(200, 200, 200);
+                box-shadow: none;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
 @media (min-width: 600px) {
     .tasks-grid {
         flex-wrap: wrap;
