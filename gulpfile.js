@@ -5,6 +5,10 @@ var sass = require('gulp-sass');
 var gutil = require('gutil');
 runSequence = require('run-sequence').use(gulp)
 
+gulp.task('html', function () {
+    return gulp.src('./src/**.html')
+    .pipe(gulp.dest('./docs/'));
+});
 
 gulp.task('css', function () {
     return gulp.src('./src/scss/**/**.scss')
@@ -19,7 +23,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('default', function(callback) {
-    runSequence('css','js',callback);
+    runSequence('html','css','js',callback);
 });
 
 gulp.task('watch', function () {

@@ -1,0 +1,43 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    background: linear-gradient(to bottom, #3b93f7, #25dafc);
+    color: white;
+}
+
+.group { 
+    position:relative; 
+    margin-bottom: 35px; 
+    margin-left: 40px;
+  }
+  
+.inputMaterial {
+    font-size:18px;
+    padding:10px 10px 10px 5px;
+    display:block;
+    width:300px;
+    border:none;
+    border-bottom:1px solid white;
+    background: transparent;
+}
+  
+.inputMaterial:focus { 
+    outline:none;
+}
+  
+label {
+    color: white;
+    font-size:14px;
+    font-weight:normal;
+    position:absolute;
+    pointer-events:none;
+    left:5px;
+    top:20px;
+    transition:0.2s ease all; 
+}
+  
+  /* active state */
+.inputMaterial:focus ~ label, .inputMaterial:valid ~ label {
+    top:-20px;
+    font-size:14px;
+}
