@@ -3,5 +3,5 @@ web:
     ports:
         - "8099:80"
     volumes:
-        - ./public:/public
+        - ./docs:/docs
         - ./nginx/site.conf:/etc/nginx/conf.d/default.conf
