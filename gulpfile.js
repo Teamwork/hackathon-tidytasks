@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var watch = require('gulp-watch');
 var coffeescript = require('gulp-coffeescript');
 var sass = require('gulp-sass');
 var gutil = require('gutil');
@@ -19,4 +20,10 @@ gulp.task('js', function() {
 
 gulp.task('default', function(callback) {
     runSequence('css','js',callback);
+});
+
+gulp.task('watch', function () {
+    watch('./src/**/*.*', function () {
+        gulp.start('default');
+    });
 });
