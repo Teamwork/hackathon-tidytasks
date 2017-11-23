@@ -162,11 +162,13 @@ html, body {
                                 flex: 0 0;
                                 margin-right: 5px;
                             }
-                            .link {
-                                margin-left: 10px;
-                                margin-bottom: 10px;
-                                text-decoration: underline;
-                                cursor: pointer;
+                            .actions {
+                                .link {
+                                    margin-left: 10px;
+                                    margin-bottom: 10px;
+                                    text-decoration: underline;
+                                    cursor: pointer;
+                                }
                             }
                         }
                     }
@@ -179,5 +181,9 @@ html, body {
 @media (min-width: 600px) {
     .tasks-grid {
         flex-wrap: wrap;
+    }
+
+    .project-container .section .tasks-container .task .task-body .task-details .control .actions {
+        display: flex;
     }
 }
