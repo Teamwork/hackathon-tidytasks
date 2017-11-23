@@ -87,14 +87,91 @@
         </div>
 
         <!-- data-bind="attr:{ 'src': ko.unwrap(avatarUrl) }"  -->
+
+        <div class="bs-component" data-bind="if: currentProject != null, visible: showPage == 'show-project'">
+
+            <div class="project-container">
+                
+                <h1 class="project-name" data-bind="text: currentProject.name"></h1>
+                <div class="task-count" data-bind="text: currentProject.counttasks()"></div>
+                <div class="progress-percent" data-bind="text: currentProject.progress()"></div>
+                <div class="progress"> 
+                    <div class="progress-bar bg-warning" role="progressbar" data-bind="style: { width: currentProject.progress + '%'; }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            
+                <div class="project-status">
+                    <div class="status late">
+                        Late
+                        <div class="status-count">
+                            2
+                        </div>
+                    </div>
+                    <div class="status today">
+                        Today
+                        <div class="status-count">
+                            4
+                        </div>
+                    </div>
+                    <div class="status upcoming">
+                        Upcoming
+                        <div class="status-count">
+                            7
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="section" data-bind="foreach: currentProject.tasklists">
+                    <div class="section-toggler">
+                        <div class="section-name" data-bind="text: name"></div>
+                        <img src="images/icons/chevron-up.svg">
+                    </div>
+                    <div class="tasks-container">
+                        <div class="task">
+                            <div class="image-container">
+                                <img src="images/icons/task.svg">
+                            </div>
+                            <div class="task-body" data-bind="foreach: tasklists.tasks">
+                                <div class="task-name" data-bind="text: name"></div>
+                                <div class="task-details">
+                                    <div class="task-description">
+                                        Some text here for the task description.
+                                    </div>
+                                    <div class="task-controls">
+                                        <div class="date control">
+                                            <div class="image-container">
+                                                <img src="images/icons/product-switcher.svg">
+                                            </div>
+                                            <div class="actions">
+                                                <div class="link">Set a start date</div>
+                                                <div class="link">Set a due date</div>
+                                            </div>
+                                        </div>
+                                        <div class="open-in-projects control">
+                                            <div class="image-container">
+                                                <img src="images/icons/product-switcher.svg">
+                                            </div>
+                                            <div class="actions">
+                                                <div class="link">View in Projects</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
   
     </div>
      
 
     <!-- All of the Node.js APIs are available in this renderer process. -->
-    <!-- We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>. -->
+    <!-- 
+        We are using Node.js <script>document.write(process.versions.node)</script>,
+        Chromium <script>document.write(process.versions.chrome)</script>,
+        and Electron <script>document.write(process.versions.electron)</script>. 
+    -->
 
     <script src="js/jquery.js"></script>
     <script src="js/knockout.js"></script>
