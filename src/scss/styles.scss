@@ -12,7 +12,7 @@ html, body {
     flex-direction: column;
     align-items: center;
 
-    .login-input
+    .login-input {
         width: 100%;
         &::placeholder {
             color: white;
@@ -26,4 +26,4 @@ html, body {
         background-color: rgba(255, 255, 255, 0.4);
         box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1);
     }
-}
+} 
