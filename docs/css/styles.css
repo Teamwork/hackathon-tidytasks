@@ -6,26 +6,38 @@ html, body {
 
 .login-container {
   width: 75%;
+  max-width: 400px;
+  height: 100%;
   margin: auto;
   color: white;
   font-family: "Open Sans";
   display: flex;
-  flex-direction: column;
-  align-items: center; }
+  flex-direction: column; }
   .login-container img {
     width: 200px;
     margin: 20px 0; }
-  .login-container .login-input {
-    width: 100%;
-    color: white; }
-    .login-container .login-input::placeholder {
+  .login-container h1 {
+    flex: 1 0 25%; }
+  .login-container .form-group {
+    flex: 1 0 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+    .login-container .form-group .login-input {
+      width: 100%;
+      margin-bottom: 20px;
       color: white; }
-  .login-container #sign-in {
-    margin-top: 50px;
-    width: 50%;
-    height: 50px;
-    border-radius: 2px;
-    background-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1);
-    border: none;
-    color: #31b3f9; }
+      .login-container .form-group .login-input::placeholder {
+        color: white; }
+    .login-container .form-group #sign-in {
+      margin-top: 50px;
+      margin-bottom: 100px;
+      width: 50%;
+      height: 50px;
+      border-radius: 2px;
+      background-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1);
+      border: none;
+      color: #31b3f9; }
+      .login-container .form-group #sign-in.enabled {
+        background-color: white; }
