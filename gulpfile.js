@@ -1,14 +1,9 @@
 var gulp = require('gulp');
-var pug = require('gulp-pug');
 var coffeescript = require('gulp-coffeescript');
 var sass = require('gulp-sass');
 var gutil = require('gutil');
 runSequence = require('run-sequence').use(gulp)
 
-gulp.task('html', function buildHTML() {
-  return gulp.src('./src/*.pug')
-  .pipe(pug({verbose:false})).pipe(gulp.dest('./docs/'))
-});
 
 gulp.task('css', function () {
     return gulp.src('./src/scss/**/**.scss')
@@ -23,5 +18,5 @@ gulp.task('js', function() {
 });
 
 gulp.task('default', function(callback) {
-    runSequence('html','css','js',callback);
+    runSequence('css','js',callback);
 });

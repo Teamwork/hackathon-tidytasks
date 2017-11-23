@@ -21,7 +21,6 @@
   "homepage": "https://teamwork.github.io/hackathon-tidytasks/",
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-pug": "^3.3.0",
     "gutil": "^1.6.4"
   },
   "dependencies": {
