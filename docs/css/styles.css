@@ -61,6 +61,69 @@ html, body {
     .tasks-grid .task-card .progress-percent {
       text-align: right; }
 
+.project-container {
+  padding: 0 10%;
+  height: 100%;
+  margin: auto;
+  background-color: white;
+  font-family: "Open Sans";
+  overflow: scroll; }
+  .project-container .task-count {
+    color: #969696; }
+  .project-container .progress-percent {
+    text-align: right;
+    color: #969696; }
+  .project-container .section {
+    margin-top: 20px; }
+    .project-container .section.collapsed .tasks-container {
+      height: 0;
+      overflow: hidden; }
+    .project-container .section .section-toggler {
+      display: flex;
+      margin-bottom: 10px; }
+      .project-container .section .section-toggler .section-name {
+        flex: 1;
+        font-size: 1.2rem; }
+      .project-container .section .section-toggler img {
+        flex: 0 0;
+        width: 15px;
+        height: 15px; }
+    .project-container .section .tasks-container .task {
+      border-bottom: solid 1px #c8c8c8;
+      display: flex;
+      padding: 5px 0; }
+      .project-container .section .tasks-container .task .image-container {
+        flex: 0 0;
+        margin-right: 5px; }
+        .project-container .section .tasks-container .task .image-container img {
+          height: 20px;
+          width: 20px; }
+      .project-container .section .tasks-container .task .task-body {
+        color: #969696; }
+        .project-container .section .tasks-container .task .task-body .task-name {
+          flex: 1 0 90%;
+          display: flex;
+          align-items: center;
+          color: black;
+          font-size: 1rem; }
+        .project-container .section .tasks-container .task .task-body .task-details.hidden {
+          height: 0;
+          overflow: hidden; }
+        .project-container .section .tasks-container .task .task-body .task-details .task-description {
+          color: #969696;
+          margin: 5px 0; }
+        .project-container .section .tasks-container .task .task-body .task-details .control {
+          display: flex;
+          color: black; }
+          .project-container .section .tasks-container .task .task-body .task-details .control .image-container {
+            flex: 0 0;
+            margin-right: 5px; }
+          .project-container .section .tasks-container .task .task-body .task-details .control .link {
+            margin-left: 10px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            cursor: pointer; }
+
 @media (min-width: 600px) {
   .tasks-grid {
     flex-wrap: wrap; } }

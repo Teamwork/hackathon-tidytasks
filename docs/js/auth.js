@@ -18,7 +18,7 @@ User = class User {
       beforeSend: function(xhr) {
         var authHeader;
         authHeader = 'Basic ' + btoa(apiKey + ':x');
-        return xhr.setRequestHeader('Authorization', authHeader);
+        xhr.setRequestHeader('Authorization', authHeader);
       },
       crossDomain: true,
       success: function(data) {
@@ -26,10 +26,10 @@ User = class User {
         this.domain = data.account.URL;
         this.userId = data.account.id;
         this.userIcon = data.account['avatar-url'];
-        return callback();
+        callback();
       },
       error: function(err) {
-        return console.log(err);
+        console.log(err);
       }
     };
     $.ajax("https://authenticate.teamwork.com/authenticate.json", opts);
@@ -43,14 +43,14 @@ User = class User {
     opts = {
       method: 'GET',
       beforeSend: function(xhr) {
-        return xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       crossDomain: true,
       success: function(data) {
-        return callback();
+        callback();
       },
       error: function(data) {
-        return console.log(data);
+        console.log(data);
       }
     };
     $.ajax(this.domain + "/me.json", opts);
