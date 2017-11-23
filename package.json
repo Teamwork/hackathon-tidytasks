@@ -1,0 +1,33 @@
+{
+  "name": "hackathon-tidytasks",
+  "description": "Alder, Maeve, Rory &amp; Brendan's Hackathon Nov. 2017",
+  "version": "1.0.0",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Teamwork/hackathon-tidytasks.git"
+  },
+  "author": "Alder Cass, Maeve Goggin, Rory O'Kelly, Brendan Benoit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Teamwork/hackathon-tidytasks/issues"
+  },
+  "homepage": "https://teamwork.github.io/hackathon-tidytasks/",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-pug": "^3.3.0",
+    "gutil": "^1.6.4"
+  },
+  "dependencies": {
+    "coffeescript": "^2.0.2",
+    "gulp-coffeescript": "0.0.15",
+    "gulp-sass": "^3.1.0",
+    "run-sequence": "^2.2.0"
+  }
+}
