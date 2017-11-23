@@ -16,6 +16,7 @@ class User
             beforeSend: (xhr) ->
                 authHeader = 'Basic ' + btoa(apiKey + ':x')
                 xhr.setRequestHeader 'Authorization', authHeader
+                return
             crossDomain: true
             success: (data) ->
                 localStorage.setItem 'auth', 'Basic ' + btoa(apiKey + ':x')
@@ -23,8 +24,10 @@ class User
                 @userId = data.account.id
                 @userIcon = data.account['avatar-url']
                 callback()
+                return
             error: (err) ->
                 console.log err
+                return
 
         $.ajax "https://authenticate.teamwork.com/authenticate.json", opts
         return
@@ -37,11 +40,14 @@ class User
             method: 'GET'
             beforeSend: (xhr) -> 
                 xhr.setRequestHeader 'Authorization', localStorage.getItem('auth')
+                return
             crossDomain: true
             success: (data) ->
                 callback()
+                return
             error: (data) ->
                 console.log data
+                return
 
         $.ajax @domain + "/me.json", opts
         return
