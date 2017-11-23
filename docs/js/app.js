@@ -25,7 +25,10 @@ Project = function(name, tasklists) {
   //   return
   // ).bind(this)
   this.counttasks = (function() {
-    return 0
+    return tasklists.reduce(function(x, y) {
+      x += y.tasks.length;
+      return x;
+    }, {});
   }).bind(this);
 };
 
