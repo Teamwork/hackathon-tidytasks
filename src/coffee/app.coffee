@@ -35,7 +35,11 @@ viewModel = ->
         iconColour()
 
     @goBack = =>
-        @currentPage @previousPage()
+        if @currentPage() == 'add-task'
+            @currentPage 'project-view'
+        else
+            @currentPage 'dashboard'
+
 
     @loginSuccess = =>
         @currentPage 'splash'
