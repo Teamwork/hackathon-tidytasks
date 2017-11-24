@@ -2,58 +2,51 @@ var User;
 
 User = class User {
   constructor() {
-    this.apiKey = 'twp_i18f5vbTkrPN6TshHN85vcktq3Lo';
     this.domain = null;
     this.userId = null;
     this.userIcon = null;
+    this.userFirstname = null;
+    return;
   }
 
-  auth(apiKey, callback) {
-    var opts;
-    if (typeOf(callback !== 'function')) {
-      callback = function() {};
+  auth(opts) {
+    var xhrOptions;
+    if (typeof opts.success !== 'function') {
+      opts.success = function() {};
     }
-    opts = {
+    if (typeof opts.fail !== 'function') {
+      opts.fail = function() {};
+    }
+    xhrOptions = {
       method: 'GET',
       beforeSend: function(xhr) {
         var authHeader;
-        authHeader = 'Basic ' + btoa(apiKey + ':x');
+        if (opts.authHeader) {
+          authHeader = opts.authHeader;
+        } else if (opts.apiKey) {
+          authHeader = 'Basic ' + btoa(opts.apiKey + ':x');
+        }
         xhr.setRequestHeader('Authorization', authHeader);
       },
       crossDomain: true,
-      success: function(data) {
-        localStorage.setItem('auth', 'Basic ' + btoa(apiKey + ':x'));
+      success: (data) => {
+        if (opts.authHeader) {
+          localStorage.setItem('auth', opts.authHeader);
+        } else if (opts.apiKey) {
+          localStorage.setItem('auth', 'Basic ' + btoa(opts.apiKey + ':x'));
+        }
         this.domain = data.account.URL;
-        this.userId = data.account.id;
+        this.userId = data.account.userId;
         this.userIcon = data.account['avatar-url'];
-        callback();
+        this.userFirstname = data.account.firstname;
+        opts.success();
       },
       error: function(err) {
         console.log(err);
+        opts.fail();
       }
     };
-    $.ajax("https://authenticate.teamwork.com/authenticate.json", opts);
-  }
-
-  getUserInfo(callback) {
-    var opts;
-    if (typeOf(callback !== 'function')) {
-      callback = function() {};
-    }
-    opts = {
-      method: 'GET',
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
-      },
-      crossDomain: true,
-      success: function(data) {
-        callback();
-      },
-      error: function(data) {
-        console.log(data);
-      }
-    };
-    $.ajax(this.domain + "/me.json", opts);
+    $.ajax("https://authenticate.teamwork.com/authenticate.json", xhrOptions);
   }
 
 };

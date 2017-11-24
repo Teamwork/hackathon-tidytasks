@@ -1,1147 +1,219 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
-// Define a "Person" class that tracks its own name and children, and has a method to add a new child
-var Project, i, len, projects, showProject, tasklists, tasks, viewModel, x;
+var iconColour, viewModel;
 
-tasklists = {
-  "STATUS": "OK",
-  "tasklists": [
-    {
-      "name": "Bedrooms",
-      "pinned": false,
-      "milestone-id": "",
-      "description": "",
-      "uncompleted-count": 6,
-      "id": "725038",
-      "complete": false,
-      "private": false,
-      "isTemplate": false,
-      "position": 4000,
-      "status": "new",
-      "projectId": "249091",
-      "projectName": "House Renovation",
-      "DLM": 1511477458965
-    },
-    {
-      "name": "Garage",
-      "pinned": false,
-      "milestone-id": "",
-      "description": "",
-      "uncompleted-count": 8,
-      "id": "725039",
-      "complete": false,
-      "private": false,
-      "isTemplate": false,
-      "position": 4001,
-      "newTaskDefaults": {
-        "grantAccessTo": "",
-        "dueDateOffset": "",
-        "estimated-minutes": 0,
-        "description": "",
-        "content": "",
-        "priority": "",
-        "defaultsTaskId": 7000466,
-        "viewEstimatedTime": true,
-        "private": 0,
-        "startDateOffset": "",
-        "lockdownId": "",
-        "userFollowingComments": false,
-        "userFollowingChanges": false,
-        "changeFollowerIds": "",
-        "commentFollowerIds": "",
-        "changeFollowerSummary": "",
-        "commentFollowerSummary": "",
-        "tags": null,
-        "boardColumn": null
-      },
-      "status": "new",
-      "projectId": "249091",
-      "projectName": "House Renovation",
-      "DLM": 1511477458965
-    },
-    {
-      "name": "Kitchen",
-      "pinned": false,
-      "milestone-id": "",
-      "description": "",
-      "uncompleted-count": 5,
-      "id": "725041",
-      "complete": false,
-      "private": false,
-      "isTemplate": false,
-      "position": 4002,
-      "newTaskDefaults": {
-        "grantAccessTo": "",
-        "dueDateOffset": "",
-        "estimated-minutes": 0,
-        "description": "",
-        "content": "",
-        "priority": "",
-        "defaultsTaskId": 7000470,
-        "viewEstimatedTime": true,
-        "private": 0,
-        "startDateOffset": "",
-        "lockdownId": "",
-        "userFollowingComments": false,
-        "userFollowingChanges": false,
-        "changeFollowerIds": "",
-        "commentFollowerIds": "",
-        "changeFollowerSummary": "",
-        "commentFollowerSummary": "",
-        "tags": null,
-        "boardColumn": null
-      },
-      "status": "new",
-      "projectId": "249091",
-      "projectName": "House Renovation",
-      "DLM": 1511477458965
+viewModel = function() {
+  this.currentPage = ko.observable('splash');
+  this.allTasks = ko.observableArray();
+  this.projects = ko.observableArray();
+  this.currentProject = ko.observable();
+  this.currentProjectId = ko.observable();
+  this.currentTasklist = ko.observable();
+  this.loginError = ko.observable();
+  this.User = new User();
+  this.domain = ko.observable();
+  this.userId = ko.observable();
+  this.userIcon = ko.observable();
+  this.userFirstname = ko.observable();
+  this.previousPage = ko.observable();
+  this.showNav = ko.observable(false);
+  this.lightNav = ko.observable(false);
+  this.backButton = ko.observable(false);
+  this.totalTasks = ko.observable();
+  this.currentPage.subscribe(function(value) {
+    return this.previousPage(value);
+  }, this, "beforeChange");
+  this.currentPage.subscribe((value) => {
+    if (['dashboard'].indexOf(this.currentPage()) > -1) {
+      this.showNav(true);
+      this.lightNav(true);
+      this.backButton(false);
+    } else if (['add-task', 'project', 'project-view'].indexOf(this.currentPage()) > -1) {
+      this.showNav(true);
+      this.lightNav(false);
+      this.backButton(true);
+    } else {
+      this.showNav(false);
     }
-  ]
-}.tasklists;
-
-tasks = {
-  "STATUS": "OK",
-  "tasks": [
-    {
-      "id": 7000472,
-      "name": "Paint!",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:46:00Z",
-      "dateChanged": "2017-11-23T16:46:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 2,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2000,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725038,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2000,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000473,
-      "name": "Order wallpaper for back wall",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:46:00Z",
-      "dateChanged": "2017-11-23T16:46:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2001,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725038,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2001,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000474,
-      "name": "New blinds",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:46:00Z",
-      "dateChanged": "2017-11-23T16:46:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2002,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725038,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2002,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000518,
-      "name": "Take out built-in wardrobe",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:55:00Z",
-      "dateChanged": "2017-11-23T16:55:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2003,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725038,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2003,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000523,
-      "name": "Bring old couch to the dump",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:56:00Z",
-      "dateChanged": "2017-11-23T16:56:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2001,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725039,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2001,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000537,
-      "name": "Insulate and paint walls",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:58:00Z",
-      "dateChanged": "2017-11-23T16:58:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 2,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2002,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725039,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2002,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000538,
-      "name": "Replace window frame",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:58:00Z",
-      "dateChanged": "2017-11-23T16:58:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2003,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725039,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2003,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000539,
-      "name": "tidy tools away",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:58:00Z",
-      "dateChanged": "2017-11-23T16:58:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2004,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725039,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2004,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7001684,
-      "name": "Stack boxes",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T17:24:00Z",
-      "dateChanged": "2017-11-23T17:24:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2005,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725039,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2005,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7001686,
-      "name": "build new integrated shelves",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T17:24:00Z",
-      "dateChanged": "2017-11-23T17:24:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2006,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725039,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2006,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000553,
-      "name": "Paint walls",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:59:00Z",
-      "dateChanged": "2017-11-23T16:59:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2001,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725041,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2001,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000554,
-      "name": "Sand down and paint bench",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:59:00Z",
-      "dateChanged": "2017-11-23T16:59:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2002,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725041,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2002,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000561,
-      "name": "Finish skirting board",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T16:59:00Z",
-      "dateChanged": "2017-11-23T16:59:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2003,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725041,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2003,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000570,
-      "name": "Take out door between sitting room and kitchen",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T17:00:00Z",
-      "dateChanged": "2017-11-23T17:00:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2004,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725041,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2004,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    },
-    {
-      "id": 7000572,
-      "name": "New shelf for photos, cookery books",
-      "priority": null,
-      "status": "new",
-      "parentTaskId": 0,
-      "description": "",
-      "canViewEstTime": true,
-      "createdBy": {
-        "id": 170293,
-        "firstName": "Rory",
-        "lastName": "O'Kelly"
-      },
-      "dateCreated": "2017-11-23T17:00:00Z",
-      "dateChanged": "2017-11-23T17:00:00Z",
-      "hasFollowers": false,
-      "hasLoggedTime": false,
-      "hasReminders": false,
-      "hasRemindersForUser": false,
-      "hasTickets": false,
-      "isPrivate": false,
-      "privacyIsInherited": null,
-      "lockdownId": 0,
-      "numMinutesLogged": 0,
-      "numActiveSubTasks": 0,
-      "numAttachments": 0,
-      "numComments": 0,
-      "numCommentsRead": 0,
-      "numCompletedSubTasks": 0,
-      "numDependencies": 0,
-      "numEstMins": 0,
-      "numPredecessors": 0,
-      "position": 2005,
-      "projectId": 249091,
-      "startDate": "20171123",
-      "assignedTo": [
-        {
-          "id": 170291,
-          "firstName": "Alder",
-          "lastName": "Cass"
-        }
-      ],
-      "dueDate": null,
-      "dueDateFromMilestone": false,
-      "taskListId": 725041,
-      "progress": 0,
-      "changeFollowerIds": "",
-      "commentFollowerIds": "",
-      "followingChanges": false,
-      "followingComments": false,
-      "order": 2005,
-      "canComplete": true,
-      "canEdit": true,
-      "canLogTime": true,
-      "DLM": 1511477689127
-    }
-  ]
-}.tasks;
-
-projects = {
-  "letters": ["H"],
-  "STATUS": "OK",
-  "projects": [
-    {
-      "replyByEmailEnabled": true,
-      "starred": false,
-      "notifySettings": {
-        "taskByEmailEveryone": false,
-        "linkEveryone": false,
-        "commentIncludeAssigned": true,
-        "messageEveryone": false,
-        "fileEveryone": false,
-        "privateItemEveryone": false,
-        "milestoneAssignee": false,
-        "notebookEveryone": false,
-        "commentIncludeCreator": true,
-        "taskAssignee": false,
-        "commentIncludeCompleter": true,
-        "messageByEmailEveryone": false,
-        "allowNotifyAnyone": false
-      },
-      "show-announcement": false,
-      "harvest-timers-enabled": false,
-      "status": "active",
-      "subStatus": "current",
-      "defaultPrivacy": "open",
-      "integrations": {
-        "microsoftConnectors": {
-          "enabled": false
-        },
-        "onedrivebusiness": {
-          "enabled": false,
-          "folder": "root",
-          "account": "",
-          "foldername": "root"
-        }
-      },
-      "created-on": "2017-11-23T16:44:40Z",
-      "category": {
-        "name": "",
-        "id": "",
-        "color": ""
-      },
-      "filesAutoNewVersion": false,
-      "tags": [],
-      "overview-start-page": "default",
-      "logo": "",
-      "startDate": "",
-      "id": "249091",
-      "last-changed-on": "2017-11-23T17:24:08Z",
-      "defaults": {
-        "privacy": ""
-      },
-      "endDate": "",
-      "company": {
-        "name": "Tidy Tasks",
-        "is-owner": "1",
-        "id": "89204"
-      },
-      "tasks-start-page": "default",
-      "active-pages": {
-        "links": "1",
-        "tasks": "1",
-        "time": "1",
-        "billing": "1",
-        "notebooks": "1",
-        "files": "1",
-        "comments": "1",
-        "riskRegister": "1",
-        "milestones": "1",
-        "messages": "1"
-      },
-      "name": "House Renovation",
-      "privacyEnabled": false,
-      "description": "",
-      "announcement": "",
-      "permissions": {
-        "canAddTaskLists": true,
-        "viewNotebook": true,
-        "canAccessOneDriveBusiness": true,
-        "receiveEmailNotifications": true,
-        "projectAdministrator": true,
-        "viewMessagesAndFiles": true,
-        "canAddLinks": true,
-        "canAddMessages": true,
-        "isObserving": false,
-        "notifyDefaults": {
-          "newTasks": "0"
-        },
-        "canAccess": true,
-        "canEditAllTasks": true,
-        "canAccessBox": false,
-        "viewTimeLog": true,
-        "canSetPrivacy": true,
-        "canAddNotebooks": true,
-        "viewLinks": true,
-        "isArchived": false,
-        "viewTasksAndMilestones": true,
-        "viewEstimatedTime": true,
-        "viewAllTimeLogs": true,
-        "canAddMilestones": true,
-        "canLogTime": true,
-        "canAccessDropbox": false,
-        "canAddFiles": true,
-        "canAccessGoogleDocs": false,
-        "canAccessInvoiceTracking": true,
-        "viewRiskRegister": true,
-        "canAddTasks": true,
-        "active": true,
-        "canAccessOneDrive": false
-      },
-      "isProjectAdmin": true,
-      "start-page": "projectoverview",
-      "notifyeveryone": false,
-      "boardData": {}
-    }
-  ],
-  "categoryPath": [
-    {
-      "name": "All projects",
-      "id": "-1"
-    }
-  ]
-}.projects;
-
-// Task = (task) -> 
-//   @name = task
-//   return
-
-// TaskList = (name, tasks) ->
-//   @name = name
-//   @tasks = tasks #.map x -> new Task(x) # ko.observableArray(tasks)
-//   # @addTask = ((task) ->
-//   #   @tasks.push new Task(task)
-//   #   return
-//   # ).bind(this)
-//   return  
-Project = function(project) {
-  this.project = project;
-  this.tasklists = tasklists.filter(function(x) {
-    return x.projectId === project.id;
-  }).map(function(x) {
-    x.tasks = tasks.filter(function(y) {
-      return y.taskListId === parseInt(x.id);
-    });
-    return x;
+    return iconColour();
   });
-  this.upcomingTasks = 6;
-  this.counttasks = (function() {
-    return tasklists.map(function(item) {
-      return item.tasks.length;
-    }).reduce(function(x, y) {
-      return x + y;
+  this.goBack = () => {
+    return this.currentPage(this.previousPage());
+  };
+  this.loginSuccess = () => {
+    this.currentPage('splash');
+    this.loginError('');
+    this.domain(User.domain);
+    this.userIcon(User.userIcon);
+    this.userFirstname(User.userFirstname);
+    this.userId(User.userId);
+    this.getAllTasks(true);
+  };
+  this.loginFail = () => {
+    this.currentPage('login');
+    this.loginError('There was an error logging in. Please double check your API key.');
+  };
+  this.logout = function() {
+    localStorage.removeItem('auth');
+    window.location.reload(true);
+  };
+  this.processLogin = function() {
+    this.currentPage('splash');
+    this.User.auth({
+      apiKey: $('#API-key').val(),
+      success: this.loginSuccess,
+      fail: this.loginFail
     });
-  }).bind(this);
-  this.progress = (function() {
-    return tasklists.map(function(item) {
-      return item.tasks.length;
-    }).reduce(function(x, y) {
-      return x + y;
+  };
+  if (localStorage.getItem('auth')) {
+    this.User.auth({
+      authHeader: localStorage.getItem('auth'),
+      success: this.loginSuccess,
+      fail: this.loginFail
     });
-  }).bind(this);
-};
-
-
-// The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
-viewModel = {
-  background: 'blue',
-  showPage: "dashboard-projects",
-  showHeader: true,
-  username: 'Mark',
-  tasksdue: 4,
-  currentProject: null,
-  projects: ko.observableArray(),
-  showAddTask: function() {
-    return this.showPage = "add-task";
+  } else {
+    this.currentPage('login');
   }
+  this.getAllTasks = (goToDash, callback) => {
+    var xhrOptions;
+    this.projects([]);
+    this.allTasks([]);
+    xhrOptions = {
+      method: 'GET',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+      },
+      data: {
+        'filter': 'today',
+        'getFiles': false,
+        'responsible-party-ids': this.userId(),
+        'stamp': new Date().getTime()
+      },
+      success: (data) => {
+        var project, projectsAssoc, tasklist, tasks;
+        console.log(data);
+        tasks = data['todo-items'];
+        this.totalTasks(tasks.length);
+        projectsAssoc = {};
+        $.each(tasks, function(i, task) {
+          var cleanTask;
+          if (projectsAssoc['p-' + task['project-id']] === void 0) {
+            projectsAssoc['p-' + task['project-id']] = {};
+            projectsAssoc['p-' + task['project-id']].taskCount = 0;
+            projectsAssoc['p-' + task['project-id']].tasklistsAssoc = {};
+            projectsAssoc['p-' + task['project-id']].projectName = task['project-name'];
+            projectsAssoc['p-' + task['project-id']].projectId = task['project-id'];
+          }
+          if (projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] === void 0) {
+            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] = {};
+            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks = [];
+            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name'];
+            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id'];
+          }
+          cleanTask = {
+            taskName: task.content,
+            taskId: task.id,
+            taskDescription: task.description
+          };
+          projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push(cleanTask);
+          return projectsAssoc['p-' + task['project-id']].taskCount++;
+        });
+        for (project in projectsAssoc) {
+          projectsAssoc[project].tasklists = [];
+          for (tasklist in projectsAssoc[project].tasklistsAssoc) {
+            projectsAssoc[project].tasklists.push(projectsAssoc[project].tasklistsAssoc[tasklist]);
+          }
+          this.projects.push(projectsAssoc[project]);
+        }
+        console.log(this.projects());
+        if (goToDash) {
+          this.currentPage('dashboard');
+        }
+        if (typeof callback === 'function') {
+          callback();
+        }
+      }
+    };
+    return $.ajax(this.domain() + 'tasks.json', xhrOptions);
+  };
+  this.showProject = (projectId) => {
+    var j, len, project, ref;
+    this.currentProjectId(projectId);
+    ref = this.projects();
+    for (j = 0, len = ref.length; j < len; j++) {
+      project = ref[j];
+      if (project.projectId === projectId) {
+        this.currentPage('project-view');
+        this.currentProject(project);
+      }
+    }
+    console.log(this.currentProject());
+  };
+  this.createTask = () => {
+    var payload, xhrOptions;
+    console.log(this.currentTasklist());
+    payload = {
+      'todo-item': {
+        'responsible-party-id': this.userId(),
+        'start-date': moment(new Date()).format('YYYYMMDD'),
+        'content': $('#task-name').val()
+      }
+    };
+    xhrOptions = {
+      method: 'POST',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+      },
+      contentType: "application/json",
+      dataType: 'json',
+      data: JSON.stringify(payload),
+      success: (data) => {
+        this.getAllTasks(false, function() {
+          return this.showProject(this.currentProjectId());
+        });
+      }
+    };
+    $.ajax(this.domain() + "tasklists/" + this.currentTasklist() + "/tasks.json", xhrOptions);
+  };
+  this.completeTask = (taskId) => {
+    var xhrOptions;
+    xhrOptions = {
+      method: 'PUT',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+      },
+      success: function(data) {
+        console.log(data);
+        $('[data-task-id=' + taskId + ']').addClass('completed').delay(1000).animate({
+          height: 0,
+          opacity: 0
+        }, function() {
+          return $(this).remove();
+        });
+      }
+    };
+    $.ajax(this.domain() + "tasks/" + taskId + "/complete.json", xhrOptions);
+  };
+  this.toggleDetails = function(data, event) {
+    $(event.target).next('.task-details').toggleClass('hidden');
+  };
 };
 
-showProject = function(model, project) {
-  model.currentProject = project;
-  model.showPage = "tasks";
-  return console.log(model);
+iconColour = function() {
+  $('.svg-icon').each(function() {
+    var $e, color, imgURL;
+    $e = $(this);
+    imgURL = $e.prop('src');
+    if ($e.hasClass('svg-icon-white')) {
+      color = '#fff';
+    } else {
+      color = 'rgba(0,0,0,0.7)';
+    }
+    return $.get(imgURL, function(data) {
+      var $svg;
+      $svg = $(data).find('svg');
+      $svg.find('path').attr('fill', color);
+      return $e.prop('src', "data:image/svg+xml;base64," + window.btoa($svg.prop('outerHTML')));
+    });
+  });
 };
-
-for (i = 0, len = projects.length; i < len; i++) {
-  x = projects[i];
-  viewModel.projects.push(new Project(x));
-}
-
-viewModel.currentProject = viewModel.projects()[0];
 
 ko.applyBindings(viewModel);
-
-console.log(viewModel.currentProject);
-
-// ---
-// generated by js2coffee 2.2.0

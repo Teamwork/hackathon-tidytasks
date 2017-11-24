@@ -1,10 +1,25 @@
 .navbar {
-  box-shadow: none !important; }
+  box-shadow: none !important;
+  position: absolute;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 15px 0; }
+
+.navbar-nav {
+  flex-direction: row; }
+
+.navbar-dark {
+  background: rgba(255, 255, 255, 0.9); }
+
+.nav-item {
+  margin-left: 15px; }
 
 .navbar-date {
   color: #fff;
-  font-weight: 100;
-  font-size: 16px; }
+  font-size: 16px;
+  text-transform: uppercase; }
 
 .nav-link img {
   width: 25px;

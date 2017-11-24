@@ -1,49 +1,88 @@
+@import 'bs';
+@import 'header';
+
 html, body {
     margin: 0;
     height: 100%;
-    background: linear-gradient(to bottom, #3b93f7, #25dafc);
-    color: white;
+    font-family: "Open Sans";
+}
+
+.heading {
+    font-weight: 400;
+}
+
+.bs-component {
+    height: 100%;
+    padding-top: 100px;
+
+    &.blue-bg {
+        background: linear-gradient(to bottom, #3b93f7, #25dafc);
+        color: white;
+    }
+
+    &.white-bg {
+        background: white;
+        color: #494e5e;
+    }
+}
+
+.splash-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    padding-top: 0;
 }
 
 .login-container {
-    width: 75%;
-    max-width: 400px;
-    height: 100%;
-    margin: auto;
-    color: white;
-    font-family: "Open Sans";
     display: flex;
-    flex-direction: column;
+    align-items: center;
 
-    img {
-        width: 200px;
-        margin: 20px 0;
+    .container {
+        padding: 0 30px;
+        max-width: 400px;
+        margin: auto;
     }
 
-    h1 {
-        flex: 1 0 25%;
-    }   
+    img {
+        width: 150px;
+        margin: 30px 0;
+    }
+    
+    .heading {
+        margin: 0 0 60px;
+    }
 
-    .form-group {
-        flex: 1 0 75%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        .login-input {
+    form {
+        input {
             width: 100%;
-            margin-bottom: 20px;
+            margin: 30px 0;
             color: white;
-            &::placeholder {
+
+            &:focus {
                 color: white;
+            }
+            
+            &::placeholder {
+                color: rgba(white,50%);
             }
         }
 
+        .error {
+            text-align: center;
+            margin: 30px 0;
+            font-weight: 600;
+            color: #ffd4d4;
+            font-size: 14px;
+        }
+
         #sign-in {
-            margin-top: 50px;
-            margin-bottom: 100px;
             width: 50%;
             height: 50px;
             border-radius: 2px;
+            margin: 30px auto;
+            display: block;
             background-color: rgba(255, 255, 255, 0.4);
             box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1);
             border: none;
@@ -57,37 +96,38 @@ html, body {
 } 
 
 .tasks-grid {
-    padding: 20px;
+    margin: 40px -15px;
     display: flex;
     overflow: scroll;
 
     .task-card {
         flex-shrink: 0;
-        margin-top: 20px;
-        margin-right: 20px;
-        width: 180px;
+        margin: 15px;
+        width: 205px;
         height: 200px;
         overflow: scroll;
         display: flex;
         flex-direction: column;
+        color: #494e5e;
+        cursor: pointer;
+        padding: 30px;
 
-        .tasks {
-            height: 100px;
-            flex: 1;
+        .title {
+            font-size: 16px;
+            font-weight: 400;
         }
 
-        .progress-percent {
-            text-align: right;
+        .tasks {
+            flex: 1;
+            opacity: 0.4;
         }
     }
 }
 
 .project-container {
-    padding: 0 10%;
     height: 100%;
     margin: auto;
     background-color: white;
-    font-family: "Open Sans";
     overflow: scroll;
     
     .task-count {
@@ -103,6 +143,7 @@ html, body {
         margin-top: 10px;
         display: flex;
         justify-content: space-between;
+        
         .status {
             display: flex;
             align-items: center;
@@ -137,7 +178,7 @@ html, body {
     }
 
     .section {
-        margin-top: 20px;
+        margin-bottom: 50px;
 
         &.collapsed {
             .tasks-container {
@@ -147,8 +188,11 @@ html, body {
         }
 
         .section-toggler {
+            margin-top: 50px;
             display: flex;
-            margin-bottom: 10px;
+            padding-bottom: 15px;
+            border-bottom: solid 1px rgba(245, 246, 247, 0.5);
+            
             .section-name {
                 flex: 1;
                 font-size: 1.2rem;
@@ -161,50 +205,73 @@ html, body {
         }
 
         .tasks-container {
+
+            .completed {
+                .task-name {
+                    text-decoration: line-through;
+                }
+
+                img.check {
+                    filter: contrast(30%) invert(100%) sepia(100%) saturate(3000%) hue-rotate(50deg);
+                    opacity: 1;
+                }
+            }
+
             .task {
-                border-bottom: solid 1px rgb(200, 200, 200);
+                border-bottom: solid 1px rgba(245, 246, 247, 0.5);
                 display: flex;
-                padding: 5px 0;
+                padding: 15px 0;
+                overflow: hidden;
+                
                 .image-container {
                     flex: 0 0;
-                    margin-right: 5px;
-                    img {
+                    margin-right: 15px;
+                    
+                    img.check {
                         height: 20px;
                         width: 20px;
+                        opacity: 0.4;
                     }
                 }
+                
                 .task-body {
-                    color: rgb(150, 150, 150);
+                    flex-grow: 1;
 
                     .task-name {
                         flex: 1 0 90%;
                         display: flex;
                         align-items: center;
-                        color: black;
-                        font-size: 1rem;
+                        color: #494e5e;
+                        font-size: 15px;
+                        -webkit-user-select: none;
+                        -moz-user-select: none;
+                        user-select: none;
                     }
                     .task-details {
+                        padding-top: 15px;
+                        color: rgba(#494e5e,.5);
+                        
                         &.hidden {
-                            height: 0;
-                            overflow: hidden;
+                            display: none;
                         }
                         .task-description {
-                            color: rgb(150, 150, 150);
-                            margin: 5px 0;
+                            margin: 0 0 15px;
                         }
                         .control {
                             display: flex;
-                            color: black;
+
                             .image-container {
                                 flex: 0 0;
-                                margin-right: 5px;
+                                margin-right: 15px;
+
+                                img {
+                                    opacity: 0.5;
+                                }
                             }
                             .actions {
                                 .link {
-                                    margin-left: 10px;
-                                    margin-bottom: 10px;
+                                    color: inherit;
                                     text-decoration: underline;
-                                    cursor: pointer;
                                 }
                             }
                         }
@@ -216,9 +283,6 @@ html, body {
 }
 
 .add-task-container {
-    height: 100%;
-    background: white;
-    font-family: "Open Sans";
 
     .add-task {
         display: flex;
@@ -232,9 +296,11 @@ html, body {
         }
 
         select, input {
-            height: 32px;
+            height: 40px;
             border: solid 1px rgb(200, 200, 200);
             border-radius: 4px;
+            padding: 10px;
+            margin: 15px 0;
             background-color: transparent;
         }
 
@@ -247,6 +313,19 @@ html, body {
                 color: rgb(200, 200, 200);
                 box-shadow: none;
                 cursor: pointer;
+            }
+
+            button {
+                margin: auto;
+                width: 50%;
+                height: 50px;
+                border-radius: 2px;
+                display: block;
+                background-color: rgba(255, 255, 255, 0.4);
+                box-shadow: 0 0.5px 2px 0 rgba(50, 51, 52, 0.1);
+                border: none;
+                background: #3b93f7;
+                color: white;
             }
         }
     }
