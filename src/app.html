@@ -72,7 +72,7 @@
                 <div class="task-card">
                     <div class="card border-light">
                         <div class="card-body">
-                            <div class="title" data-bind="text: name"></div>
+                            <div class="title" data-bind="text: project.name"></div>
                             <div class="tasks" data-bind="text: counttasks() "></div>
                             <div class="progress-percent" data-bind="text: progress() + '%'"></div>
                             <div class="progress">
@@ -124,7 +124,7 @@
             <div>
 
             <div class="project-container">
-                <h1 class="project-name" data-bind="text: currentProject.name"></h1>
+                <h1 class="project-name" data-bind="text: currentProject.project.name"></h1>
                 <div class="task-count" data-bind="text: currentProject.counttasks() + ' tasks'"></div>
                 <div class="progress-percent" data-bind="text: currentProject.progress() + '%'"></div>
 
@@ -161,7 +161,7 @@
                                 <img src="images/icons/task.svg">
                             </div>
                             <div class="task-body">
-                                <div class="task-name" data-bind="text: $data"></div>
+                                <div class="task-name" data-bind="text: name"></div>
                                 <div class="task-details">
                                     <div class="task-description">
                                         Some text here for the task description.
@@ -217,7 +217,7 @@
     <script>
         // this function turns black svg icons white
         $(function(){
-            console.log("poop")
+            
             $('img.svg-icon').each(function () {
                 var $e = $(this);
                 var imgURL = $e.prop('src');
