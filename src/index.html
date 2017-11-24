@@ -57,7 +57,7 @@
 	<div class="bs-component dashboard-container blue-bg" data-bind="visible: currentPage() == 'dashboard'">
 		<div class="container">
 			<h2 class="heading">Hey, <span data-bind="text: userFirstname()"></span></h2>
-			<p class="total-tasks">You have <span data-bind="text: totalTasks() + 'task' + (totalTasks() == 1 ? '' : 's')"></span> to work on today. <span data-bind="if: totalTasks() == 0">Go you!</span></p>
+			<p class="total-tasks">You have <span data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')"></span> to work on today. <span data-bind="if: totalTasks() == 0">Go you!</span></p>
 			<div class="tasks-grid" data-bind="foreach: projects">
 				<div class="task-card card border-light" data-bind='click: function () { showProject($data.projectId) }'>
 					<div class="title" data-bind="text: $data.projectName"></div>
