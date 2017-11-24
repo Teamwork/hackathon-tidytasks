@@ -104,6 +104,230 @@ tasks = {
   "STATUS": "OK",
   "tasks": [
     {
+      "id": 7000472,
+      "name": "Paint!",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:46:00Z",
+      "dateChanged": "2017-11-23T16:46:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 2,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2000,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725038,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2000,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000473,
+      "name": "Order wallpaper for back wall",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:46:00Z",
+      "dateChanged": "2017-11-23T16:46:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2001,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725038,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2001,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000474,
+      "name": "New blinds",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:46:00Z",
+      "dateChanged": "2017-11-23T16:46:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2002,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725038,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2002,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000518,
+      "name": "Take out built-in wardrobe",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:55:00Z",
+      "dateChanged": "2017-11-23T16:55:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2003,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725038,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2003,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
       "id": 7000523,
       "name": "Bring old couch to the dump",
       "priority": null,
@@ -438,6 +662,286 @@ tasks = {
       "canEdit": true,
       "canLogTime": true,
       "DLM": 1511477689127
+    },
+    {
+      "id": 7000553,
+      "name": "Paint walls",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:59:00Z",
+      "dateChanged": "2017-11-23T16:59:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2001,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725041,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2001,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000554,
+      "name": "Sand down and paint bench",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:59:00Z",
+      "dateChanged": "2017-11-23T16:59:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2002,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725041,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2002,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000561,
+      "name": "Finish skirting board",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:59:00Z",
+      "dateChanged": "2017-11-23T16:59:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2003,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725041,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2003,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000570,
+      "name": "Take out door between sitting room and kitchen",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T17:00:00Z",
+      "dateChanged": "2017-11-23T17:00:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2004,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725041,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2004,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000572,
+      "name": "New shelf for photos, cookery books",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 0,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T17:00:00Z",
+      "dateChanged": "2017-11-23T17:00:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 0,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "position": 2005,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725041,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2005,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
     }
   ]
 }.tasks;
@@ -581,31 +1085,29 @@ projects = {
 //   # ).bind(this)
 //   return  
 Project = function(project) {
-  var x, y;
   this.project = project;
   this.tasklists = tasklists.filter(function(x) {
     return x.projectId === project.id;
-  });
-  for (x in tasklists) {
-    y = tasklists[x];
-    x.tasks = tasks.filter(function(z) {
-      return z.taskListId === x.taskListId;
+  }).map(function(x) {
+    x.tasks = tasks.filter(function(y) {
+      return y.taskListId === parseInt(x.id);
     });
-  }
+    return x;
+  });
   this.upcomingTasks = 6;
-  // @addList = (->
-  //   @tasklists.push new TaskList()
-  //   return
-  // ).bind(this)
-  this.navigateToProject = (function() {
-    // console.log("pop")
-    return true;
-  }).bind(this);
   this.counttasks = (function() {
-    return 4;
+    return tasklists.map(function(item) {
+      return item.tasks.length;
+    }).reduce(function(x, y) {
+      return x + y;
+    });
   }).bind(this);
   this.progress = (function() {
-    return 15;
+    return tasklists.map(function(item) {
+      return item.tasks.length;
+    }).reduce(function(x, y) {
+      return x + y;
+    });
   }).bind(this);
 };
 
