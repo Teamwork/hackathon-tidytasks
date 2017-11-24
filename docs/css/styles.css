@@ -8429,7 +8429,8 @@ html, body {
 
 .login-container {
   display: flex;
-  align-items: center; }
+  align-items: center;
+  padding-top: 0; }
   .login-container .container {
     padding: 0 30px;
     max-width: 400px;
