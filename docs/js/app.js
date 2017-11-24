@@ -2,7 +2,7 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 // Define a "Person" class that tracks its own name and children, and has a method to add a new child
-var Project, i, len, projects, showProject, tasklists, tasks, viewModel, x;
+var Project, Views, back, changeView, i, len, projects, showProject, tasklists, tasks, viewModel, x;
 
 tasklists = {
   "STATUS": "OK",
@@ -160,6 +160,66 @@ tasks = {
       "DLM": 1511477689127
     },
     {
+      "id": 7000512,
+      "name": "pick up rollers in homebase",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 7000472,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:54:00Z",
+      "dateChanged": "2017-11-23T16:54:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 1,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "parentTask": {
+        "content": "Paint!",
+        "id": 7000472
+      },
+      "position": 2000,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725038,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2000,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
       "id": 7000473,
       "name": "Order wallpaper for back wall",
       "priority": null,
@@ -216,11 +276,11 @@ tasks = {
       "DLM": 1511477689127
     },
     {
-      "id": 7000474,
-      "name": "New blinds",
+      "id": 7000514,
+      "name": "check in the shed for magnolia",
       "priority": null,
       "status": "new",
-      "parentTaskId": 0,
+      "parentTaskId": 7000472,
       "description": "",
       "canViewEstTime": true,
       "createdBy": {
@@ -228,8 +288,8 @@ tasks = {
         "firstName": "Rory",
         "lastName": "O'Kelly"
       },
-      "dateCreated": "2017-11-23T16:46:00Z",
-      "dateChanged": "2017-11-23T16:46:00Z",
+      "dateCreated": "2017-11-23T16:55:00Z",
+      "dateChanged": "2017-11-23T16:55:00Z",
       "hasFollowers": false,
       "hasLoggedTime": false,
       "hasReminders": false,
@@ -244,10 +304,14 @@ tasks = {
       "numComments": 0,
       "numCommentsRead": 0,
       "numCompletedSubTasks": 0,
-      "numDependencies": 0,
+      "numDependencies": 1,
       "numEstMins": 0,
       "numPredecessors": 0,
-      "position": 2002,
+      "parentTask": {
+        "content": "Paint!",
+        "id": 7000472
+      },
+      "position": 2001,
       "projectId": 249091,
       "startDate": "20171123",
       "assignedTo": [
@@ -265,7 +329,7 @@ tasks = {
       "commentFollowerIds": "",
       "followingChanges": false,
       "followingComments": false,
-      "order": 2002,
+      "order": 2001,
       "canComplete": true,
       "canEdit": true,
       "canLogTime": true,
@@ -275,7 +339,7 @@ tasks = {
       "id": 7000518,
       "name": "Take out built-in wardrobe",
       "priority": null,
-      "status": "new",
+      "status": "reopened",
       "parentTaskId": 0,
       "description": "",
       "canViewEstTime": true,
@@ -322,6 +386,126 @@ tasks = {
       "followingChanges": false,
       "followingComments": false,
       "order": 2003,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511486554000
+    },
+    {
+      "id": 7000544,
+      "name": "pick up thermal board, plaster slabs",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 7000537,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:58:00Z",
+      "dateChanged": "2017-11-23T16:58:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 1,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "parentTask": {
+        "content": "Insulate and paint walls",
+        "id": 7000537
+      },
+      "position": 2000,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725039,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2000,
+      "canComplete": true,
+      "canEdit": true,
+      "canLogTime": true,
+      "DLM": 1511477689127
+    },
+    {
+      "id": 7000546,
+      "name": "borrow a nail gun",
+      "priority": null,
+      "status": "new",
+      "parentTaskId": 7000537,
+      "description": "",
+      "canViewEstTime": true,
+      "createdBy": {
+        "id": 170293,
+        "firstName": "Rory",
+        "lastName": "O'Kelly"
+      },
+      "dateCreated": "2017-11-23T16:58:00Z",
+      "dateChanged": "2017-11-23T16:58:00Z",
+      "hasFollowers": false,
+      "hasLoggedTime": false,
+      "hasReminders": false,
+      "hasRemindersForUser": false,
+      "hasTickets": false,
+      "isPrivate": false,
+      "privacyIsInherited": null,
+      "lockdownId": 0,
+      "numMinutesLogged": 0,
+      "numActiveSubTasks": 0,
+      "numAttachments": 0,
+      "numComments": 0,
+      "numCommentsRead": 0,
+      "numCompletedSubTasks": 0,
+      "numDependencies": 1,
+      "numEstMins": 0,
+      "numPredecessors": 0,
+      "parentTask": {
+        "content": "Insulate and paint walls",
+        "id": 7000537
+      },
+      "position": 2001,
+      "projectId": 249091,
+      "startDate": "20171123",
+      "assignedTo": [
+        {
+          "id": 170291,
+          "firstName": "Alder",
+          "lastName": "Cass"
+        }
+      ],
+      "dueDate": null,
+      "dueDateFromMilestone": false,
+      "taskListId": 725039,
+      "progress": 0,
+      "changeFollowerIds": "",
+      "commentFollowerIds": "",
+      "followingChanges": false,
+      "followingComments": false,
+      "order": 2001,
       "canComplete": true,
       "canEdit": true,
       "canLogTime": true,
@@ -1072,29 +1256,45 @@ projects = {
   ]
 }.projects;
 
-// Task = (task) -> 
-//   @name = task
-//   return
+// views on page
+// defaults to bodyClass null, showheader null
+Views = {
+  login: {
+    bodyClass: "blue",
+    showHeader: false
+  },
+  dash: {
+    bodyClass: "blue"
+  },
+  tasks: {},
+  addTask: {}
+};
 
-// TaskList = (name, tasks) ->
-//   @name = name
-//   @tasks = tasks #.map x -> new Task(x) # ko.observableArray(tasks)
-//   # @addTask = ((task) ->
-//   #   @tasks.push new Task(task)
-//   #   return
-//   # ).bind(this)
-//   return  
 Project = function(project) {
+  // access project original data with .project
   this.project = project;
-  this.tasklists = tasklists.filter(function(x) {
+  // map relevant tasklists to .tasklists property
+  this.tasklists = ko.observableArray(tasklists.filter(function(x) {
     return x.projectId === project.id;
   }).map(function(x) {
+    // add in relevant tasks from big list of tasks
     x.tasks = tasks.filter(function(y) {
-      return y.taskListId === parseInt(x.id);
+      return parseInt(y.taskListId) === parseInt(x.id);
+    });
+    
+    // bool for collapsed state
+    x.isCollapsed = false;
+    x.collapse = (function() {
+      console.log(this.isCollapsed);
+      this.isCollapsed = !this.isCollapsed;
+      return false;
     });
     return x;
-  });
-  this.upcomingTasks = 6;
+  }));
+  
+  // not sure how to do this one, hardcoding to 6 for now
+  this.upcomingTasks = 6; //? TODO
+  // count all tasks in every tasklist in the project
   this.counttasks = (function() {
     return tasklists.map(function(item) {
       return item.tasks.length;
@@ -1102,9 +1302,12 @@ Project = function(project) {
       return x + y;
     });
   }).bind(this);
+  // get percentage of tasks completed by getting incomplete percentage and taking it from 100
   this.progress = (function() {
     return tasklists.map(function(item) {
-      return item.tasks.length;
+      var incompletedPC;
+      incompletedPC = item["uncompleted-count"] / item.tasks.length; // percentage of completed tasks
+      return incompletedPC;
     }).reduce(function(x, y) {
       return x + y;
     });
@@ -1114,11 +1317,10 @@ Project = function(project) {
 
 // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
 viewModel = {
-  background: 'blue',
-  showPage: "dashboard-projects",
-  showHeader: true,
+  viewKey: ko.observable('login'),
+  lastKey: '',
+  tasksDue: 4,
   username: 'Mark',
-  tasksdue: 4,
   currentProject: null,
   projects: ko.observableArray(),
   showAddTask: function() {
@@ -1126,9 +1328,28 @@ viewModel = {
   }
 };
 
+
+// viewModel.tasksDue = ko.computedObservable(viewModel.projects()
+//   .map (item) ->
+//     item.tasksDue
+//   .reduce (x,y) ->
+//     x+y    
+// )
+console.log();
+
+changeView = function(key, model) {
+  console.log(model, key);
+  viewModel.lastKey = viewModel.viewKey();
+  return viewModel.viewKey(key);
+};
+
+back = function(key, model) {
+  return viewModel.viewKey(viewModel.lastKey);
+};
+
 showProject = function(model, project) {
-  model.currentProject = project;
-  model.showPage = "tasks";
+  viewModel.currentProject = project;
+  changeView('tasks');
   return console.log(model);
 };
 

@@ -1,8 +1,10 @@
 html, body {
   margin: 0;
   height: 100%;
-  background: linear-gradient(to bottom, #3b93f7, #25dafc);
   color: white; }
+
+body.blue {
+  background: linear-gradient(to bottom, #3b93f7, #25dafc); }
 
 .login-container {
   width: 75%;
@@ -169,6 +171,9 @@ html, body {
         color: #c8c8c8;
         box-shadow: none;
         cursor: pointer; }
+
+.card .title {
+  font-size: 16px; }
 
 @media (min-width: 600px) {
   .tasks-grid {
