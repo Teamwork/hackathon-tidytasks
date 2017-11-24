@@ -36,7 +36,11 @@ viewModel = function() {
     return iconColour();
   });
   this.goBack = () => {
-    return this.currentPage(this.previousPage());
+    if (this.currentPage() === 'add-task') {
+      return this.currentPage('project-view');
+    } else {
+      return this.currentPage('dashboard');
+    }
   };
   this.loginSuccess = () => {
     this.currentPage('splash');
