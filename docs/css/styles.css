@@ -8503,24 +8503,37 @@ html, body {
     text-align: right;
     color: #969696; }
   .project-container .project-status {
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between; }
+    margin-top: 30px;
+    display: flex; }
     .project-container .project-status .status {
       display: flex;
-      align-items: center; }
+      align-items: center;
+      color: #969696;
+      margin-right: 15px;
+      transition: color 0.16s; }
+      .project-container .project-status .status.selected {
+        font-weight: 600;
+        color: #494e5e; }
+      .project-container .project-status .status:hover, .project-container .project-status .status:active {
+        text-decoration: none; }
       .project-container .project-status .status .status-count {
-        border-radius: 15px;
-        margin: 0 5px;
-        padding: 0 5px; }
+        border-radius: 50%;
+        margin: 0 0 0 10px;
+        width: 22px;
+        height: 22px;
+        display: block;
+        line-height: 20px;
+        text-align: center;
+        font-size: 11px;
+        border: 1px solid; }
       .project-container .project-status .status.late .status-count {
-        border: solid 2px #ff6562;
+        border-color: #ff6562;
         color: #ff6562; }
       .project-container .project-status .status.today .status-count {
-        border: solid 2px #3b93f7;
+        border-color: #3b93f7;
         color: #3b93f7; }
       .project-container .project-status .status.upcoming .status-count {
-        border: solid 2px #fcb52b;
+        border-color: #fcb52b;
         color: #fcb52b; }
   .project-container .section {
     margin-bottom: 50px; }
@@ -8544,6 +8557,8 @@ html, body {
     .project-container .section .tasks-container .completed img.check {
       filter: contrast(30%) invert(100%) sepia(100%) saturate(3000%) hue-rotate(50deg);
       opacity: 1; }
+    .project-container .section .tasks-container .highlight .task-name {
+      font-weight: 600; }
     .project-container .section .tasks-container .task {
       border-bottom: solid 1px rgba(245, 246, 247, 0.5);
       display: flex;
@@ -8556,6 +8571,15 @@ html, body {
           height: 20px;
           width: 20px;
           opacity: 0.4; }
+        .project-container .section .tasks-container .task .image-container .subtask-count {
+          color: white;
+          display: block;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          background: #969696; }
       .project-container .section .tasks-container .task .task-body {
         flex-grow: 1; }
         .project-container .section .tasks-container .task .task-body .task-name {
@@ -8591,14 +8615,17 @@ html, body {
   width: 75%;
   max-width: 400px;
   margin: auto; }
-  .add-task-container .add-task label, .add-task-container .add-task .actions {
-    margin-top: 20px; }
+  .add-task-container .add-task h3 {
+    margin-bottom: 30px; }
   .add-task-container .add-task select, .add-task-container .add-task input {
+    font-size: 13px;
+    color: #494e5e;
+    box-shadow: none !important;
     height: 40px;
     border: solid 1px #c8c8c8;
     border-radius: 4px;
     padding: 10px;
-    margin: 15px 0;
+    margin: 0 0 30px;
     background-color: transparent; }
   .add-task-container .add-task .actions {
     width: 100%;
@@ -8626,6 +8653,6 @@ html, body {
   .project-container .project-status {
     justify-content: left; }
     .project-container .project-status .status {
-      margin-right: 40px; }
+      margin-right: 30px; }
   .project-container .section .tasks-container .task .task-body .task-details .control .actions {
     display: flex; } }

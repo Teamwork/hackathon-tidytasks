@@ -1,21 +1,25 @@
 viewModel = ->
     @currentPage = ko.observable 'splash'
-    @allTasks = ko.observableArray()
+    @flatTasks  = ko.observableArray()
     @projects = ko.observableArray()
-    @currentProject = ko.observable()
+    @currentFilter = ko.observable()
     @currentProjectId = ko.observable()
-    @currentTasklist = ko.observable()
-    @loginError = ko.observable()
+    @totalTasks = ko.observable()
+    @allTasklists = ko.observableArray()
+    
     @User = new User()
     @domain = ko.observable()
     @userId = ko.observable()
     @userIcon = ko.observable()
     @userFirstname = ko.observable()
+    
     @previousPage = ko.observable()
     @showNav = ko.observable false
     @lightNav = ko.observable false
     @backButton = ko.observable false
-    @totalTasks = ko.observable()
+    @loginError = ko.observable()
+
+    @today = moment(new Date()).format('YYYYMMDD')
 
     @currentPage.subscribe (value) ->
         @previousPage value
@@ -26,7 +30,7 @@ viewModel = ->
             @showNav true
             @lightNav true
             @backButton false
-        else if ['add-task','project','project-view'].indexOf(@currentPage()) > -1
+        else if ['add-task','project','tasks-view'].indexOf(@currentPage()) > -1
             @showNav true
             @lightNav false
             @backButton true
@@ -36,10 +40,9 @@ viewModel = ->
 
     @goBack = =>
         if @currentPage() == 'add-task'
-            @currentPage 'project-view'
+            @currentPage 'tasks-view'
         else
             @currentPage 'dashboard'
-
 
     @loginSuccess = =>
         @currentPage 'splash'
@@ -49,6 +52,7 @@ viewModel = ->
         @userFirstname User.userFirstname
         @userId User.userId
         @getAllTasks(true)
+        @getAllTasklists()
         return
 
     @loginFail = =>
@@ -79,26 +83,34 @@ viewModel = ->
 
     @getAllTasks = (goToDash,callback) =>
         @projects []
-        @allTasks []
+        @flatTasks  []
+        
         xhrOptions = 
             method: 'GET'
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             data: 
-                'filter': 'today'
                 'getFiles': false
                 'responsible-party-ids': @userId()
                 'stamp': new Date().getTime()
+                'getSubTasks': 'yes'
+
             success: (data) =>
                 console.log data
                 tasks = data['todo-items']
-                @totalTasks tasks.length
+                taskTotal = 0
                 projectsAssoc = {}
-                $.each tasks, (i, task)->
+                
+                $.each tasks, (i, task) =>
+                    if !task['start-date'] and !task['due-date']
+                        return true
                     if projectsAssoc['p-' + task['project-id']] is undefined
                         projectsAssoc['p-' + task['project-id']] = {}
                         projectsAssoc['p-' + task['project-id']].taskCount = 0
+                        projectsAssoc['p-' + task['project-id']].lateTasks = 0
+                        projectsAssoc['p-' + task['project-id']].currentTasks = 0
+                        projectsAssoc['p-' + task['project-id']].upcomingTasks = 0
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc = {}
                         projectsAssoc['p-' + task['project-id']].projectName = task['project-name']
                         projectsAssoc['p-' + task['project-id']].projectId = task['project-id']
@@ -107,19 +119,48 @@ viewModel = ->
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks = []
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name']
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id']
+                    
+                    type = ''
+                    start = task["start-date"]
+                    due = task["due-date"]
+                    if due != '' and due < @today
+                        type = 'late'
+                        projectsAssoc['p-' + task['project-id']].lateTasks++ 
+                        taskTotal++
+                    else if (start != '' and start <= @today) or (due != '' and due == @today)
+                        type = 'today'
+                        projectsAssoc['p-' + task['project-id']].currentTasks++ 
+                        taskTotal++
+                    else if start != '' and start > @today
+                        type = 'upcoming'
+                        projectsAssoc['p-' + task['project-id']].upcomingTasks++ 
+                    
                     cleanTask = 
                         taskName: task.content
                         taskId: task.id
                         taskDescription: task.description
+                        taskStartDate: start
+                        taskDueDate: due
+                        taskType: type
+                        subtaskCount: task.predecessors.length
+                        subtasks: task.predecessors
+                        parentId: task.parentTaskId
+                    
                     projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push cleanTask
-
                     projectsAssoc['p-' + task['project-id']].taskCount++
+                    @flatTasks.push cleanTask
+                
                 for project of projectsAssoc
                     projectsAssoc[project].tasklists = []
                     for tasklist of projectsAssoc[project].tasklistsAssoc
                         projectsAssoc[project].tasklists.push projectsAssoc[project].tasklistsAssoc[tasklist]
+                    delete projectsAssoc[project].tasklistsAssoc
                     @projects.push projectsAssoc[project]
+                
                 console.log @projects()
+                
+                @totalTasks taskTotal
+                
                 if goToDash
                     @currentPage 'dashboard'
                 if typeof callback == 'function'
@@ -128,17 +169,51 @@ viewModel = ->
             
         $.ajax @domain() + 'tasks.json', xhrOptions
 
-    @showProject = (projectId) =>
-        @currentProjectId projectId
-        for project in @projects()
-            if project.projectId == projectId
-                @currentPage 'project-view'
-                @currentProject project
-        console.log @currentProject()
+    @getAllTasklists = () =>
+        xhrOptions = 
+            method: 'GET'
+            beforeSend: (xhr) ->
+                xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
+                return
+            success: (data) =>
+                $.each data.tasklists, (i, tasklist) =>
+                    tasklist = 
+                        tasklistName: tasklist.projectName + ' / ' + tasklist.name
+                        tasklistId: tasklist.id
+                    @allTasklists.push(tasklist)
+                return
+
+        $.ajax @domain() + 'tasklists.json', xhrOptions
+
+    @showTasks = (opts) =>
+        if opts.projectId
+            @currentProjectId opts.projectId
+        else 
+            @currentProjectId ''
+        if opts.filter
+            @currentFilter opts.filter
+        else
+            @currentFilter 'all'
+        
+        @removeEmpties()
+        @currentPage 'tasks-view'
+        return
+
+    @removeEmpties = () ->
+        $('.task-list').each ->
+            if $(this).find('.task').length is 0
+                $(this).hide()
+            else 
+                $(this).show()
+        console.log 'tidy!'
+        return
+
+    @showAddTask = (tasklistId) =>
+        $('#tasklist-id').val tasklistId
+        @currentPage 'add-task'
         return
 
     @createTask = =>
-        console.log @currentTasklist()
         payload = 
             'todo-item':
                 'responsible-party-id': @userId()
@@ -155,8 +230,10 @@ viewModel = ->
                 
             success: (data) =>
                 @getAllTasks false, ->
-                    @showProject @currentProjectId()
+                    @showTasks 
+                        projectId: @currentProjectId()
                 return
+        
         $.ajax @domain() + "tasklists/" + @currentTasklist() + "/tasks.json", xhrOptions
         return
 
@@ -167,15 +244,23 @@ viewModel = ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) ->
-                console.log data
                 $('[data-task-id=' + taskId + ']').addClass('completed').delay(1000).animate({
                     height: 0,
                     opacity: 0
                 }, ->
                     $(this).remove()
+                    @getAllTasks
                 )
                 return
+        
         $.ajax @domain() + "tasks/" + taskId + "/complete.json", xhrOptions
+        return
+
+    @highlightSubtasks = (taskId) =>
+        $.each @flatTasks(), (i, task) =>
+            if parseInt(task.parentId) == parseInt(taskId)
+                $('[data-task-id=' + task.taskId + "]").toggleClass('highlight')
+            return
         return
 
     @toggleDetails = (data,event) ->

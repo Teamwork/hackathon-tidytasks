@@ -1,0 +1,26 @@
+{
+  "name": "hackathon-tidytasks",
+  "description": "Alder, Maeve, Rory &amp; Brendan's Hackathon Nov. 2017",
+  "main": "gulpfile.js",
+  "authors": [
+    "Alder Cass",
+    "Maeve Goggin",
+    "Rory O'Kelly",
+    "Brendan Benoit"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/Teamwork/hackathon-tidytasks",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "knockout": "^3.4.2",
+    "moment": "^2.19.2"
+  }
+}

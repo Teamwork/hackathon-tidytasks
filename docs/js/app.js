@@ -2,12 +2,12 @@ var iconColour, viewModel;
 
 viewModel = function() {
   this.currentPage = ko.observable('splash');
-  this.allTasks = ko.observableArray();
+  this.flatTasks = ko.observableArray();
   this.projects = ko.observableArray();
-  this.currentProject = ko.observable();
+  this.currentFilter = ko.observable();
   this.currentProjectId = ko.observable();
-  this.currentTasklist = ko.observable();
-  this.loginError = ko.observable();
+  this.totalTasks = ko.observable();
+  this.allTasklists = ko.observableArray();
   this.User = new User();
   this.domain = ko.observable();
   this.userId = ko.observable();
@@ -17,7 +17,8 @@ viewModel = function() {
   this.showNav = ko.observable(false);
   this.lightNav = ko.observable(false);
   this.backButton = ko.observable(false);
-  this.totalTasks = ko.observable();
+  this.loginError = ko.observable();
+  this.today = moment(new Date()).format('YYYYMMDD');
   this.currentPage.subscribe(function(value) {
     return this.previousPage(value);
   }, this, "beforeChange");
@@ -26,7 +27,7 @@ viewModel = function() {
       this.showNav(true);
       this.lightNav(true);
       this.backButton(false);
-    } else if (['add-task', 'project', 'project-view'].indexOf(this.currentPage()) > -1) {
+    } else if (['add-task', 'project', 'tasks-view'].indexOf(this.currentPage()) > -1) {
       this.showNav(true);
       this.lightNav(false);
       this.backButton(true);
@@ -37,7 +38,7 @@ viewModel = function() {
   });
   this.goBack = () => {
     if (this.currentPage() === 'add-task') {
-      return this.currentPage('project-view');
+      return this.currentPage('tasks-view');
     } else {
       return this.currentPage('dashboard');
     }
@@ -50,6 +51,7 @@ viewModel = function() {
     this.userFirstname(User.userFirstname);
     this.userId(User.userId);
     this.getAllTasks(true);
+    this.getAllTasklists();
   };
   this.loginFail = () => {
     this.currentPage('login');
@@ -79,29 +81,35 @@ viewModel = function() {
   this.getAllTasks = (goToDash, callback) => {
     var xhrOptions;
     this.projects([]);
-    this.allTasks([]);
+    this.flatTasks([]);
     xhrOptions = {
       method: 'GET',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       data: {
-        'filter': 'today',
         'getFiles': false,
         'responsible-party-ids': this.userId(),
-        'stamp': new Date().getTime()
+        'stamp': new Date().getTime(),
+        'getSubTasks': 'yes'
       },
       success: (data) => {
-        var project, projectsAssoc, tasklist, tasks;
+        var project, projectsAssoc, taskTotal, tasklist, tasks;
         console.log(data);
         tasks = data['todo-items'];
-        this.totalTasks(tasks.length);
+        taskTotal = 0;
         projectsAssoc = {};
-        $.each(tasks, function(i, task) {
-          var cleanTask;
+        $.each(tasks, (i, task) => {
+          var cleanTask, due, start, type;
+          if (!task['start-date'] && !task['due-date']) {
+            return true;
+          }
           if (projectsAssoc['p-' + task['project-id']] === void 0) {
             projectsAssoc['p-' + task['project-id']] = {};
             projectsAssoc['p-' + task['project-id']].taskCount = 0;
+            projectsAssoc['p-' + task['project-id']].lateTasks = 0;
+            projectsAssoc['p-' + task['project-id']].currentTasks = 0;
+            projectsAssoc['p-' + task['project-id']].upcomingTasks = 0;
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc = {};
             projectsAssoc['p-' + task['project-id']].projectName = task['project-name'];
             projectsAssoc['p-' + task['project-id']].projectId = task['project-id'];
@@ -112,22 +120,46 @@ viewModel = function() {
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name'];
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id'];
           }
+          type = '';
+          start = task["start-date"];
+          due = task["due-date"];
+          if (due !== '' && due < this.today) {
+            type = 'late';
+            projectsAssoc['p-' + task['project-id']].lateTasks++;
+            taskTotal++;
+          } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
+            type = 'today';
+            projectsAssoc['p-' + task['project-id']].currentTasks++;
+            taskTotal++;
+          } else if (start !== '' && start > this.today) {
+            type = 'upcoming';
+            projectsAssoc['p-' + task['project-id']].upcomingTasks++;
+          }
           cleanTask = {
             taskName: task.content,
             taskId: task.id,
-            taskDescription: task.description
+            taskDescription: task.description,
+            taskStartDate: start,
+            taskDueDate: due,
+            taskType: type,
+            subtaskCount: task.predecessors.length,
+            subtasks: task.predecessors,
+            parentId: task.parentTaskId
           };
           projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push(cleanTask);
-          return projectsAssoc['p-' + task['project-id']].taskCount++;
+          projectsAssoc['p-' + task['project-id']].taskCount++;
+          return this.flatTasks.push(cleanTask);
         });
         for (project in projectsAssoc) {
           projectsAssoc[project].tasklists = [];
           for (tasklist in projectsAssoc[project].tasklistsAssoc) {
             projectsAssoc[project].tasklists.push(projectsAssoc[project].tasklistsAssoc[tasklist]);
           }
+          delete projectsAssoc[project].tasklistsAssoc;
           this.projects.push(projectsAssoc[project]);
         }
         console.log(this.projects());
+        this.totalTasks(taskTotal);
         if (goToDash) {
           this.currentPage('dashboard');
         }
@@ -138,22 +170,55 @@ viewModel = function() {
     };
     return $.ajax(this.domain() + 'tasks.json', xhrOptions);
   };
-  this.showProject = (projectId) => {
-    var j, len, project, ref;
-    this.currentProjectId(projectId);
-    ref = this.projects();
-    for (j = 0, len = ref.length; j < len; j++) {
-      project = ref[j];
-      if (project.projectId === projectId) {
-        this.currentPage('project-view');
-        this.currentProject(project);
+  this.getAllTasklists = () => {
+    var xhrOptions;
+    xhrOptions = {
+      method: 'GET',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+      },
+      success: (data) => {
+        $.each(data.tasklists, (i, tasklist) => {
+          tasklist = {
+            tasklistName: tasklist.projectName + ' / ' + tasklist.name,
+            tasklistId: tasklist.id
+          };
+          return this.allTasklists.push(tasklist);
+        });
       }
+    };
+    return $.ajax(this.domain() + 'tasklists.json', xhrOptions);
+  };
+  this.showTasks = (opts) => {
+    if (opts.projectId) {
+      this.currentProjectId(opts.projectId);
+    } else {
+      this.currentProjectId('');
     }
-    console.log(this.currentProject());
+    if (opts.filter) {
+      this.currentFilter(opts.filter);
+    } else {
+      this.currentFilter('all');
+    }
+    this.removeEmpties();
+    this.currentPage('tasks-view');
+  };
+  this.removeEmpties = function() {
+    $('.task-list').each(function() {
+      if ($(this).find('.task').length === 0) {
+        return $(this).hide();
+      } else {
+        return $(this).show();
+      }
+    });
+    console.log('tidy!');
+  };
+  this.showAddTask = (tasklistId) => {
+    $('#tasklist-id').val(tasklistId);
+    this.currentPage('add-task');
   };
   this.createTask = () => {
     var payload, xhrOptions;
-    console.log(this.currentTasklist());
     payload = {
       'todo-item': {
         'responsible-party-id': this.userId(),
@@ -171,7 +236,9 @@ viewModel = function() {
       data: JSON.stringify(payload),
       success: (data) => {
         this.getAllTasks(false, function() {
-          return this.showProject(this.currentProjectId());
+          return this.showTasks({
+            projectId: this.currentProjectId()
+          });
         });
       }
     };
@@ -185,16 +252,23 @@ viewModel = function() {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: function(data) {
-        console.log(data);
         $('[data-task-id=' + taskId + ']').addClass('completed').delay(1000).animate({
           height: 0,
           opacity: 0
         }, function() {
-          return $(this).remove();
+          $(this).remove();
+          return this.getAllTasks;
         });
       }
     };
     $.ajax(this.domain() + "tasks/" + taskId + "/complete.json", xhrOptions);
+  };
+  this.highlightSubtasks = (taskId) => {
+    $.each(this.flatTasks(), (i, task) => {
+      if (parseInt(task.parentId) === parseInt(taskId)) {
+        $('[data-task-id=' + task.taskId + "]").toggleClass('highlight');
+      }
+    });
   };
   this.toggleDetails = function(data, event) {
     $(event.target).next('.task-details').toggleClass('hidden');
