@@ -17,11 +17,12 @@
                 label(for='tasklist-id') Tasklist
                 select#tasklist-id(required, data-bind='options: allTasklists, optionsText: "text", optionsValue: "value"')
                     option(value='') Loading tasklists...
-            .form-group
-                label(for='start-date') Start date
-                input#start-date(data-bind='value: moment(new Date()).format("DD MMMM, YYYY")')
-            .form-group
-                label(for='due-date') Due date
-                input#due-date
+            .double-group
+                .form-group
+                    label(for='start-date') Start date
+                    input#start-date(data-bind='value: moment(new Date()).format("DD MMMM, YYYY")')
+                .form-group
+                    label(for='due-date') Due date
+                    input#due-date
             .actions
                 button(type='submit') SAVE
