@@ -8374,7 +8374,6 @@ input[type="checkbox"]:disabled:checked:after,
 
 .navbar {
   box-shadow: none !important;
-  position: fixed;
   z-index: 50;
   top: 0;
   left: 0;
