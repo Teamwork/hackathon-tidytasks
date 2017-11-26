@@ -110,6 +110,7 @@ viewModel = ->
                 'responsible-party-ids': @userId()
                 'stamp': new Date().getTime()
                 'getSubTasks': 'yes'
+                'sort': 'dateadded'
 
             success: (data) =>
                 @projects []
