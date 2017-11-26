@@ -83,8 +83,6 @@ viewModel = ->
         @currentPage 'login'
 
     @getAllTasks = (goToDash,callback) =>
-        @projects []
-        @flatTasks  []
         
         xhrOptions = 
             method: 'GET'
@@ -98,6 +96,8 @@ viewModel = ->
                 'getSubTasks': 'yes'
 
             success: (data) =>
+                @projects []
+                @flatTasks []
                 console.log data
                 tasks = data['todo-items']
                 taskTotal = 0
@@ -188,6 +188,7 @@ viewModel = ->
                 $select = $('#tasklist-id').selectize
                     sortField: 'text'
                     options: @allTasklists()
+                    placeholder: 'Select a tasklist...'
                 @selectize = $select[0].selectize
                 return
 
@@ -243,22 +244,24 @@ viewModel = ->
                         projectId: @currentProjectId()
                 return
         
-        $.ajax @domain() + "tasklists/" + @currentTasklist() + "/tasks.json", xhrOptions
+        $.ajax @domain() + "tasklists/" + @selectize.getValue() + "/tasks.json", xhrOptions
         return
 
     @completeTask = (taskId) =>
+
         xhrOptions = 
             method: 'PUT'
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
-            success: (data) ->
-                $('[data-task-id=' + taskId + ']').addClass('completed').delay(1000).animate({
+            success: (data) =>
+                el = $('[data-task-id=' + taskId + ']')
+                el.addClass('completed').delay(1000).animate({
                     height: 0,
                     opacity: 0
-                }, ->
-                    $(this).remove()
-                    @getAllTasks
+                }, =>
+                    el.remove()
+                    @getAllTasks false
                 )
                 return
         

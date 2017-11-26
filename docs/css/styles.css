@@ -8441,6 +8441,9 @@ html, body {
   font-weight: 600;
   font-size: 14px;
   padding-top: 0; }
+  .splash-container img {
+    display: block;
+    margin-bottom: 15px; }
 
 .login-container {
   display: flex;
@@ -8633,6 +8636,8 @@ form.add-task {
     margin-bottom: 30px; }
   form.add-task .form-group {
     margin: 0 0 30px; }
+  form.add-task input {
+    -webkit-appearance: none; }
   form.add-task select, form.add-task input {
     font-size: 16px;
     color: #494e5e;
@@ -8651,7 +8656,8 @@ form.add-task {
     color: #494e5e;
     border: solid 1px #c8c8c8; }
     form.add-task .selectize-input input {
-      height: 24px; }
+      height: 24px;
+      width: 100% !important; }
     form.add-task .selectize-input .item {
       min-height: 24px;
       line-height: 24px; }

@@ -33,6 +33,11 @@ html, body {
     font-weight: 600;
     font-size: 14px;
     padding-top: 0;
+
+    img {
+        display: block;
+        margin-bottom: 15px;
+    }
 }
 
 .login-container {
@@ -331,6 +336,10 @@ form.add-task {
         margin: 0 0 30px;
     }
 
+    input {
+        -webkit-appearance: none;
+    }
+
     select, input {
         font-size: 16px;
         color: #494e5e;
@@ -353,6 +362,7 @@ form.add-task {
         
         input {
             height: 24px;
+            width: 100%!important;
         }
 
         .item {

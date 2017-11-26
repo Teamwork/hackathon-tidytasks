@@ -81,8 +81,6 @@ viewModel = function() {
   }
   this.getAllTasks = (goToDash, callback) => {
     var xhrOptions;
-    this.projects([]);
-    this.flatTasks([]);
     xhrOptions = {
       method: 'GET',
       beforeSend: function(xhr) {
@@ -96,6 +94,8 @@ viewModel = function() {
       },
       success: (data) => {
         var project, projectsAssoc, taskTotal, tasklist, tasks;
+        this.projects([]);
+        this.flatTasks([]);
         console.log(data);
         tasks = data['todo-items'];
         taskTotal = 0;
@@ -192,7 +192,8 @@ viewModel = function() {
         });
         $select = $('#tasklist-id').selectize({
           sortField: 'text',
-          options: this.allTasklists()
+          options: this.allTasklists(),
+          placeholder: 'Select a tasklist...'
         });
         this.selectize = $select[0].selectize;
       }
@@ -254,7 +255,7 @@ viewModel = function() {
         });
       }
     };
-    $.ajax(this.domain() + "tasklists/" + this.currentTasklist() + "/tasks.json", xhrOptions);
+    $.ajax(this.domain() + "tasklists/" + this.selectize.getValue() + "/tasks.json", xhrOptions);
   };
   this.completeTask = (taskId) => {
     var xhrOptions;
@@ -263,13 +264,15 @@ viewModel = function() {
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
-      success: function(data) {
-        $('[data-task-id=' + taskId + ']').addClass('completed').delay(1000).animate({
+      success: (data) => {
+        var el;
+        el = $('[data-task-id=' + taskId + ']');
+        el.addClass('completed').delay(1000).animate({
           height: 0,
           opacity: 0
-        }, function() {
-          $(this).remove();
-          return this.getAllTasks;
+        }, () => {
+          el.remove();
+          return this.getAllTasks(false);
         });
       }
     };
