@@ -8,6 +8,7 @@ viewModel = function() {
   this.currentProjectId = ko.observable();
   this.totalTasks = ko.observable();
   this.allTasklists = ko.observableArray();
+  this.creatingTask = ko.observable(false);
   this.User = new User();
   this.domain = ko.observable();
   this.userId = ko.observable();
@@ -20,6 +21,8 @@ viewModel = function() {
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
   this.tasklistSelect = null;
+  $("#start-date").pickadate();
+  $("#due-date").pickadate();
   this.currentPage.subscribe(function(value) {
     return this.previousPage(value);
   }, this, "beforeChange");
@@ -233,11 +236,18 @@ viewModel = function() {
     this.currentPage('add-task');
   };
   this.createTask = () => {
-    var payload, xhrOptions;
+    var dueDate, payload, startDate, xhrOptions;
+    startDate = $('#start-date').val() ? moment($('#start-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
+    dueDate = $('#due-date').val() ? moment($('#due-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
+    if (startDate > dueDate) {
+      alert('The start date can\'t be before the due date');
+      return false;
+    }
     payload = {
       'todo-item': {
         'responsible-party-id': this.userId(),
-        'start-date': moment(new Date()).format('YYYYMMDD'),
+        'start-date': startDate,
+        'due-date': dueDate,
         'content': $('#task-name').val()
       }
     };
@@ -251,31 +261,37 @@ viewModel = function() {
       data: JSON.stringify(payload),
       success: (data) => {
         this.getAllTasks(false, function() {
-          return this.showTasks({
+          this.showTasks({
             projectId: this.currentProjectId()
           });
+          return this.creatingTask(false);
         });
       }
     };
+    this.creatingTask(true);
     $.ajax(this.domain() + "tasklists/" + this.selectize.getValue() + "/tasks.json", xhrOptions);
   };
   this.completeTask = (taskId) => {
-    var xhrOptions;
+    var el, xhrOptions;
+    el = $('[data-task-id=' + taskId + ']');
+    el.addClass('completed');
     xhrOptions = {
       method: 'PUT',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        var el;
-        el = $('[data-task-id=' + taskId + ']');
-        el.addClass('completed').delay(1000).animate({
+        el.delay(1000).animate({
           height: 0,
           opacity: 0
         }, () => {
           el.remove();
           return this.getAllTasks();
         });
+      },
+      error: function() {
+        el.removeClass('completed');
+        return alert('There was an error completing the task');
       }
     };
     $.ajax(this.domain() + "tasks/" + taskId + "/complete.json", xhrOptions);

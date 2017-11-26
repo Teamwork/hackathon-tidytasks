@@ -8418,7 +8418,8 @@ input[type="checkbox"]:disabled:checked:after,
 
 .spinner {
   width: 66px;
-  text-align: center; }
+  text-align: center;
+  margin: auto; }
 
 .spinner > div {
   width: 12px;
@@ -8429,6 +8430,9 @@ input[type="checkbox"]:disabled:checked:after,
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both; }
+
+.spinner.dark > div {
+  background-color: rgba(0, 0, 0, 0.35); }
 
 .spinner .bounce1 {
   -webkit-animation-delay: -0.32s;
@@ -8724,6 +8728,8 @@ html, body {
       border: solid 1px #c8c8c8; }
       .add-task-container form.add-task .selectize-input input {
         height: 24px;
+        transition: none !important; }
+      .add-task-container form.add-task .selectize-input.not-full input {
         width: 100% !important; }
       .add-task-container form.add-task .selectize-input .item {
         min-height: 24px;
@@ -8757,3 +8763,13 @@ html, body {
       margin-right: 30px; }
   .project-container .section .tasks-container .task .task-body .task-details .control .actions {
     display: flex; } }
+
+.picker__holder {
+  font-size: 10px;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  justify-content: center; }
+  .picker__holder .picker__frame {
+    position: static;
+    max-width: 500px; }

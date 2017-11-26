@@ -6,6 +6,7 @@ viewModel = ->
     @currentProjectId = ko.observable()
     @totalTasks = ko.observable()
     @allTasklists = ko.observableArray()
+    @creatingTask = ko.observable false
     
     @User = new User()
     @domain = ko.observable()
@@ -21,6 +22,9 @@ viewModel = ->
 
     @today = moment(new Date()).format('YYYYMMDD')
     @tasklistSelect = null
+
+    $("#start-date").pickadate()
+    $("#due-date").pickadate()
 
     @currentPage.subscribe (value) ->
         @previousPage value
@@ -226,10 +230,17 @@ viewModel = ->
         return
 
     @createTask = =>
+        startDate = if $('#start-date').val() then moment($('#start-date').val(),"DD MMMM, YYYY").format("YYYYMMDD") else ''
+        dueDate = if $('#due-date').val() then moment($('#due-date').val(),"DD MMMM, YYYY").format("YYYYMMDD") else ''
+        
+        if startDate > dueDate
+            alert 'The start date can\'t be before the due date'
+            return false
         payload = 
             'todo-item':
                 'responsible-party-id': @userId()
-                'start-date': moment(new Date()).format('YYYYMMDD')
+                'start-date': startDate
+                'due-date': dueDate
                 'content': $('#task-name').val()
         xhrOptions = 
             method: 'POST'
@@ -244,12 +255,16 @@ viewModel = ->
                 @getAllTasks false, ->
                     @showTasks 
                         projectId: @currentProjectId()
+                    @creatingTask false
                 return
         
+        @creatingTask true
         $.ajax @domain() + "tasklists/" + @selectize.getValue() + "/tasks.json", xhrOptions
         return
 
     @completeTask = (taskId) =>
+        el = $('[data-task-id=' + taskId + ']')
+        el.addClass('completed')
 
         xhrOptions = 
             method: 'PUT'
@@ -257,8 +272,7 @@ viewModel = ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) =>
-                el = $('[data-task-id=' + taskId + ']')
-                el.addClass('completed').delay(1000).animate({
+                el.delay(1000).animate({
                     height: 0,
                     opacity: 0
                 }, =>
@@ -266,6 +280,9 @@ viewModel = ->
                     @getAllTasks()
                 )
                 return
+            error: ->
+                el.removeClass('completed')
+                alert 'There was an error completing the task'
         
         $.ajax @domain() + "tasks/" + taskId + "/complete.json", xhrOptions
         return

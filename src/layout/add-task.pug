@@ -1,6 +1,11 @@
 .bs-component.add-task-container.white-bg(data-bind="visible: currentPage() == 'add-task'")
     .container
-        form#add-task-form.add-task(data-bind='submit: createTask')
+        .spinner.dark(data-bind='visible: creatingTask()')
+            .bounce1
+            .bounce2
+            .bounce3
+
+        form#add-task-form.add-task(data-bind='submit: createTask, visible: !creatingTask()')
             h3.heading Add task
             .form-group
                 label(for='task-name') Task title
@@ -8,5 +13,11 @@
             .form-group
                 label(for='tasklist-id') Tasklist
                 select#tasklist-id(required)
+            .form-group
+                label(for='start-date') Start date
+                input#start-date(data-bind='value: moment(new Date()).format("DD MMMM, YYYY")')
+            .form-group
+                label(for='due-date') Due date
+                input#due-date
             .actions
                 button(type='submit') SAVE

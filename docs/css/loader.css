@@ -1,6 +1,7 @@
 .spinner {
   width: 66px;
-  text-align: center; }
+  text-align: center;
+  margin: auto; }
 
 .spinner > div {
   width: 12px;
@@ -11,6 +12,9 @@
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both; }
+
+.spinner.dark > div {
+  background-color: rgba(0, 0, 0, 0.35); }
 
 .spinner .bounce1 {
   -webkit-animation-delay: -0.32s;
