@@ -217,7 +217,6 @@ viewModel = ->
         return
 
     @showAddTask = (tasklistId) =>
-        @selectize.clear()
         if tasklistId
             @selectize.setValue tasklistId
         @currentPage 'add-task'

@@ -224,7 +224,6 @@ viewModel = function() {
     });
   };
   this.showAddTask = (tasklistId) => {
-    this.selectize.clear();
     if (tasklistId) {
       this.selectize.setValue(tasklistId);
     }
