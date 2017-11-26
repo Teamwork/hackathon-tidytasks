@@ -462,15 +462,19 @@ html, body {
     }
 }
 
-.picker__holder {
-    font-size: 10px;
-    display: flex;
-    padding: 10px;
-    align-items: center;
-    justify-content: center;
-
-    .picker__frame {
-        position: static;
-        max-width: 500px;
+.picker {
+    
+    .picker__holder {
+        font-size: 10px;
+        display: flex;
+        padding: 10px;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+    
+        .picker__frame {
+            position: static;
+            max-width: 500px;
+        }
     }
 }

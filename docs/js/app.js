@@ -182,7 +182,7 @@ viewModel = function() {
     xhrOptions = {
       method: 'GET',
       data: {
-        pageSize: 500
+        pageSize: 1000
       },
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));

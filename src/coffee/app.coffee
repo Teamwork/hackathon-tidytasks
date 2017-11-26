@@ -90,7 +90,6 @@ viewModel = ->
         @currentPage 'login'
 
     @getAllTasks = (goToDash,callback) =>
-        
         xhrOptions = 
             method: 'GET'
             beforeSend: (xhr) ->
@@ -181,7 +180,7 @@ viewModel = ->
         xhrOptions = 
             method: 'GET'
             data: 
-                pageSize: 500
+                pageSize: 1000
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return

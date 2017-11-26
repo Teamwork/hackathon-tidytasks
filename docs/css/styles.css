@@ -8764,12 +8764,13 @@ html, body {
   .project-container .section .tasks-container .task .task-body .task-details .control .actions {
     display: flex; } }
 
-.picker__holder {
+.picker .picker__holder {
   font-size: 10px;
   display: flex;
   padding: 10px;
   align-items: center;
-  justify-content: center; }
-  .picker__holder .picker__frame {
+  justify-content: center;
+  z-index: 100; }
+  .picker .picker__holder .picker__frame {
     position: static;
     max-width: 500px; }
