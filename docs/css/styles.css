@@ -8702,7 +8702,7 @@ html, body {
   .add-task-container form.add-task h3 {
     margin-bottom: 30px; }
   .add-task-container form.add-task .form-group {
-    margin: 0 0 30px; }
+    margin: 0 0 20px; }
   .add-task-container form.add-task input {
     -webkit-appearance: none; }
   .add-task-container form.add-task select, .add-task-container form.add-task input {
@@ -8719,7 +8719,7 @@ html, body {
     width: 100%; }
   .add-task-container form.add-task select {
     background-position: calc(100% - 10px) center;
-    padding-right: 40px; }
+    padding-right: 30px; }
   .add-task-container form.add-task .actions {
     width: 100%;
     display: flex;
