@@ -5,6 +5,9 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
         .navbar-date(data-bind="text: moment(new Date()).format('DD MMM YYYY'), visible: !backButton()")
         ul.navbar-nav.navbar-right
             li.nav-item
+                a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('search')}")
+                    img.svg-icon.svg-icon-dark(src='images/icons/search.svg', width='25', height='25', data-bind="css: {'svg-icon-white': lightNav}")
+            li.nav-item
                 a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('add-task')}")
                     img.svg-icon.svg-icon-dark(src='images/icons/plus.svg', width='25', height='25', data-bind="css: {'svg-icon-white': lightNav}")
             li.nav-item.dropdown

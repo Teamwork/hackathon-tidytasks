@@ -10,6 +10,10 @@ viewModel = function() {
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.creatingTask = ko.observable(false);
+  this.searchTerm = ko.observable().extend({
+    rateLimit: 500
+  });
+  this.searchResults = ko.observableArray();
   this.User = new User();
   this.domain = ko.observable();
   this.userId = ko.observable();
@@ -33,7 +37,7 @@ viewModel = function() {
       this.showNav(true);
       this.lightNav(true);
       this.backButton(false);
-    } else if (['add-task', 'project', 'tasks-view'].indexOf(this.currentPage()) > -1) {
+    } else if (['add-task', 'project', 'tasks-view', 'search'].indexOf(this.currentPage()) > -1) {
       this.showNav(true);
       this.lightNav(false);
       this.backButton(true);
@@ -49,6 +53,14 @@ viewModel = function() {
       $('#project-id').val(value);
       this.getProjectTasklists(value);
     }
+  });
+  this.searchTerm.subscribe((searchTerm) => {
+    this.searchResults([]);
+    $.each(this.flatTasks(), (i, task) => {
+      if (task.taskName.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1) {
+        return this.searchResults.push(task);
+      }
+    });
   });
   this.goBack = () => {
     if (this.currentPage() === 'add-task' && this.currentProjectId()) {

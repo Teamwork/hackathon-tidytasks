@@ -8,6 +8,8 @@ viewModel = ->
     @allProjects = ko.observableArray()
     @allTasklists = ko.observableArray()
     @creatingTask = ko.observable false
+    @searchTerm = ko.observable().extend({ rateLimit: 500 })
+    @searchResults = ko.observableArray()
     
     @User = new User()
     @domain = ko.observable()
@@ -38,7 +40,7 @@ viewModel = ->
             @showNav true
             @lightNav true
             @backButton false
-        else if ['add-task','project','tasks-view'].indexOf(@currentPage()) > -1
+        else if ['add-task','project','tasks-view','search'].indexOf(@currentPage()) > -1
             @showNav true
             @lightNav false
             @backButton true
@@ -55,6 +57,12 @@ viewModel = ->
             @getProjectTasklists value
         return
 
+    @searchTerm.subscribe (searchTerm) =>
+        @searchResults []
+        $.each @flatTasks(), (i,task) =>
+            if task.taskName.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
+                @searchResults.push task
+        return
 
     @goBack = =>
         if @currentPage() == 'add-task' and @currentProjectId()
