@@ -20,6 +20,7 @@ viewModel = ->
     @loginError = ko.observable()
 
     @today = moment(new Date()).format('YYYYMMDD')
+    @tasklistSelect = null
 
     @currentPage.subscribe (value) ->
         @previousPage value
@@ -39,7 +40,7 @@ viewModel = ->
         iconColour()
 
     @goBack = =>
-        if @currentPage() == 'add-task'
+        if @currentPage() == 'add-task' and @currentProjectId()
             @currentPage 'tasks-view'
         else
             @currentPage 'dashboard'
@@ -172,15 +173,22 @@ viewModel = ->
     @getAllTasklists = () =>
         xhrOptions = 
             method: 'GET'
+            data: 
+                pageSize: 500
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) =>
                 $.each data.tasklists, (i, tasklist) =>
                     tasklist = 
-                        tasklistName: tasklist.projectName + ' / ' + tasklist.name
-                        tasklistId: tasklist.id
+                        text: tasklist.projectName + ' / ' + tasklist.name
+                        value: tasklist.id
                     @allTasklists.push(tasklist)
+
+                $select = $('#tasklist-id').selectize
+                    sortField: 'text'
+                    options: @allTasklists()
+                @selectize = $select[0].selectize
                 return
 
         $.ajax @domain() + 'tasklists.json', xhrOptions
@@ -205,11 +213,12 @@ viewModel = ->
                 $(this).hide()
             else 
                 $(this).show()
-        console.log 'tidy!'
         return
 
     @showAddTask = (tasklistId) =>
-        $('#tasklist-id').val tasklistId
+        @selectize.clear()
+        if tasklistId
+            @selectize.setValue tasklistId
         @currentPage 'add-task'
         return
 

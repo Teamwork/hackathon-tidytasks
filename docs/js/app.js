@@ -19,6 +19,7 @@ viewModel = function() {
   this.backButton = ko.observable(false);
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
+  this.tasklistSelect = null;
   this.currentPage.subscribe(function(value) {
     return this.previousPage(value);
   }, this, "beforeChange");
@@ -37,7 +38,7 @@ viewModel = function() {
     return iconColour();
   });
   this.goBack = () => {
-    if (this.currentPage() === 'add-task') {
+    if (this.currentPage() === 'add-task' && this.currentProjectId()) {
       return this.currentPage('tasks-view');
     } else {
       return this.currentPage('dashboard');
@@ -174,17 +175,26 @@ viewModel = function() {
     var xhrOptions;
     xhrOptions = {
       method: 'GET',
+      data: {
+        pageSize: 500
+      },
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
+        var $select;
         $.each(data.tasklists, (i, tasklist) => {
           tasklist = {
-            tasklistName: tasklist.projectName + ' / ' + tasklist.name,
-            tasklistId: tasklist.id
+            text: tasklist.projectName + ' / ' + tasklist.name,
+            value: tasklist.id
           };
           return this.allTasklists.push(tasklist);
         });
+        $select = $('#tasklist-id').selectize({
+          sortField: 'text',
+          options: this.allTasklists()
+        });
+        this.selectize = $select[0].selectize;
       }
     };
     return $.ajax(this.domain() + 'tasklists.json', xhrOptions);
@@ -211,10 +221,12 @@ viewModel = function() {
         return $(this).show();
       }
     });
-    console.log('tidy!');
   };
   this.showAddTask = (tasklistId) => {
-    $('#tasklist-id').val(tasklistId);
+    this.selectize.clear();
+    if (tasklistId) {
+      this.selectize.setValue(tasklistId);
+    }
     this.currentPage('add-task');
   };
   this.createTask = () => {

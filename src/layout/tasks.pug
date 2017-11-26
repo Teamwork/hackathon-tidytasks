@@ -1,4 +1,4 @@
-.bs-component.project-container.white-bg(data-bind="if: currentPage() == 'tasks-view'")
+.bs-component.project-container.white-bg(data-bind="visible: currentPage() == 'tasks-view'")
     div
         // ko foreach: projects()
         .container(data-bind="if: !(currentProjectId() && currentProjectId() != projectId)")
@@ -33,11 +33,11 @@
                         .task(data-bind="attr: {'data-task-id' : taskId}")
                             .image-container
                                 // ko if: subtaskCount
-                                a(href='#', data-bind='click: function () {highlightSubtasks(taskId)}')
+                                a.task-action(href='#', data-bind='click: function () {highlightSubtasks(taskId)}')
                                     span(class='subtask-count', data-bind='text: subtaskCount')
                                 // /ko
                                 // ko ifnot: subtaskCount
-                                a(href='#', data-bind='click: function () {completeTask(taskId)}')
+                                a.task-action(href='#', data-bind='click: function () {completeTask(taskId)}')
                                     img.check(src='images/icons/task.svg', alt='Complete')
                                 // /ko
                             

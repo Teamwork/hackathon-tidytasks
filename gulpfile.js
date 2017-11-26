@@ -27,19 +27,23 @@ gulp.task('libs', function() {
     gulp.src([
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/knockout/dist/knockout.js',
-        'bower_components/moment/min/moment.min.js'
+        'bower_components/moment/min/moment.min.js',
+        'bower_components/bootstrap/dist/js/bootstrap.min.js',
+        'bower_components/selectize/dist/js/standalone/selectize.min.js'
     ]).pipe(gulp.dest('./docs/js/'))
+    gulp.src([
+        'bower_components/selectize/dist/css/selectize.css'
+    ]).pipe(gulp.dest('./docs/css/'))
 });
 
 gulp.task('js', function() {
-    gulp.start('libs');
     gulp.src('./src/coffee/*.coffee')
     .pipe(coffeescript({bare: true}).on('error', gutil.log))
     .pipe(gulp.dest('./docs/js/'));
 });
 
 gulp.task('default', function(callback) {
-    runSequence('html','css','js','images',callback);
+    runSequence('libs','html','css','js','images',callback);
 });
 
 gulp.task('watch', function () {

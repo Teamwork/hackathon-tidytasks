@@ -1,16 +1,16 @@
 /*!
- * Bootswatch v4.0.0-beta.2
- * Homepage: https://bootswatch.com
- * Copyright 2012-2017 Thomas Park
- * Licensed under MIT
- * Based on Bootstrap
+* Bootswatch v4.0.0-beta.2
+* Homepage: https://bootswatch.com
+* Copyright 2012-2017 Thomas Park
+* Licensed under MIT
+* Based on Bootstrap
 */
 /*!
- * Bootstrap v4.0.0-beta.2 (https://getbootstrap.com)
- * Copyright 2011-2017 The Bootstrap Authors
- * Copyright 2011-2017 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+* Bootstrap v4.0.0-beta.2 (https://getbootstrap.com)
+* Copyright 2011-2017 The Bootstrap Authors
+* Copyright 2011-2017 Twitter, Inc.
+* Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+*/
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700");
 :root {
   --blue: #2196F3;
@@ -2615,7 +2615,7 @@ tbody.collapse.show {
   color: #666;
   background-color: transparent; }
 
-.dropdown-menu.show {
+.dropdown.open .dropdown-menu {
   display: block; }
 
 .dropdown-header {
@@ -7795,8 +7795,7 @@ fieldset[disabled] .btn-secondary:focus {
 body,
 input,
 button {
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: .1px; }
+  -webkit-font-smoothing: antialiased; }
 
 p {
   margin: 0 0 1em; }
@@ -8381,6 +8380,22 @@ input[type="checkbox"]:disabled:checked:after,
   left: 0;
   right: 0;
   padding: 15px 0; }
+  .navbar .user-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #FFF;
+    border: 1px solid #CCC;
+    padding: 0px; }
+  .navbar .dropdown-toggle::after {
+    display: none; }
+  .navbar .dropdown-menu {
+    position: absolute;
+    transform: translate3d(0px, 35px, 0px);
+    top: 20px;
+    left: auto;
+    right: 0px;
+    will-change: transform; }
 
 .navbar-nav {
   flex-direction: row; }
@@ -8552,6 +8567,8 @@ html, body {
         flex: 0 0;
         width: 15px;
         height: 15px; }
+    .project-container .section .tasks-container .task-action {
+      text-decoration: none; }
     .project-container .section .tasks-container .completed .task-name {
       text-decoration: line-through; }
     .project-container .section .tasks-container .completed img.check {
@@ -8609,33 +8626,44 @@ html, body {
               color: inherit;
               text-decoration: underline; }
 
-.add-task-container .add-task {
-  display: flex;
-  flex-direction: column;
-  width: 75%;
+form.add-task {
   max-width: 400px;
   margin: auto; }
-  .add-task-container .add-task h3 {
+  form.add-task h3 {
     margin-bottom: 30px; }
-  .add-task-container .add-task select, .add-task-container .add-task input {
-    font-size: 13px;
+  form.add-task .form-group {
+    margin: 0 0 30px; }
+  form.add-task select, form.add-task input {
+    font-size: 16px;
     color: #494e5e;
     box-shadow: none !important;
-    height: 40px;
     border: solid 1px #c8c8c8;
-    border-radius: 4px;
+    border-radius: 3px;
     padding: 10px;
-    margin: 0 0 30px;
-    background-color: transparent; }
-  .add-task-container .add-task .actions {
+    margin: 0;
+    line-height: 24px;
+    background-color: transparent;
+    display: block;
+    width: 100%; }
+  form.add-task .selectize-input {
+    padding: 10px 30px 10px 10px;
+    box-shadow: none !important;
+    color: #494e5e;
+    border: solid 1px #c8c8c8; }
+    form.add-task .selectize-input input {
+      height: 24px; }
+    form.add-task .selectize-input .item {
+      min-height: 24px;
+      line-height: 24px; }
+  form.add-task .actions {
     width: 100%;
     display: flex;
     justify-content: flex-end; }
-    .add-task-container .add-task .actions .btn-cancel {
+    form.add-task .actions .btn-cancel {
       color: #c8c8c8;
       box-shadow: none;
       cursor: pointer; }
-    .add-task-container .add-task .actions button {
+    form.add-task .actions button {
       margin: auto;
       width: 50%;
       height: 50px;

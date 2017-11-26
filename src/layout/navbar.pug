@@ -4,13 +4,13 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
             img.svg-icon.svg-icon-dark(src='images/icons/back.svg', width='30', height='30', data-bind="css: {'svg-icon-white': lightNav}")
         .navbar-date(data-bind="text: moment(new Date()).format('DD MMM YYYY'), visible: !backButton()")
         ul.navbar-nav.navbar-right
+            li.nav-item
+                a.add-task.nav-link(href='#', data-bind="click: function() {showAddTask()}")
+                    img.svg-icon.svg-icon-dark(src='images/icons/plus.svg', width='25', height='25', data-bind="css: {'svg-icon-white': lightNav}")
             li.nav-item.dropdown
                 a.nav-link.dropdown-toggle(aria-expanded='false', aria-haspopup='true', data-toggle='dropdown', href='#', role='button')
-                    img(data-bind='attr:{src: userIcon}', src='data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', style='width: 25px; height: 25px; border-radius: 50%; background: #FFF; border: 1px solid #CCC; float: left; padding: 0px; margin: 0 10px 0 0;')
-                
-                .dropdown-menu(style='position: absolute; transform: translate3d(0px, 35px, 0px); top: 20px; left: auto; right: 0px; will-change: transform;')
+                    img.user-icon(data-bind='attr:{src: userIcon}', src='data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+                .dropdown-menu
                     a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Open Projects
-                    
                     .dropdown-divider
-                    
                     a.dropdown-item(href='#', data-bind='click: logout') Sign Out

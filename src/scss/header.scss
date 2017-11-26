@@ -6,6 +6,28 @@
     left: 0;
     right: 0;
     padding: 15px 0;
+
+    .user-icon {
+        width: 25px; 
+        height: 25px; 
+        border-radius: 50%; 
+        background: #FFF; 
+        border: 1px solid #CCC; 
+        padding: 0px; 
+    }
+
+    .dropdown-toggle::after {
+        display: none;
+    }
+
+    .dropdown-menu {
+        position: absolute; 
+        transform: translate3d(0px, 35px, 0px); 
+        top: 20px; 
+        left: auto; 
+        right: 0px; 
+        will-change: transform;
+    }
 }
 
 .navbar-nav {
