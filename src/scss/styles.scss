@@ -361,9 +361,6 @@ html, body {
 }
 
 .add-task-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     form.add-task {
         max-width: 400px;
@@ -395,25 +392,9 @@ html, body {
             width: 100%;
         }
 
-        .selectize-input {
-            padding: 10px 30px 10px 10px;
-            box-shadow: none!important;
-            color: #494e5e;
-            border: solid 1px rgb(200, 200, 200);
-            
-            input {
-                height: 24px;
-                transition: none!important;
-            }
-
-            &.not-full input {
-                width: 100%!important;
-            }
-
-            .item {
-                min-height: 24px;
-                line-height: 24px;
-            }
+        select {
+            background-position: calc(100% - 10px) center;
+            padding-right: 40px;
         }
 
         .actions {

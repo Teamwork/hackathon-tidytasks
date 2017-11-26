@@ -24,9 +24,6 @@
                 .task-list
                     .section-toggler
                         .section-name(data-bind='text: tasklistName')
-                        
-                        a.add-task(href='#', data-bind="click: function() {showAddTask(tasklistId)}")
-                            img.svg-icon.svg-icon-dark(src='images/icons/plus.svg')
                     
                     .tasks-container(data-bind='foreach: $data.tasks')
                         // ko if: currentFilter() == taskType || currentFilter() == 'all'

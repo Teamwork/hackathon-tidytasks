@@ -5,6 +5,7 @@ viewModel = ->
     @currentFilter = ko.observable()
     @currentProjectId = ko.observable()
     @totalTasks = ko.observable()
+    @allProjects = ko.observableArray()
     @allTasklists = ko.observableArray()
     @creatingTask = ko.observable false
     
@@ -28,6 +29,7 @@ viewModel = ->
 
     @currentPage.subscribe (value) ->
         @previousPage value
+        return
     , this, "beforeChange"
 
     @currentPage.subscribe (value) =>
@@ -45,6 +47,14 @@ viewModel = ->
             $('html').addClass 'blue-bg'
             @showNav false
         iconColour()
+        return
+
+    @currentProjectId.subscribe (value) =>
+        if value
+            $('#project-id').val value
+            @getProjectTasklists value
+        return
+
 
     @goBack = =>
         if @currentPage() == 'add-task' and @currentProjectId()
@@ -60,7 +70,7 @@ viewModel = ->
         @userFirstname User.userFirstname
         @userId User.userId
         @getAllTasks true
-        @getAllTasklists()
+        @getAllProjects()
         return
 
     @loginFail = =>
@@ -176,29 +186,46 @@ viewModel = ->
             
         $.ajax @domain() + 'tasks.json', xhrOptions
 
-    @getAllTasklists = () =>
+    @getAllProjects = () =>
         xhrOptions = 
             method: 'GET'
             data: 
-                pageSize: 1000
+                pageSize: 500
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) =>
-                $.each data.tasklists, (i, tasklist) =>
-                    tasklist = 
-                        text: tasklist.projectName + ' / ' + tasklist.name
-                        value: tasklist.id
-                    @allTasklists.push(tasklist)
-
-                $select = $('#tasklist-id').selectize
-                    sortField: 'text'
-                    options: @allTasklists()
-                    placeholder: 'Select a tasklist...'
-                @selectize = $select[0].selectize
+                $.each data.projects, (i, project) =>
+                    project = 
+                        text: project.name
+                        value: project.id
+                    @allProjects.push(project)
+                @getProjectTasklists $("#project-id").val()
                 return
 
-        $.ajax @domain() + 'tasklists.json', xhrOptions
+        $.ajax @domain() + 'projects.json', xhrOptions
+        return
+
+    @getProjectTasklists = (projectId) =>
+        @allTasklists [{id:'',text:'Loading tasklists...'}]
+        xhrOptions = 
+            method: 'GET'
+            data: 
+                pageSize: 500
+            beforeSend: (xhr) ->
+                xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
+                return
+            success: (data) =>
+                @allTasklists []
+                $.each data.tasklists, (i, tasklist) =>
+                    tasklist = 
+                        text: tasklist.name
+                        value: tasklist.id
+                    @allTasklists.push(tasklist)
+                return
+
+        $.ajax @domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions
+        return
 
     @showTasks = (opts) =>
         if opts.projectId
@@ -220,12 +247,6 @@ viewModel = ->
                 $(this).hide()
             else 
                 $(this).show()
-        return
-
-    @showAddTask = (tasklistId) =>
-        if tasklistId
-            @selectize.setValue tasklistId
-        @currentPage 'add-task'
         return
 
     @createTask = =>
@@ -258,7 +279,7 @@ viewModel = ->
                 return
         
         @creatingTask true
-        $.ajax @domain() + "tasklists/" + @selectize.getValue() + "/tasks.json", xhrOptions
+        $.ajax @domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions
         return
 
     @completeTask = (taskId) =>

@@ -11,8 +11,12 @@
                 label(for='task-name') Task title
                 input#task-name(required, placeholder='Walk the dog')
             .form-group
+                label(for='project-id') Project
+                select#project-id(required, data-bind='options: allProjects, optionsText: "text", optionsValue: "value", event: {change: function () {getProjectTasklists($element.value)}}')
+            .form-group
                 label(for='tasklist-id') Tasklist
-                select#tasklist-id(required)
+                select#tasklist-id(required, data-bind='options: allTasklists, optionsText: "text", optionsValue: "value"')
+                    option(value='') Loading tasklists...
             .form-group
                 label(for='start-date') Start date
                 input#start-date(data-bind='value: moment(new Date()).format("DD MMMM, YYYY")')

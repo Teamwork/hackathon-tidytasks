@@ -7,6 +7,7 @@ viewModel = function() {
   this.currentFilter = ko.observable();
   this.currentProjectId = ko.observable();
   this.totalTasks = ko.observable();
+  this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.creatingTask = ko.observable(false);
   this.User = new User();
@@ -24,7 +25,7 @@ viewModel = function() {
   $("#start-date").pickadate();
   $("#due-date").pickadate();
   this.currentPage.subscribe(function(value) {
-    return this.previousPage(value);
+    this.previousPage(value);
   }, this, "beforeChange");
   this.currentPage.subscribe((value) => {
     if (['dashboard'].indexOf(this.currentPage()) > -1) {
@@ -41,7 +42,13 @@ viewModel = function() {
       $('html').addClass('blue-bg');
       this.showNav(false);
     }
-    return iconColour();
+    iconColour();
+  });
+  this.currentProjectId.subscribe((value) => {
+    if (value) {
+      $('#project-id').val(value);
+      this.getProjectTasklists(value);
+    }
   });
   this.goBack = () => {
     if (this.currentPage() === 'add-task' && this.currentProjectId()) {
@@ -58,7 +65,7 @@ viewModel = function() {
     this.userFirstname(User.userFirstname);
     this.userId(User.userId);
     this.getAllTasks(true);
-    this.getAllTasklists();
+    this.getAllProjects();
   };
   this.loginFail = () => {
     this.currentPage('login');
@@ -177,34 +184,57 @@ viewModel = function() {
     };
     return $.ajax(this.domain() + 'tasks.json', xhrOptions);
   };
-  this.getAllTasklists = () => {
+  this.getAllProjects = () => {
     var xhrOptions;
     xhrOptions = {
       method: 'GET',
       data: {
-        pageSize: 1000
+        pageSize: 500
       },
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        var $select;
+        $.each(data.projects, (i, project) => {
+          project = {
+            text: project.name,
+            value: project.id
+          };
+          return this.allProjects.push(project);
+        });
+        this.getProjectTasklists($("#project-id").val());
+      }
+    };
+    $.ajax(this.domain() + 'projects.json', xhrOptions);
+  };
+  this.getProjectTasklists = (projectId) => {
+    var xhrOptions;
+    this.allTasklists([
+      {
+        id: '',
+        text: 'Loading tasklists...'
+      }
+    ]);
+    xhrOptions = {
+      method: 'GET',
+      data: {
+        pageSize: 500
+      },
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+      },
+      success: (data) => {
+        this.allTasklists([]);
         $.each(data.tasklists, (i, tasklist) => {
           tasklist = {
-            text: tasklist.projectName + ' / ' + tasklist.name,
+            text: tasklist.name,
             value: tasklist.id
           };
           return this.allTasklists.push(tasklist);
         });
-        $select = $('#tasklist-id').selectize({
-          sortField: 'text',
-          options: this.allTasklists(),
-          placeholder: 'Select a tasklist...'
-        });
-        this.selectize = $select[0].selectize;
       }
     };
-    return $.ajax(this.domain() + 'tasklists.json', xhrOptions);
+    $.ajax(this.domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions);
   };
   this.showTasks = (opts) => {
     if (opts.projectId) {
@@ -228,12 +258,6 @@ viewModel = function() {
         return $(this).show();
       }
     });
-  };
-  this.showAddTask = (tasklistId) => {
-    if (tasklistId) {
-      this.selectize.setValue(tasklistId);
-    }
-    this.currentPage('add-task');
   };
   this.createTask = () => {
     var dueDate, payload, startDate, xhrOptions;
@@ -269,7 +293,7 @@ viewModel = function() {
       }
     };
     this.creatingTask(true);
-    $.ajax(this.domain() + "tasklists/" + this.selectize.getValue() + "/tasks.json", xhrOptions);
+    $.ajax(this.domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions);
   };
   this.completeTask = (taskId) => {
     var el, xhrOptions;
