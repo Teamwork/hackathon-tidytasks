@@ -25,6 +25,7 @@ viewModel = function() {
   }, this, "beforeChange");
   this.currentPage.subscribe((value) => {
     if (['dashboard'].indexOf(this.currentPage()) > -1) {
+      $('html').addClass('blue-bg');
       this.showNav(true);
       this.lightNav(true);
       this.backButton(false);
@@ -32,7 +33,9 @@ viewModel = function() {
       this.showNav(true);
       this.lightNav(false);
       this.backButton(true);
+      $('html').removeClass('blue-bg');
     } else {
+      $('html').addClass('blue-bg');
       this.showNav(false);
     }
     return iconColour();

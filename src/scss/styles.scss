@@ -13,6 +13,32 @@ html, body {
     font-weight: 400;
 }
 
+.scroll-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+
+    &::before, &::after {
+        content: " ";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 50%;
+    }
+
+    &::before {
+        top: 0;
+        background: #25dafc;
+    }
+    &::before {
+        background: #3b93f7;
+        bottom: 0;
+    }
+}
+
 .bs-component {
     height: 100%;
     padding: 80px 0;

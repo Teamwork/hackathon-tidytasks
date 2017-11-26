@@ -1,8 +1,9 @@
 doctype html
-html(lang='en')
+html
     include layout/header
         
     body
+        .scroll-bg(data-bind='visible: lightNav')
         include layout/splash
         include layout/navbar
         include layout/login

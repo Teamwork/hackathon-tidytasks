@@ -28,6 +28,7 @@ viewModel = ->
 
     @currentPage.subscribe (value) =>
         if ['dashboard'].indexOf(@currentPage()) > -1
+            $('html').addClass 'blue-bg'
             @showNav true
             @lightNav true
             @backButton false
@@ -35,7 +36,9 @@ viewModel = ->
             @showNav true
             @lightNav false
             @backButton true
-        else   
+            $('html').removeClass 'blue-bg'
+        else
+            $('html').addClass 'blue-bg'
             @showNav false
         iconColour()
 
