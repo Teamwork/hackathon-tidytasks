@@ -2,7 +2,8 @@ doctype html
 html
     include layout/header
         
-    body
+    body(data-bind='css: {"is-electron": window && window.process && window.process.type == "renderer"}')
+        #electron-titlebar
         .scroll-bg(data-bind='visible: lightNav')
         include layout/splash
         include layout/navbar

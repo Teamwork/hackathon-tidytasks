@@ -1,4 +1,4 @@
-var iconColour, viewModel;
+var viewModel;
 
 viewModel = function() {
   this.currentPage = ko.observable('splash');
@@ -46,7 +46,6 @@ viewModel = function() {
       $('html').addClass('blue-bg');
       this.showNav(false);
     }
-    iconColour();
   });
   this.currentProjectId.subscribe((value) => {
     if (value) {
@@ -342,25 +341,6 @@ viewModel = function() {
   this.toggleDetails = function(data, event) {
     $(event.target).next('.task-details').toggleClass('hidden');
   };
-};
-
-iconColour = function() {
-  $('.svg-icon').each(function() {
-    var $e, color, imgURL;
-    $e = $(this);
-    imgURL = $e.prop('src');
-    if ($e.hasClass('svg-icon-white')) {
-      color = '#fff';
-    } else {
-      color = 'rgba(0,0,0,0.7)';
-    }
-    return $.get(imgURL, function(data) {
-      var $svg;
-      $svg = $(data).find('svg');
-      $svg.find('path').attr('fill', color);
-      return $e.prop('src', "data:image/svg+xml;base64," + window.btoa($svg.prop('outerHTML')));
-    });
-  });
 };
 
 ko.applyBindings(viewModel);

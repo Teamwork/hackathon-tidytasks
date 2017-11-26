@@ -7,6 +7,11 @@
     right: 0;
     padding: 15px 0;
 
+    .svg-icon {
+        width: 24px;
+        height: 24px;
+    }
+
     .user-icon {
         width: 25px; 
         height: 25px; 
@@ -23,11 +28,19 @@
     .dropdown-menu {
         position: absolute; 
         transform: translate3d(0px, 35px, 0px); 
-        top: 20px; 
+        top: 0; 
         left: auto; 
         right: 0px; 
         will-change: transform;
     }
+
+    .nav-link {
+        padding: 0;
+    }
+}
+
+.is-electron .navbar {
+    padding-top: 40px;
 }
 
 .navbar-nav {
@@ -35,7 +48,7 @@
 }
 
 .navbar-dark {
-    background: rgba(white,.9);
+    background: rgba(white,.95);
 }
 
 .nav-item {

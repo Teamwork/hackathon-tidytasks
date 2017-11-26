@@ -1,3 +1,6 @@
+script. 
+    if (typeof module === 'object') {window.module = module; module = undefined;}
+
 script(src='js/jquery.min.js')
 script(src='js/moment.min.js')
 script(src='js/knockout.js')
@@ -6,3 +9,10 @@ script(src='js/picker.js')
 script(src='js/picker.date.js')
 script(src='js/auth.js')
 script(src='js/app.js')
+
+script.
+    if (window.module) module = window.module;
+    if (window.require) {
+        require('./renderer.js');
+    }
+

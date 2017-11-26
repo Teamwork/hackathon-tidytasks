@@ -48,7 +48,6 @@ viewModel = ->
         else
             $('html').addClass 'blue-bg'
             @showNav false
-        iconColour()
         return
 
     @currentProjectId.subscribe (value) =>
@@ -326,21 +325,6 @@ viewModel = ->
         $(event.target).next('.task-details').toggleClass('hidden')
         return
 
-    return
-
-iconColour = ->
-    $('.svg-icon').each ->
-        $e = $ this
-        imgURL = $e.prop('src')
-        if $e.hasClass('svg-icon-white')
-            color = '#fff'
-        else
-            color = 'rgba(0,0,0,0.7)'
-        
-        $.get imgURL, (data) ->
-            $svg = $(data).find('svg')
-            $svg.find('path').attr('fill', color)
-            $e.prop('src', "data:image/svg+xml;base64," + window.btoa($svg.prop('outerHTML')))
     return
 
 

@@ -6,6 +6,9 @@
   left: 0;
   right: 0;
   padding: 15px 0; }
+  .navbar .svg-icon {
+    width: 24px;
+    height: 24px; }
   .navbar .user-icon {
     width: 25px;
     height: 25px;
@@ -18,16 +21,21 @@
   .navbar .dropdown-menu {
     position: absolute;
     transform: translate3d(0px, 35px, 0px);
-    top: 20px;
+    top: 0;
     left: auto;
     right: 0px;
     will-change: transform; }
+  .navbar .nav-link {
+    padding: 0; }
+
+.is-electron .navbar {
+  padding-top: 40px; }
 
 .navbar-nav {
   flex-direction: row; }
 
 .navbar-dark {
-  background: rgba(255, 255, 255, 0.9); }
+  background: rgba(255, 255, 255, 0.95); }
 
 .nav-item {
   margin-left: 15px; }

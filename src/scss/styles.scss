@@ -9,8 +9,31 @@ html, body {
     font-family: "Open Sans";
 }
 
+#electron-titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    z-index: 10000;
+    -webkit-app-region: drag;
+    display: none;
+}
+
+.is-electron #electron-titlebar {
+    display: block;
+}
+
 .heading {
     font-weight: 400;
+}
+
+.svg-icon-dark path {
+    fill: black
+}
+
+.svg-icon-white path {
+    fill: white
 }
 
 .scroll-bg {
@@ -58,6 +81,10 @@ html, body {
         background: white;
         color: #494e5e;
     }
+}
+
+.is-electron .bs-component {
+    padding-top: 100px;
 }
 
 .splash-container {

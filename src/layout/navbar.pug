@@ -1,19 +1,23 @@
 nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightNav()}")
     .container
         a.back-button(href='#', data-bind='click: goBack, visible: backButton()')
-            img.svg-icon.svg-icon-dark(src='images/icons/back.svg', width='24', height='24', data-bind="css: {'svg-icon-white': lightNav}")
+            .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
+                include ../images/icons/back.svg
         .navbar-date(data-bind="text: moment(new Date()).format('DD MMM YYYY'), visible: !backButton()")
         ul.navbar-nav.navbar-right
             li.nav-item
                 a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('search')}")
-                    img.svg-icon.svg-icon-dark(src='images/icons/search.svg', width='25', height='25', data-bind="css: {'svg-icon-white': lightNav}")
+                    .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
+                        include ../images/icons/search.svg
             li.nav-item
                 a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('add-task')}")
-                    img.svg-icon.svg-icon-dark(src='images/icons/plus.svg', width='25', height='25', data-bind="css: {'svg-icon-white': lightNav}")
+                    .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
+                        include ../images/icons/plus.svg
             li.nav-item.dropdown
                 a.nav-link.dropdown-toggle(aria-expanded='false', aria-haspopup='true', data-toggle='dropdown', href='#', role='button')
-                    img.user-icon(data-bind='attr:{src: userIcon}', src='data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+                    img.user-icon(data-bind='attr:{src: userIcon}', src='')
                 .dropdown-menu
+                    a.dropdown-item(href='download/TidyTasks.zip', data-bind='visible: !(window && window.process && window.process.type == "renderer")') Download for Mac
                     a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Go to Projects
                     a.dropdown-item(href='#', target='_blank', data-bind='click: getAllTasks') Refresh all tasks
                     .dropdown-divider

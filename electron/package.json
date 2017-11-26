@@ -1,0 +1,18 @@
+{
+  "name": "TidyTasks",
+  "version": "1.0.0",
+  "description": "Electron application for TidyTasks by Teamwork Projects",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/Teamwork/hackathon-tidytasks",
+  "keywords": [],
+  "author": "Alder Cass",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8"
+  },
+  "dependencies": {
+  }
+}

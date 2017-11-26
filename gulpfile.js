@@ -38,6 +38,11 @@ gulp.task('libs', function() {
     ]).pipe(gulp.dest('./docs/css/'))
 });
 
+gulp.task('electron', function() {
+    gulp.src(['electron/**/*'])
+    .pipe(gulp.dest('./docs/'))
+});
+
 gulp.task('js', function() {
     gulp.src('./src/coffee/*.coffee')
     .pipe(coffeescript({bare: true}).on('error', gutil.log))
