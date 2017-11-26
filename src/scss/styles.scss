@@ -16,6 +16,8 @@ html, body {
 .bs-component {
     height: 100%;
     padding: 80px 0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 
     > .container {
         margin-top: auto;
@@ -36,7 +38,6 @@ html, body {
 .splash-container {
     font-weight: 600;
     font-size: 14px;
-    padding-top: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -46,7 +47,6 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 0;
 
     .container {
         padding: 0 30px;
