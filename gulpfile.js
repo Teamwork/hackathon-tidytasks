@@ -29,12 +29,10 @@ gulp.task('libs', function() {
         'bower_components/knockout/dist/knockout.js',
         'bower_components/moment/min/moment.min.js',
         'bower_components/bootstrap/dist/js/bootstrap.min.js',
-        'bower_components/selectize/dist/js/standalone/selectize.min.js',
         'bower_components/pickadate/lib/picker.js',
         'bower_components/pickadate/lib/picker.date.js'
     ]).pipe(gulp.dest('./docs/js/'))
     gulp.src([
-        'bower_components/selectize/dist/css/selectize.css',
         'bower_components/pickadate/lib/themes/default.css',
         'bower_components/pickadate/lib/themes/default.date.css'
     ]).pipe(gulp.dest('./docs/css/'))

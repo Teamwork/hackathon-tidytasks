@@ -23,7 +23,6 @@
     "knockout": "^3.4.2",
     "moment": "^2.19.2",
     "bootstrap": "^3.3.7",
-    "selectize": "^0.12.4",
     "pickadate": "^3.5.6"
   }
 }
