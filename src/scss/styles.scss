@@ -335,13 +335,14 @@ html, body {
                         }
                         .control {
                             display: flex;
+                            margin-bottom: 10px;
 
                             .image-container {
                                 flex: 0 0;
                                 margin-right: 15px;
 
                                 img {
-                                    opacity: 0.5;
+                                    opacity: 0.35;
                                 }
                             }
 

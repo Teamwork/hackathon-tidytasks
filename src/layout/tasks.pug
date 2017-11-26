@@ -48,10 +48,25 @@
                                     .task-description(data-bind='text: taskDescription')
                                     
                                     .task-controls
+                                        // ko if: taskStartDate
+                                        .date.control
+                                            .image-container
+                                                img(src='images/icons/calendar.svg', width='20', height='16')
+                                            .actions
+                                                // ko text: "Start: " + moment(taskStartDate,"YYYYMMDD").format("DD MMM YYYY")
+                                                // /ko
+                                        // /ko
+                                        // ko if: taskDueDate
+                                        .date.control
+                                            .image-container
+                                                img(src='images/icons/calendar.svg', width='20', height='16')
+                                            .actions
+                                                // ko text: "Due: " + moment(taskDueDate,"YYYYMMDD").format("DD MMM YYYY")
+                                                // /ko
+                                        // /ko
                                         .open-in-projects.control
                                             .image-container
                                                 img(src='images/icons/projects-mark.svg', width='20', height='20')
-                                            
                                             .actions
                                                 a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}", href='#', target='_blank')
                                                     | View in Projects
