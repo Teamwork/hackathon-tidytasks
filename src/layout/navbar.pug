@@ -11,6 +11,7 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
                 a.nav-link.dropdown-toggle(aria-expanded='false', aria-haspopup='true', data-toggle='dropdown', href='#', role='button')
                     img.user-icon(data-bind='attr:{src: userIcon}', src='data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
                 .dropdown-menu
-                    a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Open Projects
+                    a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Go to Projects
+                    a.dropdown-item(href='#', target='_blank', data-bind='click: getAllTasks') Refresh all tasks
                     .dropdown-divider
-                    a.dropdown-item(href='#', data-bind='click: logout') Sign Out
+                    a.dropdown-item(href='#', data-bind='click: logout') Sign out

@@ -52,7 +52,7 @@ viewModel = ->
         @userIcon User.userIcon
         @userFirstname User.userFirstname
         @userId User.userId
-        @getAllTasks(true)
+        @getAllTasks true
         @getAllTasklists()
         return
 
@@ -260,7 +260,7 @@ viewModel = ->
                     opacity: 0
                 }, =>
                     el.remove()
-                    @getAllTasks false
+                    @getAllTasks()
                 )
                 return
         

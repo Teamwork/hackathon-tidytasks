@@ -271,7 +271,7 @@ viewModel = function() {
           opacity: 0
         }, () => {
           el.remove();
-          return this.getAllTasks(false);
+          return this.getAllTasks();
         });
       }
     };
