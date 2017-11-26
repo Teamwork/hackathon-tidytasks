@@ -1,7 +1,7 @@
 .bs-component.project-container.white-bg(data-bind="visible: currentPage() == 'tasks-view'")
-    div
+    .container
         // ko foreach: projects()
-        .container(data-bind="if: !(currentProjectId() && currentProjectId() != projectId)")
+        div(data-bind="if: !(currentProjectId() && currentProjectId() != projectId)")
             h2.project-name(data-bind='text: projectName')
             
             .task-count(data-bind="text: taskCount + ' tasks today.'")
