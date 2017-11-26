@@ -1,5 +1,7 @@
 @import 'bs';
 @import 'header';
+@import 'loader';
+
 
 html, body {
     margin: 0;
@@ -33,11 +35,6 @@ html, body {
     font-weight: 600;
     font-size: 14px;
     padding-top: 0;
-
-    img {
-        display: block;
-        margin-bottom: 15px;
-    }
 }
 
 .login-container {
