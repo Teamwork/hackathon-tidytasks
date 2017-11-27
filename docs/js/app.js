@@ -45,10 +45,14 @@ viewModel = function() {
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
   this.tasklistSelect = null;
-  setInterval(() => {
-    this.getAllTasks();
-    return console.log('timer ran');
-  }, 60000);
+  $(window).bind('mousemove touchmove keypress', () => {
+    if (this.autoRefresh) {
+      clearInterval(this.autoRefresh);
+    }
+    return this.autoRefresh = this.setInterval(() => {
+      return this.getAllTasks();
+    }, 5000);
+  });
   $("#start-date").pickadate();
   $("#due-date").pickadate();
   this.currentPage.subscribe(function(value) {

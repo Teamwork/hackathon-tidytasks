@@ -42,9 +42,12 @@ viewModel = ->
     @today = moment(new Date()).format('YYYYMMDD')
     @tasklistSelect = null
 
-    setInterval =>
-        @getAllTasks() 
-    , 60000
+    $(window).bind 'mousemove touchmove keypress', =>
+        if @autoRefresh 
+            clearInterval(@autoRefresh)
+        @autoRefresh = @setInterval =>
+            @getAllTasks() 
+        , 60000
 
     $("#start-date").pickadate()
     $("#due-date").pickadate()
