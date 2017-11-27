@@ -8666,12 +8666,13 @@ html, body {
   margin: auto;
   background-color: white; }
   .project-container .task-count {
-    color: #969696; }
+    color: #969696;
+    margin-bottom: 50px; }
   .project-container .progress-percent {
     text-align: right;
     color: #969696; }
   .project-container .project-status {
-    margin: 30px 0 50px;
+    margin: 0 0 50px;
     display: flex; }
     .project-container .project-status .status {
       display: flex;

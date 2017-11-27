@@ -1,6 +1,6 @@
 .bs-component.search-container(data-bind="visible: currentPage() == 'search'")
     .container
-        h2 Search Tasks
+        h2 Search tasks
         input(id='search-term', placeholder='Search term...', data-bind='value: searchTerm, valueUpdate: "input"')
         
         // ko if: searchTerm() && !searchResults().length

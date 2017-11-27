@@ -183,11 +183,9 @@ viewModel = ->
                     if due != '' and due < @today
                         type = 'late'
                         projectsAssoc['p-' + task['project-id']].lateTasks++ 
-                        taskTotal++
                     else if (start != '' and start <= @today) or (due != '' and due == @today)
                         type = 'today'
                         projectsAssoc['p-' + task['project-id']].currentTasks++ 
-                        taskTotal++
                     else if start != '' and start > @today
                         type = 'upcoming'
                         projectsAssoc['p-' + task['project-id']].upcomingTasks++ 
@@ -209,6 +207,7 @@ viewModel = ->
                     projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push cleanTask
                     projectsAssoc['p-' + task['project-id']].taskCount++
                     @flatTasks.push cleanTask
+                    taskTotal++
                 
                 for project of projectsAssoc
                     projectsAssoc[project].tasklists = []

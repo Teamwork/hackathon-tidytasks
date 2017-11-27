@@ -53,9 +53,6 @@ viewModel = function() {
       return this.getAllTasks();
     }, 60000);
   });
-  window.logger = (varName) => {
-    console.log(this[varName]);
-  };
   $("#start-date").pickadate();
   $("#due-date").pickadate();
   this.currentPage.subscribe(function(value) {
@@ -193,11 +190,9 @@ viewModel = function() {
           if (due !== '' && due < this.today) {
             type = 'late';
             projectsAssoc['p-' + task['project-id']].lateTasks++;
-            taskTotal++;
           } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
             type = 'today';
             projectsAssoc['p-' + task['project-id']].currentTasks++;
-            taskTotal++;
           } else if (start !== '' && start > this.today) {
             type = 'upcoming';
             projectsAssoc['p-' + task['project-id']].upcomingTasks++;
@@ -218,7 +213,8 @@ viewModel = function() {
           };
           projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push(cleanTask);
           projectsAssoc['p-' + task['project-id']].taskCount++;
-          return this.flatTasks.push(cleanTask);
+          this.flatTasks.push(cleanTask);
+          return taskTotal++;
         });
         for (project in projectsAssoc) {
           projectsAssoc[project].tasklists = [];
