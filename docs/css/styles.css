@@ -8616,9 +8616,9 @@ html, body {
   padding: 15px 0; }
   .tasks-grid .task-card {
     flex-shrink: 0;
-    padding: 15px; }
+    padding: 15px;
+    width: 270px; }
     .tasks-grid .task-card .card {
-      width: 240px;
       display: flex;
       flex-direction: column;
       color: #494e5e;
@@ -8884,6 +8884,8 @@ html, body {
 @media (min-width: 576px) {
   .tasks-grid {
     flex-wrap: wrap; }
+    .tasks-grid .task-card {
+      width: 50%; }
   .project-container .project-status {
     justify-content: left; }
     .project-container .project-status .status {
@@ -8894,6 +8896,14 @@ html, body {
 @media (max-width: 575px) {
   .add-task-container form.add-task select, .add-task-container form.add-task input {
     font-size: 13px; } }
+
+@media (min-width: 768px) {
+  .tasks-grid .task-card {
+    width: 33.333%; } }
+
+@media (min-width: 992px) {
+  .tasks-grid .task-card {
+    width: 25%; } }
 
 .picker .picker__holder {
   font-size: 10px;

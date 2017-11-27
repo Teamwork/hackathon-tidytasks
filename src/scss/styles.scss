@@ -192,9 +192,9 @@ html, body {
     .task-card {
         flex-shrink: 0;
         padding: 15px;
+        width: 270px;
         
         .card {
-            width: 240px;
             display: flex;
             flex-direction: column;
             color: #494e5e;
@@ -592,6 +592,10 @@ html, body {
 @media (min-width: 576px) {
     .tasks-grid {
         flex-wrap: wrap;
+
+        .task-card {
+            width: 50%;
+        }
     }
 
     .project-container .project-status {
@@ -612,6 +616,18 @@ html, body {
         select, input {
             font-size: 13px;
         }
+    }
+}
+
+@media (min-width: 768px) {
+    .tasks-grid .task-card {
+        width: 33.333%;
+    }
+}
+
+@media (min-width: 992px) {
+    .tasks-grid .task-card {
+        width: 25%;
     }
 }
 
