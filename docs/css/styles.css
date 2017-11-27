@@ -8585,6 +8585,16 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center; }
+  .dashboard .welcome {
+    font-size: 14px; }
+    .dashboard .welcome p {
+      margin: 0; }
+    .dashboard .welcome a {
+      color: inherit;
+      text-decoration: underline;
+      opacity: 0.7; }
+      .dashboard .welcome a:hover {
+        opacity: 1; }
 
 .tasks-grid {
   margin: 15px -15px;
@@ -8648,7 +8658,7 @@ html, body {
     text-align: right;
     color: #969696; }
   .project-container .project-status {
-    margin-top: 30px;
+    margin: 30px 0 50px;
     display: flex; }
     .project-container .project-status .status {
       display: flex;
@@ -8681,23 +8691,24 @@ html, body {
       .project-container .project-status .status.upcoming .status-count {
         border-color: #fcb52b;
         color: #fcb52b; }
-  .project-container .section {
+  .project-container .section.collapsed .tasks-container {
+    height: 0;
+    overflow: hidden; }
+  .project-container .section .task-list {
     margin-bottom: 50px; }
-    .project-container .section.collapsed .tasks-container {
-      height: 0;
-      overflow: hidden; }
-    .project-container .section .section-toggler {
-      margin-top: 50px;
-      display: flex;
-      padding-bottom: 15px;
-      border-bottom: solid 1px rgba(245, 246, 247, 0.5); }
-      .project-container .section .section-toggler .section-name {
-        flex: 1;
-        font-size: 1.2rem; }
-      .project-container .section .section-toggler img {
-        flex: 0 0;
-        width: 15px;
-        height: 15px; }
+    .project-container .section .task-list:last-child {
+      margin-bottom: 0; }
+  .project-container .section .section-toggler {
+    display: flex;
+    padding-bottom: 15px;
+    border-bottom: solid 1px rgba(245, 246, 247, 0.5); }
+    .project-container .section .section-toggler .section-name {
+      flex: 1;
+      font-size: 1.2rem; }
+    .project-container .section .section-toggler img {
+      flex: 0 0;
+      width: 15px;
+      height: 15px; }
 
 .tasks-container .task-action {
   text-decoration: none; }
@@ -8725,6 +8736,18 @@ html, body {
         fill: #969696;
         will-change: fill;
         transition: fill 0.15s; }
+    .tasks-container .task .image-container .late svg {
+      border-color: #ff6562; }
+      .tasks-container .task .image-container .late svg path {
+        fill: #ff6562; }
+    .tasks-container .task .image-container .today svg {
+      border-color: #3b93f7; }
+      .tasks-container .task .image-container .today svg path {
+        fill: #3b93f7; }
+    .tasks-container .task .image-container .upcoming svg {
+      border-color: #fcb52b; }
+      .tasks-container .task .image-container .upcoming svg path {
+        fill: #fcb52b; }
     .tasks-container .task .image-container a:hover .check svg {
       border: 1px solid #60cf1c; }
       .tasks-container .task .image-container a:hover .check svg path {
@@ -8768,8 +8791,11 @@ html, body {
         .tasks-container .task .task-body .task-details .control .image-container {
           flex: 0 0;
           margin-right: 15px; }
-          .tasks-container .task .task-body .task-details .control .image-container img {
-            opacity: 0.35; }
+          .tasks-container .task .task-body .task-details .control .image-container .icon {
+            width: 24px;
+            height: 24px; }
+            .tasks-container .task .task-body .task-details .control .image-container .icon path {
+              fill: #969696; }
         .tasks-container .task .task-body .task-details .control .actions .link {
           color: inherit;
           text-decoration: underline; }

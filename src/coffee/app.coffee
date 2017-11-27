@@ -15,13 +15,14 @@ marked.setOptions
 viewModel = ->
     @currentPage = ko.observable 'splash'
     @flatTasks  = ko.observableArray()
-    @projects = ko.observableArray()
+    @projectTree = ko.observableArray()
     @currentFilter = ko.observable()
     @currentProjectId = ko.observable()
     @totalTasks = ko.observable()
     @allProjects = ko.observableArray()
     @allTasklists = ko.observableArray()
     @creatingTask = ko.observable false
+    @loadingTasks = ko.observable false
     @selectedTasklist = ko.observable()
     @searchTerm = ko.observable().extend({ rateLimit: 500 })
     @searchResults = ko.observableArray()
@@ -88,6 +89,7 @@ viewModel = ->
         if @currentPage() == 'add-task' and @currentProjectId()
             @currentPage 'tasks-view'
         else
+            @currentProjectId null
             @currentPage 'dashboard'
 
     @loginSuccess = =>
@@ -140,7 +142,7 @@ viewModel = ->
                 'getSubTasks': 'yes'
 
             success: (data) =>
-                @projects []
+                @projectTree []
                 @flatTasks []
                 console.log data
                 tasks = data['todo-items']
@@ -204,9 +206,9 @@ viewModel = ->
                     for tasklist of projectsAssoc[project].tasklistsAssoc
                         projectsAssoc[project].tasklists.push projectsAssoc[project].tasklistsAssoc[tasklist]
                     delete projectsAssoc[project].tasklistsAssoc
-                    @projects.push projectsAssoc[project]
+                    @projectTree.push projectsAssoc[project]
                 
-                console.log @projects()
+                console.log @projectTree()
                 
                 @totalTasks taskTotal
                 
@@ -263,11 +265,11 @@ viewModel = ->
         return
 
     @showTasks = (opts) =>
-        if opts.projectId
+        if opts and opts.projectId
             @currentProjectId opts.projectId
         else 
             @currentProjectId ''
-        if opts.filter
+        if opts and opts.filter
             @currentFilter opts.filter
         else
             @currentFilter 'all'
@@ -279,8 +281,9 @@ viewModel = ->
     @removeEmpties = () ->
         if $('.task').length is 0 and $('.project-status').length
             @currentFilter 'all'
-        else if $('.project-status').length is 0
+        else if $('.task').length is 0
             @currentPage 'dashboard'
+        
         $('.task-list').each ->
             if $(this).find('.task').length is 0
                 $(this).hide()

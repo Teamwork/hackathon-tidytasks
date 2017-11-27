@@ -1,10 +1,12 @@
 .bs-component.dashboard.blue-bg(data-bind="visible: currentPage() == 'dashboard'")
     .container
-        h2.heading Hey, #[span(data-bind='text: userFirstname()')]
-        p.total-tasks 
-            | You have #[span(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')")] to work on today. 
-            span(data-bind='if: totalTasks() == 0') Go you!
-        .tasks-grid(data-bind='foreach: projects')
+        .welcome
+            h2.heading Hey, #[span(data-bind='text: userFirstname()')]
+            p.total-tasks 
+                | You have #[span(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')")] to work on today.
+                span(data-bind='if: totalTasks() == 0') Go you! 
+            a(href='#', data-bind='click: function () {showTasks()}, visible: totalTasks() != 0') View all tasks.
+        .tasks-grid(data-bind='foreach: projectTree')
             .task-card
                 a.card.border-light(href='#', data-bind='click: function () { showTasks({projectId: $data.projectId, filter: "all"}) }')
                     .title(data-bind='text: $data.projectName')

@@ -20,13 +20,14 @@ marked.setOptions({
 viewModel = function() {
   this.currentPage = ko.observable('splash');
   this.flatTasks = ko.observableArray();
-  this.projects = ko.observableArray();
+  this.projectTree = ko.observableArray();
   this.currentFilter = ko.observable();
   this.currentProjectId = ko.observable();
   this.totalTasks = ko.observable();
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.creatingTask = ko.observable(false);
+  this.loadingTasks = ko.observable(false);
   this.selectedTasklist = ko.observable();
   this.searchTerm = ko.observable().extend({
     rateLimit: 500
@@ -90,6 +91,7 @@ viewModel = function() {
     if (this.currentPage() === 'add-task' && this.currentProjectId()) {
       return this.currentPage('tasks-view');
     } else {
+      this.currentProjectId(null);
       return this.currentPage('dashboard');
     }
   };
@@ -143,7 +145,7 @@ viewModel = function() {
       },
       success: (data) => {
         var project, projectsAssoc, taskTotal, tasklist, tasks;
-        this.projects([]);
+        this.projectTree([]);
         this.flatTasks([]);
         console.log(data);
         tasks = data['todo-items'];
@@ -210,9 +212,9 @@ viewModel = function() {
             projectsAssoc[project].tasklists.push(projectsAssoc[project].tasklistsAssoc[tasklist]);
           }
           delete projectsAssoc[project].tasklistsAssoc;
-          this.projects.push(projectsAssoc[project]);
+          this.projectTree.push(projectsAssoc[project]);
         }
-        console.log(this.projects());
+        console.log(this.projectTree());
         this.totalTasks(taskTotal);
         if (goToDash) {
           this.currentPage('dashboard');
@@ -281,23 +283,23 @@ viewModel = function() {
     $.ajax(this.domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions);
   };
   this.showTasks = (opts) => {
-    if (opts.projectId) {
+    if (opts && opts.projectId) {
       this.currentProjectId(opts.projectId);
     } else {
       this.currentProjectId('');
     }
-    if (opts.filter) {
+    if (opts && opts.filter) {
       this.currentFilter(opts.filter);
     } else {
       this.currentFilter('all');
     }
-    this.removeEmpties();
     this.currentPage('tasks-view');
+    this.removeEmpties();
   };
   this.removeEmpties = function() {
     if ($('.task').length === 0 && $('.project-status').length) {
       this.currentFilter('all');
-    } else if ($('.project-status').length === 0) {
+    } else if ($('.task').length === 0) {
       this.currentPage('dashboard');
     }
     $('.task-list').each(function() {

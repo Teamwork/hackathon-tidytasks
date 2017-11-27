@@ -2,11 +2,11 @@
     .image-container
         // ko if: subtaskCount
         a.task-action(href='#', data-bind='click: function () {highlightSubtasks(taskId)}')
-            span(class='subtask-count', data-bind='text: subtaskCount')
+            span(class='subtask-count', data-bind='text: subtaskCount, css: taskType')
         // /ko
         // ko ifnot: subtaskCount
         a.task-action(href='#', data-bind='click: function () {completeTask(taskId)}')
-            .check
+            .check(data-bind='css: taskType')
                 include ../images/icons/task.svg
         // /ko
     
@@ -20,22 +20,41 @@
                 // ko if: taskStartDate
                 .date.control
                     .image-container
-                        img(src='images/icons/calendar.svg', width='20', height='16')
+                        .icon
+                            include ../images/icons/calendar.svg
                     .actions
-                        // ko text: "Start: " + moment(taskStartDate,"YYYYMMDD").format("DD MMM YYYY")
+                        // ko text: "Start: " + moment(taskStartDate,"YYYYMMDD").format("D MMM YYYY")
                         // /ko
                 // /ko
                 // ko if: taskDueDate
                 .date.control
                     .image-container
-                        img(src='images/icons/calendar.svg', width='20', height='16')
+                        .icon
+                            include ../images/icons/calendar.svg
                     .actions
-                        // ko text: "Due: " + moment(taskDueDate,"YYYYMMDD").format("DD MMM YYYY")
+                        // ko text: "Due: " + moment(taskDueDate,"YYYYMMDD").format("D MMM YYYY")
                         // /ko
+                // /ko
+                // ko if: attachmentCount > 0
+                .date.control
+                    .image-container
+                        .icon
+                            include ../images/icons/attachment.svg
+                    .actions
+                        a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}, text: attachmentCount + ' attachment' + (attachmentCount == 1 ? '' : 's')", href='#', target='_blank')
+                // /ko
+                // ko if: commentCount > 0
+                .date.control
+                    .image-container
+                        .icon
+                            include ../images/icons/comments.svg
+                    .actions
+                        a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}, text: commentCount + ' comment' + (commentCount == 1 ? '' : 's')", href='#', target='_blank')
                 // /ko
                 .open-in-projects.control
                     .image-container
-                        img(src='images/icons/projects-mark.svg', width='20', height='20')
+                        .icon
+                            include ../images/icons/projects-mark.svg
                     .actions
                         a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}", href='#', target='_blank')
                             | View in Projects
