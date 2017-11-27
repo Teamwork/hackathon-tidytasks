@@ -51,7 +51,7 @@ viewModel = function() {
     }
     return this.autoRefresh = this.setInterval(() => {
       return this.getAllTasks();
-    }, 5000);
+    }, 60000);
   });
   $("#start-date").pickadate();
   $("#due-date").pickadate();
