@@ -5,7 +5,11 @@
             | You have #[span(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')")] to work on today. 
             span(data-bind='if: totalTasks() == 0') Go you!
         .tasks-grid(data-bind='foreach: projects')
-            .task-card.card.border-light(data-bind='click: function () { showTasks({projectId: $data.projectId, filter: "all"}) }')
-                .title(data-bind='text: $data.projectName')
-                .tasks(data-bind="text: $data.taskCount + ' task' + ($data.taskCount == 1 ? '' : 's')")
-        
+            .task-card
+                a.card.border-light(href='#', data-bind='click: function () { showTasks({projectId: $data.projectId, filter: "all"}) }')
+                    .title(data-bind='text: $data.projectName')
+                    .tasks
+                        .status-count.late(data-bind='text: lateTasks, visible: lateTasks')
+                        .status-count.today(data-bind='text: currentTasks, visible: currentTasks')
+                        .status-count.upcoming(data-bind='text: upcomingTasks, visible: upcomingTasks')
+            

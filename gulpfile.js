@@ -30,7 +30,8 @@ gulp.task('libs', function() {
         'bower_components/moment/min/moment.min.js',
         'bower_components/bootstrap/dist/js/bootstrap.min.js',
         'bower_components/pickadate/lib/picker.js',
-        'bower_components/pickadate/lib/picker.date.js'
+        'bower_components/pickadate/lib/picker.date.js',
+        'bower_components/marked/lib/marked.js'
     ]).pipe(gulp.dest('./docs/js/'))
     gulp.src([
         'bower_components/pickadate/lib/themes/default.css',
@@ -39,7 +40,7 @@ gulp.task('libs', function() {
 });
 
 gulp.task('electron', function() {
-    gulp.src(['electron/**/*'])
+    gulp.src(['electron/**/*','!./electron/TidyTasks-darwin-x64/**/*'])
     .pipe(gulp.dest('./docs/'))
 });
 

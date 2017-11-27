@@ -7,6 +7,7 @@ script(src='js/knockout.js')
 script(src='js/bootstrap.min.js')
 script(src='js/picker.js')
 script(src='js/picker.date.js')
+script(src='js/marked.js')
 script(src='js/auth.js')
 script(src='js/app.js')
 
@@ -14,5 +15,11 @@ script.
     if (window.module) module = window.module;
     if (window.require) {
         require('./renderer.js');
+        var shell = require('electron').shell;
+        //open links externally by default
+        $(document).on('click', 'a[target="_blank"]', function(event) {
+            event.preventDefault();
+            shell.openExternal(this.href);
+        });
     }
 

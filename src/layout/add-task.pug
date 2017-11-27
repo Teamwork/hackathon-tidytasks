@@ -9,20 +9,24 @@
             h3.heading Add task
             .form-group
                 label(for='task-name') Task title
-                input#task-name(required, placeholder='Walk the dog')
+                input#task-name.text-input(required, placeholder='Walk the dog')
             .form-group
                 label(for='project-id') Project
                 select#project-id(required, data-bind='options: allProjects, optionsText: "text", optionsValue: "value", event: {change: function () {getProjectTasklists($element.value)}}')
             .form-group
                 label(for='tasklist-id') Tasklist
-                select#tasklist-id(required, data-bind='options: allTasklists, optionsText: "text", optionsValue: "value"')
+                select#tasklist-id(required, data-bind='value: selectedTasklist, valueUpdate: "input", options: allTasklists, optionsText: "text", optionsValue: "value"')
                     option(value='') Loading tasklists...
+            // ko if: selectedTasklist() == -1
+            .form-group
+                input#tasklist-name.text-input(placeholder='Tasklist name...', required, data-bind='value: ""')
+            // /ko
             .double-group
                 .form-group
                     label(for='start-date') Start date
-                    input#start-date(data-bind='value: moment(new Date()).format("DD MMMM, YYYY")')
+                    input#start-date.text-input(data-bind='value: moment(new Date()).format("DD MMMM, YYYY")')
                 .form-group
                     label(for='due-date') Due date
-                    input#due-date
+                    input#due-date.text-input
             .actions
                 button(type='submit') SAVE

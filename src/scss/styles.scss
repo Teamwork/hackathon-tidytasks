@@ -29,7 +29,7 @@ html, body {
 }
 
 .svg-icon-dark path {
-    fill: black
+    fill: #494e5e;
 }
 
 .svg-icon-white path {
@@ -64,7 +64,7 @@ html, body {
 
 .bs-component {
     min-height: 100%;
-    padding: 80px 0;
+    padding: 100px 0 50px;
     -webkit-overflow-scrolling: touch;
 
     > .container {
@@ -166,30 +166,71 @@ html, body {
 }
 
 .tasks-grid {
-    margin: 40px -15px;
+    margin: 15px -15px;
     display: flex;
     overflow: scroll;
+    padding: 15px 0;
 
     .task-card {
         flex-shrink: 0;
-        margin: 15px;
-        width: 205px;
-        height: 200px;
-        overflow: scroll;
-        display: flex;
-        flex-direction: column;
-        color: #494e5e;
-        cursor: pointer;
-        padding: 30px;
+        padding: 15px;
+        
+        .card {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            color: #494e5e;
+            position: relative;
+            cursor: pointer;
+            padding: 30px 30px 65px;
+            text-decoration: none;
+            will-change: transform;
+            transition: transform 0.15s;
 
-        .title {
-            font-size: 16px;
-            font-weight: 400;
-        }
+            &:hover {
+                transform: translateY(-5px);
+            }
 
-        .tasks {
-            flex: 1;
-            opacity: 0.4;
+            .title {
+                font-size: 18px;
+                line-height: 24px;
+                font-weight: 400;
+                height: 120px;
+                overflow: hidden;
+            }
+
+            .tasks {
+                display: flex;
+                margin-top: 15px;
+                position: absolute;
+                bottom: 30px;
+                left: 30px;
+            }
+
+            .status-count {
+                margin-right: 5px;
+                width: 20px;
+                height: 20px;
+                border: 1px solid;
+                font-size: 10px;
+                line-height: 18px;
+                text-align: center;
+                border-radius: 50%;
+                font-weight: 600;
+            }
+
+            .late.status-count {
+                border-color: #ff6562;
+                color: #ff6562;
+            }
+            .today.status-count {
+                border-color: #3b93f7;
+                color: #3b93f7;
+            }
+            .upcoming.status-count {
+                border-color: #fcb52b;
+                color: #fcb52b;
+            }
         }
     }
 }
@@ -237,6 +278,7 @@ html, body {
                 text-align: center;
                 font-size: 10px;
                 border: 1px solid;
+                font-weight: 600;
             }
 
             &.late .status-count {
@@ -291,17 +333,6 @@ html, body {
         text-decoration: none;
     }
 
-    .completed {
-        .task-name {
-            text-decoration: line-through;
-        }
-
-        img.check {
-            filter: contrast(30%) invert(100%) sepia(100%) saturate(3000%) hue-rotate(50deg);
-            opacity: 1;
-        }
-    }
-
     .highlight {
         .task-name {
             font-weight: 600;
@@ -318,21 +349,53 @@ html, body {
             flex: 0 0;
             margin-right: 15px;
             
-            img.check {
-                height: 20px;
-                width: 20px;
-                opacity: 0.4;
+            .check svg {
+                height: 22px;
+                width: 22px;
+                will-change: border;
+                transition-property: border;
+                transition-duration: 0.15s;
+                border-radius: 50%;
+                border: 1px solid #969696;
+
+                path {
+                    fill: #969696;
+                    will-change: fill;
+                    transition: fill 0.15s;
+                }
+            }
+
+            a:hover .check svg {
+                border: 1px solid #60cf1c;
+                
+                path {
+                    fill: #60cf1c;
+                }
             }
             
             .subtask-count {
                 color: white;
                 display: block;
                 border-radius: 50%;
-                width: 20px;
-                height: 20px;
-                line-height: 20px;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
                 text-align: center;
                 background: #969696;
+            }
+        }
+        
+        &.completed {
+            .task-name {
+                text-decoration: line-through;
+            }
+    
+            .check svg {
+                border: 1px solid #60cf1c;
+                
+                path {
+                    fill: #60cf1c;
+                }
             }
         }
         
@@ -409,11 +472,11 @@ html, body {
         }
     }
 
-    input {
+    input.text-input {
         -webkit-appearance: none;
     }
 
-    select, input {
+    select, input.text-input {
         font-size: 16px;
         color: #494e5e;
         box-shadow: none!important;

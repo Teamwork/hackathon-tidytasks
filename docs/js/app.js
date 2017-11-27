@@ -1,4 +1,21 @@
-var viewModel;
+var markedRenderer, viewModel;
+
+markedRenderer = new marked.Renderer();
+
+markedRenderer.link = function(href, title, text) {
+  return '<a target="_blank" href="' + href + '" title="' + title + '">' + text + '</a>';
+};
+
+marked.setOptions({
+  renderer: markedRenderer,
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: false
+});
 
 viewModel = function() {
   this.currentPage = ko.observable('splash');
@@ -10,6 +27,7 @@ viewModel = function() {
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.creatingTask = ko.observable(false);
+  this.selectedTasklist = ko.observable();
   this.searchTerm = ko.observable().extend({
     rateLimit: 500
   });
@@ -32,12 +50,12 @@ viewModel = function() {
     this.previousPage(value);
   }, this, "beforeChange");
   this.currentPage.subscribe((value) => {
-    if (['dashboard'].indexOf(this.currentPage()) > -1) {
+    if (['dashboard'].indexOf(value) > -1) {
       $('html').addClass('blue-bg');
       this.showNav(true);
       this.lightNav(true);
       this.backButton(false);
-    } else if (['add-task', 'project', 'tasks-view', 'search'].indexOf(this.currentPage()) > -1) {
+    } else if (['add-task', 'project', 'tasks-view', 'search'].indexOf(value) > -1) {
       this.showNav(true);
       this.lightNav(false);
       this.backButton(true);
@@ -46,6 +64,13 @@ viewModel = function() {
       $('html').addClass('blue-bg');
       this.showNav(false);
     }
+    setTimeout(function() {
+      if (value === 'search') {
+        return document.getElementById('search-term').focus();
+      } else if (value === 'add-task') {
+        return document.getElementById('task-name').focus();
+      }
+    }, 50);
   });
   this.currentProjectId.subscribe((value) => {
     if (value) {
@@ -142,6 +167,7 @@ viewModel = function() {
           if (projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] === void 0) {
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] = {};
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks = [];
+            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].private = task['tasklist-private'];
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name'];
             projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id'];
           }
@@ -163,13 +189,16 @@ viewModel = function() {
           cleanTask = {
             taskName: task.content,
             taskId: task.id,
-            taskDescription: task.description,
+            taskDescription: marked(task.description),
+            taskDescriotionRaw: task.description,
             taskStartDate: start,
             taskDueDate: due,
             taskType: type,
             subtaskCount: task.predecessors.length,
             subtasks: task.predecessors,
-            parentId: task.parentTaskId
+            parentId: task.parentTaskId,
+            attachmentCount: task['attachments-count'],
+            commentCount: task['comments-count']
           };
           projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push(cleanTask);
           projectsAssoc['p-' + task['project-id']].taskCount++;
@@ -243,6 +272,10 @@ viewModel = function() {
           };
           return this.allTasklists.push(tasklist);
         });
+        this.allTasklists.push({
+          text: 'New tasklist...',
+          value: '-1'
+        });
       }
     };
     $.ajax(this.domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions);
@@ -262,6 +295,11 @@ viewModel = function() {
     this.currentPage('tasks-view');
   };
   this.removeEmpties = function() {
+    if ($('.task').length === 0 && $('.project-status').length) {
+      this.currentFilter('all');
+    } else if ($('.project-status').length === 0) {
+      this.currentPage('dashboard');
+    }
     $('.task-list').each(function() {
       if ($(this).find('.task').length === 0) {
         return $(this).hide();
@@ -271,10 +309,10 @@ viewModel = function() {
     });
   };
   this.createTask = () => {
-    var dueDate, payload, startDate, xhrOptions;
+    var dueDate, payload, startDate, tasklistPayload, tasklistXhrOptions, xhrOptions;
     startDate = $('#start-date').val() ? moment($('#start-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
     dueDate = $('#due-date').val() ? moment($('#due-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
-    if (startDate > dueDate) {
+    if (dueDate && (startDate > dueDate)) {
       alert('The start date can\'t be before the due date');
       return false;
     }
@@ -296,15 +334,40 @@ viewModel = function() {
       data: JSON.stringify(payload),
       success: (data) => {
         this.getAllTasks(false, function() {
-          this.showTasks({
-            projectId: this.currentProjectId()
-          });
+          if (this.currentProjectId()) {
+            this.showTasks({
+              projectId: this.currentProjectId()
+            });
+          } else {
+            this.currentPage('dashboard');
+          }
           return this.creatingTask(false);
         });
       }
     };
     this.creatingTask(true);
-    $.ajax(this.domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions);
+    if ($('#tasklist-name').val()) {
+      tasklistPayload = {
+        'todo-list': {
+          'name': $('#tasklist-name').val()
+        }
+      };
+      tasklistXhrOptions = {
+        method: 'POST',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
+        },
+        contentType: "application/json",
+        dataType: 'json',
+        data: JSON.stringify(tasklistPayload),
+        success: (data) => {
+          $.ajax(this.domain() + "tasklists/" + data.TASKLISTID + "/tasks.json", xhrOptions);
+        }
+      };
+      $.ajax(this.domain() + "projects/" + $('#project-id').val() + "/tasklists.json", tasklistXhrOptions);
+    } else {
+      $.ajax(this.domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions);
+    }
   };
   this.completeTask = (taskId) => {
     var el, xhrOptions;
@@ -321,7 +384,7 @@ viewModel = function() {
           opacity: 0
         }, () => {
           el.remove();
-          return this.getAllTasks();
+          return this.getAllTasks(false, this.removeEmpties);
         });
       },
       error: function() {

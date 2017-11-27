@@ -1,3 +1,17 @@
+markedRenderer = new marked.Renderer()
+markedRenderer.link = (href, title, text) ->
+    return '<a target="_blank" href="' + href + '" title="' + title + '">' + text + '</a>'
+
+marked.setOptions
+    renderer: markedRenderer
+    gfm: true
+    tables: true
+    breaks: false
+    pedantic: false
+    sanitize: true
+    smartLists: true
+    smartypants: false
+
 viewModel = ->
     @currentPage = ko.observable 'splash'
     @flatTasks  = ko.observableArray()
@@ -8,6 +22,7 @@ viewModel = ->
     @allProjects = ko.observableArray()
     @allTasklists = ko.observableArray()
     @creatingTask = ko.observable false
+    @selectedTasklist = ko.observable()
     @searchTerm = ko.observable().extend({ rateLimit: 500 })
     @searchResults = ko.observableArray()
     
@@ -35,12 +50,12 @@ viewModel = ->
     , this, "beforeChange"
 
     @currentPage.subscribe (value) =>
-        if ['dashboard'].indexOf(@currentPage()) > -1
+        if ['dashboard'].indexOf(value) > -1
             $('html').addClass 'blue-bg'
             @showNav true
             @lightNav true
             @backButton false
-        else if ['add-task','project','tasks-view','search'].indexOf(@currentPage()) > -1
+        else if ['add-task','project','tasks-view','search'].indexOf(value) > -1
             @showNav true
             @lightNav false
             @backButton true
@@ -48,6 +63,12 @@ viewModel = ->
         else
             $('html').addClass 'blue-bg'
             @showNav false
+        setTimeout ->
+            if value == 'search'
+                document.getElementById('search-term').focus()
+            else if value == 'add-task'
+                document.getElementById('task-name').focus()
+        , 50
         return
 
     @currentProjectId.subscribe (value) =>
@@ -141,6 +162,7 @@ viewModel = ->
                     if projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] is undefined
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] = {}
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks = []
+                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].private = task['tasklist-private']
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name']
                         projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id']
                     
@@ -162,13 +184,16 @@ viewModel = ->
                     cleanTask = 
                         taskName: task.content
                         taskId: task.id
-                        taskDescription: task.description
+                        taskDescription: marked(task.description)
+                        taskDescriotionRaw: task.description
                         taskStartDate: start
                         taskDueDate: due
                         taskType: type
                         subtaskCount: task.predecessors.length
                         subtasks: task.predecessors
                         parentId: task.parentTaskId
+                        attachmentCount: task['attachments-count']
+                        commentCount: task['comments-count']
                     
                     projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push cleanTask
                     projectsAssoc['p-' + task['project-id']].taskCount++
@@ -229,6 +254,9 @@ viewModel = ->
                         text: tasklist.name
                         value: tasklist.id
                     @allTasklists.push(tasklist)
+                @allTasklists.push 
+                    text: 'New tasklist...'
+                    value: '-1'
                 return
 
         $.ajax @domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions
@@ -244,11 +272,15 @@ viewModel = ->
         else
             @currentFilter 'all'
         
-        @removeEmpties()
         @currentPage 'tasks-view'
+        @removeEmpties()
         return
 
     @removeEmpties = () ->
+        if $('.task').length is 0 and $('.project-status').length
+            @currentFilter 'all'
+        else if $('.project-status').length is 0
+            @currentPage 'dashboard'
         $('.task-list').each ->
             if $(this).find('.task').length is 0
                 $(this).hide()
@@ -260,7 +292,7 @@ viewModel = ->
         startDate = if $('#start-date').val() then moment($('#start-date').val(),"DD MMMM, YYYY").format("YYYYMMDD") else ''
         dueDate = if $('#due-date').val() then moment($('#due-date').val(),"DD MMMM, YYYY").format("YYYYMMDD") else ''
         
-        if startDate > dueDate
+        if dueDate and (startDate > dueDate)
             alert 'The start date can\'t be before the due date'
             return false
         payload = 
@@ -280,13 +312,34 @@ viewModel = ->
                 
             success: (data) =>
                 @getAllTasks false, ->
-                    @showTasks 
-                        projectId: @currentProjectId()
+                    if @currentProjectId()
+                        @showTasks 
+                            projectId: @currentProjectId()
+                    else 
+                        @currentPage 'dashboard'
                     @creatingTask false
                 return
         
         @creatingTask true
-        $.ajax @domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions
+        
+        if $('#tasklist-name').val()
+            tasklistPayload = 
+                'todo-list':
+                    'name': $('#tasklist-name').val()
+            tasklistXhrOptions = 
+                method: 'POST'
+                beforeSend: (xhr) ->
+                    xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
+                    return
+                contentType: "application/json"
+                dataType: 'json'
+                data: JSON.stringify tasklistPayload
+                success: (data) =>
+                    $.ajax @domain() + "tasklists/" + data.TASKLISTID + "/tasks.json", xhrOptions
+                    return
+            $.ajax @domain() + "projects/" + $('#project-id').val() + "/tasklists.json", tasklistXhrOptions
+        else
+            $.ajax @domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions
         return
 
     @completeTask = (taskId) =>
@@ -304,7 +357,7 @@ viewModel = ->
                     opacity: 0
                 }, =>
                     el.remove()
-                    @getAllTasks()
+                    @getAllTasks false, @removeEmpties
                 )
                 return
             error: ->

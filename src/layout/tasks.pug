@@ -27,45 +27,6 @@
                     
                     .tasks-container(data-bind='foreach: $data.tasks')
                         // ko if: currentFilter() == taskType || currentFilter() == 'all'
-                        .task(data-bind="attr: {'data-task-id' : taskId}")
-                            .image-container
-                                // ko if: subtaskCount
-                                a.task-action(href='#', data-bind='click: function () {highlightSubtasks(taskId)}')
-                                    span(class='subtask-count', data-bind='text: subtaskCount')
-                                // /ko
-                                // ko ifnot: subtaskCount
-                                a.task-action(href='#', data-bind='click: function () {completeTask(taskId)}')
-                                    img.check(src='images/icons/task.svg', alt='Complete')
-                                // /ko
-                            
-                            .task-body
-                                .task-name(data-bind='text: taskName, click: toggleDetails')
-                                
-                                .task-details.hidden
-                                    .task-description(data-bind='text: taskDescription')
-                                    
-                                    .task-controls
-                                        // ko if: taskStartDate
-                                        .date.control
-                                            .image-container
-                                                img(src='images/icons/calendar.svg', width='20', height='16')
-                                            .actions
-                                                // ko text: "Start: " + moment(taskStartDate,"YYYYMMDD").format("DD MMM YYYY")
-                                                // /ko
-                                        // /ko
-                                        // ko if: taskDueDate
-                                        .date.control
-                                            .image-container
-                                                img(src='images/icons/calendar.svg', width='20', height='16')
-                                            .actions
-                                                // ko text: "Due: " + moment(taskDueDate,"YYYYMMDD").format("DD MMM YYYY")
-                                                // /ko
-                                        // /ko
-                                        .open-in-projects.control
-                                            .image-container
-                                                img(src='images/icons/projects-mark.svg', width='20', height='20')
-                                            .actions
-                                                a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}", href='#', target='_blank')
-                                                    | View in Projects
+                        include task
                         // /ko
         // /ko

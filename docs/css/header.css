@@ -5,7 +5,7 @@
   top: 0;
   left: 0;
   right: 0;
-  padding: 15px 0; }
+  padding: 30px 0; }
   .navbar .svg-icon {
     width: 24px;
     height: 24px; }
@@ -14,8 +14,7 @@
     height: 25px;
     border-radius: 50%;
     background: #FFF;
-    border: 1px solid #CCC;
-    padding: 0px; }
+    padding: 0; }
   .navbar .dropdown-toggle::after {
     display: none; }
   .navbar .dropdown-menu {
@@ -26,10 +25,14 @@
     right: 0px;
     will-change: transform; }
   .navbar .nav-link {
-    padding: 0; }
+    padding: 0;
+    will-change: opacity;
+    transition: opacity 0.15s; }
+    .navbar .nav-link:hover {
+      opacity: 0.7; }
 
 .is-electron .navbar {
-  padding-top: 40px; }
+  padding-top: 35px; }
 
 .navbar-nav {
   flex-direction: row; }
