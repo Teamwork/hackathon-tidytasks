@@ -31,7 +31,8 @@ gulp.task('libs', function() {
         'bower_components/bootstrap/dist/js/bootstrap.min.js',
         'bower_components/pickadate/lib/picker.js',
         'bower_components/pickadate/lib/picker.date.js',
-        'bower_components/marked/lib/marked.js'
+        'bower_components/marked/lib/marked.js',
+        'bower_components/HackTimer/HackTimer.min.js'
     ]).pipe(gulp.dest('./docs/js/'))
     gulp.src([
         'bower_components/pickadate/lib/themes/default.css',

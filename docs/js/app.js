@@ -45,6 +45,10 @@ viewModel = function() {
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
   this.tasklistSelect = null;
+  setInterval(() => {
+    this.getAllTasks();
+    return console.log('timer ran');
+  }, 60000);
   $("#start-date").pickadate();
   $("#due-date").pickadate();
   this.currentPage.subscribe(function(value) {
@@ -132,6 +136,10 @@ viewModel = function() {
   }
   this.getAllTasks = (goToDash, callback) => {
     var xhrOptions;
+    if (this.loadingTasks()) {
+      return;
+    }
+    this.loadingTasks(true);
     xhrOptions = {
       method: 'GET',
       beforeSend: function(xhr) {
@@ -222,6 +230,7 @@ viewModel = function() {
         if (typeof callback === 'function') {
           callback();
         }
+        this.loadingTasks(false);
       }
     };
     return $.ajax(this.domain() + 'tasks.json', xhrOptions);

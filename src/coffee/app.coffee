@@ -42,6 +42,10 @@ viewModel = ->
     @today = moment(new Date()).format('YYYYMMDD')
     @tasklistSelect = null
 
+    setInterval =>
+        @getAllTasks() 
+    , 60000
+
     $("#start-date").pickadate()
     $("#due-date").pickadate()
 
@@ -130,6 +134,9 @@ viewModel = ->
         @currentPage 'login'
 
     @getAllTasks = (goToDash,callback) =>
+        if @loadingTasks() 
+            return
+        @loadingTasks true
         xhrOptions = 
             method: 'GET'
             beforeSend: (xhr) ->
@@ -216,6 +223,7 @@ viewModel = ->
                     @currentPage 'dashboard'
                 if typeof callback == 'function'
                     callback()
+                @loadingTasks false
                 return
             
         $.ajax @domain() + 'tasks.json', xhrOptions

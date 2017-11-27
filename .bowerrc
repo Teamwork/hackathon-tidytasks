@@ -1,0 +1,8 @@
+{
+    "registry": {
+        "search": [
+            "https://www.myget.org/F/hack-timer/bower/",
+            "https://bower.herokuapp.com"
+        ]
+    }
+}

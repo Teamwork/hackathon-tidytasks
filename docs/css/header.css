@@ -1,3 +1,11 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  70% {
+    transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg); } }
+
 .navbar {
   box-shadow: none !important;
   position: fixed;
@@ -30,6 +38,11 @@
     transition: opacity 0.15s; }
     .navbar .nav-link:hover {
       opacity: 0.7; }
+    .navbar .nav-link.loading {
+      animation-name: spin;
+      animation-duration: 800ms;
+      animation-timing-function: ease-out;
+      animation-iteration-count: infinite; }
 
 .is-electron .navbar {
   padding-top: 35px; }

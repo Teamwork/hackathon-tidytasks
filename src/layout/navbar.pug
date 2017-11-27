@@ -6,11 +6,15 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
         .navbar-date(data-bind="text: moment(new Date()).format('D MMM YYYY'), visible: !backButton()")
         ul.navbar-nav.navbar-right
             li.nav-item
-                a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('search')}")
+                a.refresh-tasks.nav-link(href='#', data-bind="click: getAllTasks, css: loadingTasks() ? 'loading' : ''", title="Refresh all tasks")
+                    .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
+                        include ../images/icons/refreshing.svg
+            li.nav-item
+                a.search-tasks.nav-link(href='#', data-bind="click: function() {currentPage('search')}", title="Search tasks")
                     .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
                         include ../images/icons/search.svg
             li.nav-item
-                a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('add-task')}")
+                a.add-task.nav-link(href='#', data-bind="click: function() {currentPage('add-task')}", title="Add task")
                     .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
                         include ../images/icons/plus.svg
             li.nav-item.dropdown
@@ -19,6 +23,5 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
                 .dropdown-menu
                     a.dropdown-item(href='download/TidyTasks.zip', data-bind='visible: !(window && window.process && window.process.type == "renderer")') Download for Mac
                     a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Go to Projects
-                    a.dropdown-item(href='#', data-bind='click: getAllTasks') Refresh all tasks
                     .dropdown-divider
                     a.dropdown-item(href='#', data-bind='click: logout') Sign out
