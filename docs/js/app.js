@@ -53,6 +53,9 @@ viewModel = function() {
       return this.getAllTasks();
     }, 60000);
   });
+  window.logger = (varName) => {
+    console.log(this[varName]);
+  };
   $("#start-date").pickadate();
   $("#due-date").pickadate();
   this.currentPage.subscribe(function(value) {
@@ -159,7 +162,6 @@ viewModel = function() {
         var project, projectsAssoc, taskTotal, tasklist, tasks;
         this.projectTree([]);
         this.flatTasks([]);
-        console.log(data);
         tasks = data['todo-items'];
         taskTotal = 0;
         projectsAssoc = {};
@@ -226,7 +228,6 @@ viewModel = function() {
           delete projectsAssoc[project].tasklistsAssoc;
           this.projectTree.push(projectsAssoc[project]);
         }
-        console.log(this.projectTree());
         this.totalTasks(taskTotal);
         if (goToDash) {
           this.currentPage('dashboard');

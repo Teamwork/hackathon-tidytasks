@@ -154,7 +154,6 @@ viewModel = ->
             success: (data) =>
                 @projectTree []
                 @flatTasks []
-                console.log data
                 tasks = data['todo-items']
                 taskTotal = 0
                 projectsAssoc = {}
@@ -217,9 +216,7 @@ viewModel = ->
                         projectsAssoc[project].tasklists.push projectsAssoc[project].tasklistsAssoc[tasklist]
                     delete projectsAssoc[project].tasklistsAssoc
                     @projectTree.push projectsAssoc[project]
-                
-                console.log @projectTree()
-                
+                                
                 @totalTasks taskTotal
                 
                 if goToDash
