@@ -1,7 +1,11 @@
 .bs-component.project-container.white-bg(data-bind="visible: currentPage() == 'tasks-view'")
     .container
+        // ko if: !currentProjectId()
+        h2 All tasks
+        .task-count(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's') + ' today.'")
+        // /ko
         // ko foreach: projectTree()
-        div(data-bind="if: !currentProjectId() || currentProjectId() == projectId")
+        .section(data-bind="if: !currentProjectId() || currentProjectId() == projectId")
             // ko if: currentProjectId()
             h2(data-bind='text: projectName')
             .task-count(data-bind="text: taskCount + ' task' + (taskCount == 1 ? '' : 's') + ' today.'")
@@ -19,11 +23,7 @@
                     | Upcoming
                     .status-count(data-bind='text: upcomingTasks')
             // /ko
-            // ko if !currentProjectId()
-            h2 All tasks
-            .task-count(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's') + ' today.'")
-            // /ko
-            .section(data-bind='foreach: tasklists')
+            div(data-bind='foreach: tasklists')
                 .task-list
                     .section-toggler
                         .section-name(data-bind='text: tasklistName')

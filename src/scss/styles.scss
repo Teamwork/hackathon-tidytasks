@@ -318,7 +318,12 @@ html, body {
     }
 
     .section {
+        margin-bottom: 50px;
 
+        &:last-child {
+            margin-bottom: 0;
+        }
+        
         &.collapsed {
             .tasks-container {
                 height: 0;

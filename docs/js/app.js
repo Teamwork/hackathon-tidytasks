@@ -153,7 +153,8 @@ viewModel = function() {
         'getFiles': false,
         'responsible-party-ids': this.userId(),
         'stamp': new Date().getTime(),
-        'getSubTasks': 'yes'
+        'getSubTasks': 'yes',
+        'sort': 'duedate'
       },
       success: (data) => {
         var project, projectsAssoc, taskTotal, tasklist, tasks;
