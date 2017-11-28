@@ -41,10 +41,7 @@ viewModel = ->
 
     @today = moment(new Date()).format('YYYYMMDD')
 
-    $("#start-date").pickadate()
-    $("#due-date").pickadate()
-
-    $(window).bind 'mousemove touchmove keypress', =>
+    document.addEventListener 'mousemove', =>
         if @autoRefresh 
             clearInterval(@autoRefresh)
         @autoRefresh = @setInterval =>
@@ -68,7 +65,6 @@ viewModel = ->
 
     @currentPage.subscribe (value) =>
         if ['dashboard'].indexOf(value) > -1
-            $('html').addClass 'blue-bg'
             @showNav true
             @lightNav true
             @backButton false
@@ -78,9 +74,7 @@ viewModel = ->
             @showNav true
             @lightNav false
             @backButton true
-            $('html').removeClass 'blue-bg'
         else
-            $('html').addClass 'blue-bg'
             @showNav false
         setTimeout ->
             if value == 'search'
@@ -151,7 +145,7 @@ viewModel = ->
 
     @currentProjectId.subscribe (value) =>
         if value
-            $('#project-id').val value
+            document.getElementById('project-id').value = value
             @getTasklists value
         return
 
@@ -185,7 +179,7 @@ viewModel = ->
     @processLogin = ->
         @currentPage 'splash'
         @User.auth 
-            apiKey: $('#API-key').val(), 
+            apiKey: document.getElementById('API-key').value, 
             success: @loginSuccess
             fail: @loginFail
         return
@@ -271,12 +265,12 @@ viewModel = ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) =>
-                $.each data.projects, (i, project) =>
+                ko.utils.arrayForEach data.projects, (project) =>
                     project = 
                         text: project.name
                         value: project.id
                     @allProjects.push(project)
-                @getTasklists $("#project-id").val()
+                @getTasklists document.getElementById("project-id").value
                 return
 
         $.ajax @domain() + 'projects.json', xhrOptions
@@ -293,7 +287,7 @@ viewModel = ->
                 return
             success: (data) =>
                 @allTasklists []
-                $.each data.tasklists, (i, tasklist) =>
+                ko.utils.arrayForEach data.tasklists, (tasklist) =>
                     tasklist = 
                         text: tasklist.name
                         value: tasklist.id
@@ -307,8 +301,10 @@ viewModel = ->
         return
 
     @createTask = =>
-        startDate = if $('#start-date').val() then moment($('#start-date').val(),"DD MMMM, YYYY").format("YYYYMMDD") else ''
-        dueDate = if $('#due-date').val() then moment($('#due-date').val(),"DD MMMM, YYYY").format("YYYYMMDD") else ''
+        startDateVal = document.getElementById('start-date').value
+        dueDateVal = document.getElementById('due-date').value
+        startDate = if startDateVal then moment(startDateVal).format("YYYYMMDD") else ''
+        dueDate = if dueDateVal then moment(dueDateVal).format("YYYYMMDD") else ''
         
         if dueDate and (startDate > dueDate)
             alert 'The start date can\'t be before the due date'
@@ -318,7 +314,7 @@ viewModel = ->
                 'responsible-party-id': @userId()
                 'start-date': startDate
                 'due-date': dueDate
-                'content': $('#task-name').val()
+                'content': document.getElementById('task-name').value
         xhrOptions = 
             method: 'POST'
             beforeSend: (xhr) ->
@@ -340,10 +336,10 @@ viewModel = ->
         
         @creatingTask true
         
-        if $('#tasklist-name').val()
+        if document.getElementById('tasklist-name').value
             tasklistPayload = 
                 'todo-list':
-                    'name': $('#tasklist-name').val()
+                    'name': document.getElementById('tasklist-name').value
             tasklistXhrOptions = 
                 method: 'POST'
                 beforeSend: (xhr) ->
@@ -355,9 +351,9 @@ viewModel = ->
                 success: (data) =>
                     $.ajax @domain() + "tasklists/" + data.TASKLISTID + "/tasks.json", xhrOptions
                     return
-            $.ajax @domain() + "projects/" + $('#project-id').val() + "/tasklists.json", tasklistXhrOptions
+            $.ajax @domain() + "projects/" + document.getElementById('project-id').value + "/tasklists.json", tasklistXhrOptions
         else
-            $.ajax @domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions
+            $.ajax @domain() + "tasklists/" + document.getElementById('tasklist-id').value + "/tasks.json", xhrOptions
         return
 
     @completeTask = (taskId) =>
@@ -386,7 +382,7 @@ viewModel = ->
         return
 
     @highlightSubtasks = (taskId) =>
-        $.each @tasks(), (i, task) =>
+        ko.utils.arrayForEach @tasks(), (task) =>
             if parseInt(task.parentId) == parseInt(taskId)
                 $('[data-task-id=' + task.taskId + "]").toggleClass('highlight')
             return
