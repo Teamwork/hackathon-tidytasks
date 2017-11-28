@@ -4,32 +4,30 @@
         h2 All tasks
         .task-count(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's') + ' today.'")
         // /ko
-        // ko foreach: projectTree()
-        .section(data-bind="if: !currentProjectId() || currentProjectId() == projectId, visible: !currentProjectId() || currentProjectId() == projectId")
-            // ko if: currentProjectId()
-            h2(data-bind='text: projectName')
-            .task-count(data-bind="text: taskCount + ' task' + (taskCount == 1 ? '' : 's') + ' today.'")
-            .project-status
-                a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { showTasks({projectId: $data.projectId, filter: "all"}) }')
-                    | All
-                    .status-count(data-bind='text: taskCount')
-                a.status.late(href='#', data-bind='visible: lateTasks, css: {"selected": currentFilter() == "late"}, click: function() { showTasks({projectId: $data.projectId, filter: "late"}) }')
-                    | Late
-                    .status-count(data-bind='text: lateTasks')
-                a.status.today(href='#', data-bind='visible: currentTasks, css: {"selected": currentFilter() == "today"}, click: function() { showTasks({projectId: $data.projectId, filter: "today"}) }')
-                    | Today
-                    .status-count(data-bind='text: currentTasks')
-                a.status.upcoming(href='#', data-bind='visible: upcomingTasks, css: {"selected": currentFilter() == "upcoming"}, click: function() { showTasks({projectId: $data.projectId, filter: "upcoming"}) }') 
-                    | Upcoming
-                    .status-count(data-bind='text: upcomingTasks')
-            // /ko
-            div(data-bind='foreach: tasklists')
-                .task-list
-                    .section-toggler
-                        .section-name(data-bind='text: tasklistName')
-                    
-                    .tasks-container(data-bind='foreach: $data.tasks')
-                        // ko if: currentFilter() == taskType || currentFilter() == 'all'
-                        include task
-                        // /ko
-        // /ko
+        div(data-bind='foreach: projects')
+            .section(data-bind="if: !currentProjectId() || currentProjectId() == projectId, visible: !currentProjectId() || currentProjectId() == projectId")
+                
+                // ko if: currentProjectId()
+                h2(data-bind='text: projectName')
+                .task-count(data-bind="text: taskCount + ' task' + (taskCount == 1 ? '' : 's') + ' today.'")
+                .project-status
+                    a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { currentProjectId(projectId); currentFilter("all") }')
+                        | All
+                        .status-count(data-bind='text: taskCount')
+                    a.status.late(href='#', data-bind='visible: lateCount, css: {"selected": currentFilter() == "late"}, click: function() { currentProjectId(projectId); currentFilter("late") }')
+                        | Late
+                        .status-count(data-bind='text: lateCount')
+                    a.status.today(href='#', data-bind='visible: todayCount, css: {"selected": currentFilter() == "today"}, click: function() { currentProjectId(projectId); currentFilter("today") }')
+                        | Today
+                        .status-count(data-bind='text: todayCount')
+                    a.status.upcoming(href='#', data-bind='visible: upcomingCount, css: {"selected": currentFilter() == "upcoming"}, click: function() { currentProjectId(projectId); currentFilter("upcoming") }') 
+                        | Upcoming
+                        .status-count(data-bind='text: upcomingCount')
+                // /ko
+
+                div(data-bind='foreach: tasklists')
+                    .task-list(data-bind='visible: tasks.length')
+                        .section-toggler
+                            .section-name(data-bind='text: tasklistName')
+                        .tasks-container(data-bind='foreach: tasks')
+                            include task

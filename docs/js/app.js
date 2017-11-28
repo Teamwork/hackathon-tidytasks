@@ -19,20 +19,17 @@ marked.setOptions({
 
 viewModel = function() {
   this.currentPage = ko.observable('splash');
-  this.flatTasks = ko.observableArray();
-  this.projectTree = ko.observableArray();
-  this.currentFilter = ko.observable();
-  this.currentProjectId = ko.observable();
-  this.totalTasks = ko.observable();
+  this.tasks = ko.observableArray();
+  this.currentFilter = ko.observable('all');
+  this.currentProjectId = ko.observable('');
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.creatingTask = ko.observable(false);
   this.loadingTasks = ko.observable(false);
   this.selectedTasklist = ko.observable();
-  this.searchTerm = ko.observable().extend({
+  this.searchTerm = ko.observable('').extend({
     rateLimit: 500
   });
-  this.searchResults = ko.observableArray();
   this.User = new User();
   this.domain = ko.observable();
   this.userId = ko.observable();
@@ -44,7 +41,8 @@ viewModel = function() {
   this.backButton = ko.observable(false);
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
-  this.tasklistSelect = null;
+  $("#start-date").pickadate();
+  $("#due-date").pickadate();
   $(window).bind('mousemove touchmove keypress', () => {
     if (this.autoRefresh) {
       clearInterval(this.autoRefresh);
@@ -53,9 +51,19 @@ viewModel = function() {
       return this.getAllTasks();
     }, 60000);
   });
-  $("#start-date").pickadate();
-  $("#due-date").pickadate();
-  this.currentPage.subscribe(function(value) {
+  this.totalTasks = ko.pureComputed(() => {
+    return this.tasks().length;
+  });
+  this.searchResults = ko.pureComputed(() => {
+    if (!this.searchTerm()) {
+      return [];
+    } else {
+      return ko.utils.arrayFilter(this.tasks(), function(task) {
+        return task.taskName.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1 || task.taskDescriptionRaw.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1;
+      });
+    }
+  });
+  this.currentPage.subscribe((value) => {
     this.previousPage(value);
   }, this, "beforeChange");
   this.currentPage.subscribe((value) => {
@@ -64,6 +72,8 @@ viewModel = function() {
       this.showNav(true);
       this.lightNav(true);
       this.backButton(false);
+      this.currentFilter('all');
+      this.currentProjectId('');
     } else if (['add-task', 'project', 'tasks-view', 'search'].indexOf(value) > -1) {
       this.showNav(true);
       this.lightNav(false);
@@ -81,25 +91,91 @@ viewModel = function() {
       }
     }, 50);
   });
+  this.filteredTasks = ko.pureComputed(() => {
+    return ko.utils.arrayFilter(this.tasks(), (task) => {
+      if (this.currentProjectId() !== '' && this.currentProjectId() !== task.projectId) {
+        return false;
+      }
+      if (this.currentFilter() !== 'all' && this.currentFilter() !== task.taskType) {
+        return false;
+      }
+      return true;
+    });
+  }, this);
+  this.projects = ko.pureComputed(() => {
+    var projectArray, projectIds;
+    projectIds = [];
+    projectArray = [];
+    ko.utils.arrayForEach(this.filteredTasks(), (task) => {
+      var project;
+      if (projectIds.indexOf(task.projectId) < 0) {
+        project = {
+          projectId: task.projectId,
+          projectName: task.projectName,
+          taskCount: this.getTaskCount(task.projectId),
+          lateCount: this.getTaskCount(task.projectId, "late"),
+          todayCount: this.getTaskCount(task.projectId, "today"),
+          upcomingCount: this.getTaskCount(task.projectId, "upcoming"),
+          tasklists: this.getProjectTasklists(task.projectId)
+        };
+        projectIds.push(task.projectId);
+        return projectArray.push(project);
+      }
+    });
+    return projectArray;
+  }, this);
+  this.tasklists = ko.pureComputed(() => {
+    var tasklistIds, tasklistsArray;
+    tasklistIds = [];
+    tasklistsArray = [];
+    ko.utils.arrayForEach(this.filteredTasks(), (task) => {
+      var tasklist;
+      if (tasklistIds.indexOf(task.tasklistId) < 0) {
+        tasklist = {
+          tasklistId: task.tasklistId,
+          tasklistName: task.tasklistName,
+          projectId: task.projectId,
+          tasks: this.getTasklistTasks(task.tasklistId)
+        };
+        tasklistIds.push(task.tasklistId);
+        return tasklistsArray.push(tasklist);
+      }
+    });
+    return tasklistsArray;
+  }, this);
+  this.getProjectTasklists = (projectId) => {
+    return ko.utils.arrayFilter(this.tasklists(), (tasklist) => {
+      return tasklist.projectId === projectId;
+    });
+  };
+  this.getTasklistTasks = (tasklistId) => {
+    return ko.utils.arrayFilter(this.filteredTasks(), (task) => {
+      return task.tasklistId === tasklistId;
+    });
+  };
+  this.getTaskCount = (projectId, filter) => {
+    var taskCount;
+    taskCount = 0;
+    ko.utils.arrayForEach(this.tasks(), (task) => {
+      if (filter && filter !== task.taskType) {
+        return;
+      }
+      if (task.projectId === projectId) {
+        return taskCount++;
+      }
+    });
+    return taskCount;
+  };
   this.currentProjectId.subscribe((value) => {
     if (value) {
       $('#project-id').val(value);
-      this.getProjectTasklists(value);
+      this.getTasklists(value);
     }
-  });
-  this.searchTerm.subscribe((searchTerm) => {
-    this.searchResults([]);
-    $.each(this.flatTasks(), (i, task) => {
-      if (task.taskName.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1) {
-        return this.searchResults.push(task);
-      }
-    });
   });
   this.goBack = () => {
     if (this.currentPage() === 'add-task' && this.currentProjectId()) {
       return this.currentPage('tasks-view');
     } else {
-      this.currentProjectId(null);
       return this.currentPage('dashboard');
     }
   };
@@ -157,75 +233,44 @@ viewModel = function() {
         'sort': 'duedate'
       },
       success: (data) => {
-        var project, projectsAssoc, taskTotal, tasklist, tasks;
-        this.projectTree([]);
-        this.flatTasks([]);
-        tasks = data['todo-items'];
-        taskTotal = 0;
-        projectsAssoc = {};
-        $.each(tasks, (i, task) => {
-          var cleanTask, due, start, type;
-          if (!task['start-date'] && !task['due-date']) {
-            return true;
+        var cleanTask, cleanTasks, due, j, len, ref, start, task, type;
+        cleanTasks = [];
+        ref = data['todo-items'];
+        for (j = 0, len = ref.length; j < len; j++) {
+          task = ref[j];
+          if (task['start-date'] || task['due-date']) {
+            type = '';
+            start = task["start-date"];
+            due = task["due-date"];
+            if (due !== '' && due < this.today) {
+              type = 'late';
+            } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
+              type = 'today';
+            } else if (start !== '' && start > this.today) {
+              type = 'upcoming';
+            }
+            cleanTask = {
+              taskName: task.content,
+              taskId: task.id,
+              tasklistId: task['todo-list-id'],
+              tasklistName: task['todo-list-name'],
+              projectId: task['project-id'],
+              projectName: task['project-name'],
+              taskDescription: marked(task.description),
+              taskDescriptionRaw: task.description,
+              taskStartDate: start,
+              taskDueDate: due,
+              taskType: type,
+              subtaskCount: task.predecessors.length,
+              subtasks: task.predecessors,
+              parentId: task.parentTaskId,
+              attachmentCount: task['attachments-count'],
+              commentCount: task['comments-count']
+            };
+            cleanTasks.push(cleanTask);
           }
-          if (projectsAssoc['p-' + task['project-id']] === void 0) {
-            projectsAssoc['p-' + task['project-id']] = {};
-            projectsAssoc['p-' + task['project-id']].taskCount = 0;
-            projectsAssoc['p-' + task['project-id']].lateTasks = 0;
-            projectsAssoc['p-' + task['project-id']].currentTasks = 0;
-            projectsAssoc['p-' + task['project-id']].upcomingTasks = 0;
-            projectsAssoc['p-' + task['project-id']].tasklistsAssoc = {};
-            projectsAssoc['p-' + task['project-id']].projectName = task['project-name'];
-            projectsAssoc['p-' + task['project-id']].projectId = task['project-id'];
-          }
-          if (projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] === void 0) {
-            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] = {};
-            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks = [];
-            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].private = task['tasklist-private'];
-            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name'];
-            projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id'];
-          }
-          type = '';
-          start = task["start-date"];
-          due = task["due-date"];
-          if (due !== '' && due < this.today) {
-            type = 'late';
-            projectsAssoc['p-' + task['project-id']].lateTasks++;
-          } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
-            type = 'today';
-            projectsAssoc['p-' + task['project-id']].currentTasks++;
-          } else if (start !== '' && start > this.today) {
-            type = 'upcoming';
-            projectsAssoc['p-' + task['project-id']].upcomingTasks++;
-          }
-          cleanTask = {
-            taskName: task.content,
-            taskId: task.id,
-            taskDescription: marked(task.description),
-            taskDescriotionRaw: task.description,
-            taskStartDate: start,
-            taskDueDate: due,
-            taskType: type,
-            subtaskCount: task.predecessors.length,
-            subtasks: task.predecessors,
-            parentId: task.parentTaskId,
-            attachmentCount: task['attachments-count'],
-            commentCount: task['comments-count']
-          };
-          projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push(cleanTask);
-          projectsAssoc['p-' + task['project-id']].taskCount++;
-          this.flatTasks.push(cleanTask);
-          return taskTotal++;
-        });
-        for (project in projectsAssoc) {
-          projectsAssoc[project].tasklists = [];
-          for (tasklist in projectsAssoc[project].tasklistsAssoc) {
-            projectsAssoc[project].tasklists.push(projectsAssoc[project].tasklistsAssoc[tasklist]);
-          }
-          delete projectsAssoc[project].tasklistsAssoc;
-          this.projectTree.push(projectsAssoc[project]);
         }
-        this.totalTasks(taskTotal);
+        this.tasks(cleanTasks);
         if (goToDash) {
           this.currentPage('dashboard');
         }
@@ -255,12 +300,12 @@ viewModel = function() {
           };
           return this.allProjects.push(project);
         });
-        this.getProjectTasklists($("#project-id").val());
+        this.getTasklists($("#project-id").val());
       }
     };
     $.ajax(this.domain() + 'projects.json', xhrOptions);
   };
-  this.getProjectTasklists = (projectId) => {
+  this.getTasklists = (projectId) => {
     var xhrOptions;
     this.allTasklists([
       {
@@ -293,34 +338,6 @@ viewModel = function() {
     };
     $.ajax(this.domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions);
   };
-  this.showTasks = (opts) => {
-    if (opts && opts.projectId) {
-      this.currentProjectId(opts.projectId);
-    } else {
-      this.currentProjectId('');
-    }
-    if (opts && opts.filter) {
-      this.currentFilter(opts.filter);
-    } else {
-      this.currentFilter('all');
-    }
-    this.currentPage('tasks-view');
-    this.removeEmpties();
-  };
-  this.removeEmpties = function() {
-    if ($('.task').length === 0 && $('.project-status').length) {
-      this.currentFilter('all');
-    } else if ($('.task').length === 0) {
-      this.currentPage('dashboard');
-    }
-    $('.task-list').each(function() {
-      if ($(this).find('.task').length === 0) {
-        return $(this).hide();
-      } else {
-        return $(this).show();
-      }
-    });
-  };
   this.createTask = () => {
     var dueDate, payload, startDate, tasklistPayload, tasklistXhrOptions, xhrOptions;
     startDate = $('#start-date').val() ? moment($('#start-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
@@ -348,9 +365,8 @@ viewModel = function() {
       success: (data) => {
         this.getAllTasks(false, function() {
           if (this.currentProjectId()) {
-            this.showTasks({
-              projectId: this.currentProjectId()
-            });
+            this.currentProjectId(projectId);
+            this.currentPage('tasks-view');
           } else {
             this.currentPage('dashboard');
           }
@@ -397,7 +413,7 @@ viewModel = function() {
           opacity: 0
         }, () => {
           el.remove();
-          return this.getAllTasks(false, this.removeEmpties);
+          return this.getAllTasks();
         });
       },
       error: function() {
@@ -408,7 +424,7 @@ viewModel = function() {
     $.ajax(this.domain() + "tasks/" + taskId + "/complete.json", xhrOptions);
   };
   this.highlightSubtasks = (taskId) => {
-    $.each(this.flatTasks(), (i, task) => {
+    $.each(this.tasks(), (i, task) => {
       if (parseInt(task.parentId) === parseInt(taskId)) {
         $('[data-task-id=' + task.taskId + "]").toggleClass('highlight');
       }

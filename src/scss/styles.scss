@@ -73,7 +73,10 @@ html, body {
     }
 
     &.blue-bg {
-        background: linear-gradient(to bottom, #3b93f7, #25dafc);
+        background: linear-gradient(to bottom, #3b93f7 100px, #25dafc);
+        background-size: cover;
+        background-position: top center;
+        background-attachment: fixed;
         color: white;
     }
 
@@ -93,6 +96,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
 }
 
 .login-container {

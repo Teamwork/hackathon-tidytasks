@@ -1,7 +1,7 @@
 .bs-component.search-container(data-bind="visible: currentPage() == 'search'")
     .container
         h2 Search tasks
-        input(id='search-term', placeholder='Search term...', data-bind='value: searchTerm, valueUpdate: "input"')
+        input(id='search-term', placeholder='Search term...', data-bind='textInput: searchTerm, valueUpdate: "input"')
         
         // ko if: searchTerm() && !searchResults().length
         .no-results No results matched your search
@@ -9,4 +9,3 @@
 
         .tasks-container(data-bind='foreach: searchResults, visible: searchTerm() && searchResults().length')
             include task
-

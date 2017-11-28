@@ -8387,7 +8387,8 @@ input[type="checkbox"]:disabled:checked:after,
   top: 0;
   left: 0;
   right: 0;
-  padding: 30px 0; }
+  padding: 20px 0;
+  background: rgba(59, 147, 247, 0.95); }
   .navbar .svg-icon {
     width: 24px;
     height: 24px; }
@@ -8535,7 +8536,10 @@ html, body {
     margin-top: auto;
     margin-bottom: auto; }
   .bs-component.blue-bg {
-    background: linear-gradient(to bottom, #3b93f7, #25dafc);
+    background: linear-gradient(to bottom, #3b93f7 100px, #25dafc);
+    background-size: cover;
+    background-position: top center;
+    background-attachment: fixed;
     color: white; }
   .bs-component.white-bg {
     background: white;
@@ -8549,7 +8553,8 @@ html, body {
   font-size: 14px;
   display: flex;
   align-items: center;
-  justify-content: center; }
+  justify-content: center;
+  padding: 0; }
 
 .login-container {
   display: flex;

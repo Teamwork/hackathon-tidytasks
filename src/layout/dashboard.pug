@@ -3,15 +3,14 @@
         .welcome
             h2.heading Hey, #[span(data-bind='text: userFirstname()')]
             p.total-tasks 
-                | You have #[span(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')")] to work on today.
-                span(data-bind='if: totalTasks() == 0') Go you! 
-            a(href='#', data-bind='click: function () {showTasks()}, visible: totalTasks() != 0') View all tasks.
-        .tasks-grid(data-bind='foreach: projectTree')
+                | You have #[span(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')")] to work on today. #[span(data-bind='if: totalTasks() == 0') Go you!] 
+            a(href='#', data-bind='click: function () { currentPage("tasks-view"); currentFilter("all"); currentProjectId(null) }, visible: totalTasks() != 0') View all tasks.
+        .tasks-grid(data-bind='foreach: projects')
             .task-card
-                a.card.border-light(href='#', data-bind='click: function () { showTasks({projectId: $data.projectId, filter: "all"}) }')
-                    .title(data-bind='text: $data.projectName')
+                a.card.border-light(href='#', data-bind='click: function () { currentPage("tasks-view"); currentFilter("all"); currentProjectId(projectId) }')
+                    .title(data-bind='text: projectName')
                     .tasks
-                        .status-count.late(data-bind='text: lateTasks, visible: lateTasks')
-                        .status-count.today(data-bind='text: currentTasks, visible: currentTasks')
-                        .status-count.upcoming(data-bind='text: upcomingTasks, visible: upcomingTasks')
+                        .status-count.late(data-bind='text: lateCount, visible: lateCount')
+                        .status-count.today(data-bind='text: todayCount, visible: todayCount')
+                        .status-count.upcoming(data-bind='text: upcomingCount, visible: upcomingCount')
             

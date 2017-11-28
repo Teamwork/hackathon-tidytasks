@@ -14,19 +14,19 @@ marked.setOptions
 
 viewModel = ->
     @currentPage = ko.observable 'splash'
-    @flatTasks  = ko.observableArray()
-    @projectTree = ko.observableArray()
-    @currentFilter = ko.observable()
-    @currentProjectId = ko.observable()
-    @totalTasks = ko.observable()
+    @tasks = ko.observableArray()
+    @currentFilter = ko.observable 'all'
+    @currentProjectId = ko.observable ''
     @allProjects = ko.observableArray()
     @allTasklists = ko.observableArray()
+    
     @creatingTask = ko.observable false
     @loadingTasks = ko.observable false
-    @selectedTasklist = ko.observable()
-    @searchTerm = ko.observable().extend({ rateLimit: 500 })
-    @searchResults = ko.observableArray()
     
+    @selectedTasklist = ko.observable()
+    
+    @searchTerm = ko.observable('').extend({ rateLimit: 500 })
+
     @User = new User()
     @domain = ko.observable()
     @userId = ko.observable()
@@ -40,7 +40,9 @@ viewModel = ->
     @loginError = ko.observable()
 
     @today = moment(new Date()).format('YYYYMMDD')
-    @tasklistSelect = null
+
+    $("#start-date").pickadate()
+    $("#due-date").pickadate()
 
     $(window).bind 'mousemove touchmove keypress', =>
         if @autoRefresh 
@@ -49,10 +51,17 @@ viewModel = ->
             @getAllTasks() 
         , 60000
 
-    $("#start-date").pickadate()
-    $("#due-date").pickadate()
-
-    @currentPage.subscribe (value) ->
+    @totalTasks = ko.pureComputed =>
+        return @tasks().length
+    
+    @searchResults = ko.pureComputed =>
+        if !@searchTerm() 
+            return []
+        else
+            return ko.utils.arrayFilter @tasks(), (task) ->
+                return task.taskName.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1 or task.taskDescriptionRaw.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1
+    
+    @currentPage.subscribe (value) =>
         @previousPage value
         return
     , this, "beforeChange"
@@ -63,6 +72,8 @@ viewModel = ->
             @showNav true
             @lightNav true
             @backButton false
+            @currentFilter 'all'
+            @currentProjectId ''
         else if ['add-task','project','tasks-view','search'].indexOf(value) > -1
             @showNav true
             @lightNav false
@@ -79,24 +90,75 @@ viewModel = ->
         , 50
         return
 
+    @filteredTasks = ko.pureComputed =>
+        return ko.utils.arrayFilter @tasks(), (task) =>
+            if @currentProjectId() isnt '' and @currentProjectId() isnt task.projectId
+                return false
+            if @currentFilter() isnt 'all' and @currentFilter() isnt task.taskType
+                return false
+            return true
+    , this
+
+    @projects = ko.pureComputed =>
+        projectIds = []
+        projectArray = []
+        ko.utils.arrayForEach @filteredTasks(), (task) =>
+            if projectIds.indexOf(task.projectId) < 0
+                project = 
+                    projectId: task.projectId
+                    projectName: task.projectName
+                    taskCount: @getTaskCount task.projectId
+                    lateCount: @getTaskCount task.projectId, "late"
+                    todayCount: @getTaskCount task.projectId, "today"
+                    upcomingCount: @getTaskCount task.projectId, "upcoming"
+                    tasklists: @getProjectTasklists task.projectId
+                projectIds.push task.projectId
+                projectArray.push project
+        return projectArray
+    , this
+    
+    @tasklists = ko.pureComputed =>
+        tasklistIds = []
+        tasklistsArray = []
+        ko.utils.arrayForEach @filteredTasks(), (task) =>
+            if tasklistIds.indexOf(task.tasklistId) < 0
+                tasklist = 
+                    tasklistId: task.tasklistId
+                    tasklistName: task.tasklistName
+                    projectId: task.projectId
+                    tasks: @getTasklistTasks task.tasklistId
+                tasklistIds.push task.tasklistId
+                tasklistsArray.push tasklist
+        return tasklistsArray
+    , this
+
+    @getProjectTasklists = (projectId) =>
+        return ko.utils.arrayFilter @tasklists(), (tasklist) =>
+            return tasklist.projectId is projectId
+    
+    @getTasklistTasks = (tasklistId) =>
+        return ko.utils.arrayFilter @filteredTasks(), (task) =>
+            return task.tasklistId is tasklistId
+
+    @getTaskCount = (projectId,filter) =>
+        taskCount = 0
+        ko.utils.arrayForEach @tasks(), (task) =>
+            if filter and filter isnt task.taskType
+                return
+            if task.projectId is projectId
+                taskCount++
+        return taskCount
+
     @currentProjectId.subscribe (value) =>
         if value
             $('#project-id').val value
-            @getProjectTasklists value
-        return
-
-    @searchTerm.subscribe (searchTerm) =>
-        @searchResults []
-        $.each @flatTasks(), (i,task) =>
-            if task.taskName.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
-                @searchResults.push task
+            @getTasklists value
         return
 
     @goBack = =>
         if @currentPage() == 'add-task' and @currentProjectId()
             @currentPage 'tasks-view'
         else
-            @currentProjectId null
             @currentPage 'dashboard'
 
     @loginSuccess = =>
@@ -153,76 +215,48 @@ viewModel = ->
                 'sort': 'duedate'
 
             success: (data) =>
-                @projectTree []
-                @flatTasks []
-                tasks = data['todo-items']
-                taskTotal = 0
-                projectsAssoc = {}
+                cleanTasks = []
+                for task in data['todo-items']
+                    if task['start-date'] or task['due-date']
+                    
+                        type = ''
+                        start = task["start-date"]
+                        due = task["due-date"]
+                        
+                        if due != '' and due < @today
+                            type = 'late'
+                        else if (start != '' and start <= @today) or (due != '' and due == @today)
+                            type = 'today'
+                        else if start != '' and start > @today
+                            type = 'upcoming'
+                        
+                        cleanTask = 
+                            taskName: task.content
+                            taskId: task.id
+                            tasklistId: task['todo-list-id']
+                            tasklistName: task['todo-list-name']
+                            projectId: task['project-id']
+                            projectName: task['project-name']
+                            taskDescription: marked(task.description)
+                            taskDescriptionRaw: task.description
+                            taskStartDate: start
+                            taskDueDate: due
+                            taskType: type
+                            subtaskCount: task.predecessors.length
+                            subtasks: task.predecessors
+                            parentId: task.parentTaskId
+                            attachmentCount: task['attachments-count']
+                            commentCount: task['comments-count']
+                    
+                        cleanTasks.push cleanTask
                 
-                $.each tasks, (i, task) =>
-                    if !task['start-date'] and !task['due-date']
-                        return true
-                    if projectsAssoc['p-' + task['project-id']] is undefined
-                        projectsAssoc['p-' + task['project-id']] = {}
-                        projectsAssoc['p-' + task['project-id']].taskCount = 0
-                        projectsAssoc['p-' + task['project-id']].lateTasks = 0
-                        projectsAssoc['p-' + task['project-id']].currentTasks = 0
-                        projectsAssoc['p-' + task['project-id']].upcomingTasks = 0
-                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc = {}
-                        projectsAssoc['p-' + task['project-id']].projectName = task['project-name']
-                        projectsAssoc['p-' + task['project-id']].projectId = task['project-id']
-                    if projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] is undefined
-                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']] = {}
-                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks = []
-                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].private = task['tasklist-private']
-                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistName = task['todo-list-name']
-                        projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasklistId = task['todo-list-id']
-                    
-                    type = ''
-                    start = task["start-date"]
-                    due = task["due-date"]
-                    if due != '' and due < @today
-                        type = 'late'
-                        projectsAssoc['p-' + task['project-id']].lateTasks++ 
-                    else if (start != '' and start <= @today) or (due != '' and due == @today)
-                        type = 'today'
-                        projectsAssoc['p-' + task['project-id']].currentTasks++ 
-                    else if start != '' and start > @today
-                        type = 'upcoming'
-                        projectsAssoc['p-' + task['project-id']].upcomingTasks++ 
-                    
-                    cleanTask = 
-                        taskName: task.content
-                        taskId: task.id
-                        taskDescription: marked(task.description)
-                        taskDescriotionRaw: task.description
-                        taskStartDate: start
-                        taskDueDate: due
-                        taskType: type
-                        subtaskCount: task.predecessors.length
-                        subtasks: task.predecessors
-                        parentId: task.parentTaskId
-                        attachmentCount: task['attachments-count']
-                        commentCount: task['comments-count']
-                    
-                    projectsAssoc['p-' + task['project-id']].tasklistsAssoc['tl-' + task['todo-list-id']].tasks.push cleanTask
-                    projectsAssoc['p-' + task['project-id']].taskCount++
-                    @flatTasks.push cleanTask
-                    taskTotal++
-                
-                for project of projectsAssoc
-                    projectsAssoc[project].tasklists = []
-                    for tasklist of projectsAssoc[project].tasklistsAssoc
-                        projectsAssoc[project].tasklists.push projectsAssoc[project].tasklistsAssoc[tasklist]
-                    delete projectsAssoc[project].tasklistsAssoc
-                    @projectTree.push projectsAssoc[project]
-                                
-                @totalTasks taskTotal
+                @tasks cleanTasks 
                 
                 if goToDash
                     @currentPage 'dashboard'
                 if typeof callback == 'function'
                     callback()
+                
                 @loadingTasks false
                 return
             
@@ -242,13 +276,13 @@ viewModel = ->
                         text: project.name
                         value: project.id
                     @allProjects.push(project)
-                @getProjectTasklists $("#project-id").val()
+                @getTasklists $("#project-id").val()
                 return
 
         $.ajax @domain() + 'projects.json', xhrOptions
         return
 
-    @getProjectTasklists = (projectId) =>
+    @getTasklists = (projectId) =>
         @allTasklists [{id:'',text:'Loading tasklists...'}]
         xhrOptions = 
             method: 'GET'
@@ -270,33 +304,6 @@ viewModel = ->
                 return
 
         $.ajax @domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions
-        return
-
-    @showTasks = (opts) =>
-        if opts and opts.projectId
-            @currentProjectId opts.projectId
-        else 
-            @currentProjectId ''
-        if opts and opts.filter
-            @currentFilter opts.filter
-        else
-            @currentFilter 'all'
-        
-        @currentPage 'tasks-view'
-        @removeEmpties()
-        return
-
-    @removeEmpties = () ->
-        if $('.task').length is 0 and $('.project-status').length
-            @currentFilter 'all'
-        else if $('.task').length is 0
-            @currentPage 'dashboard'
-        
-        $('.task-list').each ->
-            if $(this).find('.task').length is 0
-                $(this).hide()
-            else 
-                $(this).show()
         return
 
     @createTask = =>
@@ -324,8 +331,8 @@ viewModel = ->
             success: (data) =>
                 @getAllTasks false, ->
                     if @currentProjectId()
-                        @showTasks 
-                            projectId: @currentProjectId()
+                        @currentProjectId projectId
+                        @currentPage 'tasks-view'
                     else 
                         @currentPage 'dashboard'
                     @creatingTask false
@@ -368,7 +375,7 @@ viewModel = ->
                     opacity: 0
                 }, =>
                     el.remove()
-                    @getAllTasks false, @removeEmpties
+                    @getAllTasks()
                 )
                 return
             error: ->
@@ -379,7 +386,7 @@ viewModel = ->
         return
 
     @highlightSubtasks = (taskId) =>
-        $.each @flatTasks(), (i, task) =>
+        $.each @tasks(), (i, task) =>
             if parseInt(task.parentId) == parseInt(taskId)
                 $('[data-task-id=' + task.taskId + "]").toggleClass('highlight')
             return
