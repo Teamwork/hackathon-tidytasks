@@ -8617,7 +8617,7 @@ html, body {
 .tasks-grid {
   margin: 15px -15px;
   display: flex;
-  overflow: scroll;
+  overflow: auto;
   padding: 15px 0; }
   .tasks-grid .task-card {
     flex-shrink: 0;
