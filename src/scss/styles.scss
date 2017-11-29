@@ -131,6 +131,7 @@ body {
     form {
         input {
             width: 100%;
+            font-size: 16px;
             margin: 30px 0;
             color: white;
             -webkit-appearance: none;
@@ -549,13 +550,13 @@ body {
         }
 
         .double-group {
-            display: flex;
+            overflow: hidden;
             margin: 0 -5px 20px;
 
             .form-group {
                 width: 50%;
-                margin: 0 5px;
-                flex-grow: 1;
+                padding: 0 5px;
+                float: left;
             }
         }
 
@@ -627,6 +628,7 @@ body {
         background-color: transparent;
         display: block;
         width: 100%;
+        -webkit-appearance: none;
     }
 }
 
@@ -649,14 +651,6 @@ body {
 
     .project-container .section .tasks-container .task .task-body .task-details .control .actions {
         display: flex;
-    }
-}
-
-@media (max-width: 575px) {
-    .add-task-container form.add-task {
-        select, input {
-            font-size: 13px;
-        }
     }
 }
 
