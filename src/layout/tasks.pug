@@ -21,7 +21,7 @@
             .section(data-bind="if: !currentProjectId() || currentProjectId() == projectId, visible: !currentProjectId() || currentProjectId() == projectId")
                 
                 // ko if: currentProjectId()
-                h2.heading(data-bind='text: projectName')
+                h2.heading(data-bind='text: projectName') Project
                 .task-count(data-bind="text: taskCount + ' task' + (taskCount == 1 ? '' : 's') + ' today.'")
                 .project-status
                     a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { currentProjectId(projectId); currentFilter("all") }')

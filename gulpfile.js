@@ -32,7 +32,8 @@ gulp.task('css', function () {
             /.late/,
             /.today/,
             /.upcoming/,
-            /.highlight/
+            /.highlight/,
+            /.navbar-dark/
         ]
     }))
     .pipe(gulp.dest('./docs/css/uncss/'));

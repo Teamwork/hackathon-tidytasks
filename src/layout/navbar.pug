@@ -1,4 +1,4 @@
-nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightNav()}")
+nav.navbar(data-bind="visible: showNav, css: {'navbar-dark': !lightNav()}")
     .container
         a.back-button(href='#', data-bind='click: goBack, visible: backButton()')
             .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
@@ -19,7 +19,7 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
                         include ../images/icons/plus.svg
             li.nav-item.dropdown
                 a.nav-link.dropdown-toggle(href='#', data-bind='click: function() { dropdown = document.getElementById("user-dropdown"); dropdown.style.display = dropdown.style.display === "block" ? "" : "block"; }')
-                    img.user-icon(data-bind='attr:{src: userIcon}', src='')
+                    img.user-icon(data-bind='attr:{src: userIcon}', alt='Menu' src='data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
                 .dropdown-menu#user-dropdown
                     a.dropdown-item(href='download/TidyTasks.dmg', data-bind='visible: !(window && window.process && window.process.type == "renderer")') Download for Mac
                     a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Go to Projects
