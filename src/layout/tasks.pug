@@ -1,14 +1,27 @@
 .bs-component.project-container.white-bg(data-bind="visible: currentPage() == 'tasks-view'")
     .container
         // ko if: !currentProjectId()
-        h2 All tasks
+        h2.heading All tasks
         .task-count(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's') + ' today.'")
+        .project-status
+            a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { currentFilter("all") }')
+                | All
+                .status-count(data-bind='text: totalTasks')
+            a.status.late(href='#', data-bind='visible: totalLate, css: {"selected": currentFilter() == "late"}, click: function() { currentFilter("late") }')
+                | Late
+                .status-count(data-bind='text: totalLate')
+            a.status.today(href='#', data-bind='visible: totalToday, css: {"selected": currentFilter() == "today"}, click: function() { currentFilter("today") }')
+                | Today
+                .status-count(data-bind='text: totalToday')
+            a.status.upcoming(href='#', data-bind='visible: totalUpcoming, css: {"selected": currentFilter() == "upcoming"}, click: function() { currentFilter("upcoming") }') 
+                | Upcoming
+                .status-count(data-bind='text: totalUpcoming')
         // /ko
         div(data-bind='foreach: projects')
             .section(data-bind="if: !currentProjectId() || currentProjectId() == projectId, visible: !currentProjectId() || currentProjectId() == projectId")
                 
                 // ko if: currentProjectId()
-                h2(data-bind='text: projectName')
+                h2.heading(data-bind='text: projectName')
                 .task-count(data-bind="text: taskCount + ' task' + (taskCount == 1 ? '' : 's') + ' today.'")
                 .project-status
                     a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { currentProjectId(projectId); currentFilter("all") }')
@@ -27,7 +40,10 @@
 
                 div(data-bind='foreach: tasklists')
                     .task-list(data-bind='visible: tasks.length')
-                        .section-toggler
+                        .section-heading
                             .section-name(data-bind='text: tasklistName')
+                            // ko ifnot: currentProjectId()
+                            a.project-name(href="#", data-bind='text: $parent.projectName, click: function(){currentProjectId(projectId)}')
+                            // /ko
                         .tasks-container(data-bind='foreach: tasks')
                             include task

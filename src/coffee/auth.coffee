@@ -17,6 +17,7 @@ class User
                 return
         
         xhrOptions = 
+            url: 'https://authenticate.teamwork.com/authenticate.json'
             method: 'GET'
             beforeSend: (xhr) ->
                 if opts.authHeader
@@ -25,7 +26,6 @@ class User
                     authHeader = 'Basic ' + btoa(opts.apiKey + ':x')
                 xhr.setRequestHeader 'Authorization', authHeader
                 return
-            crossDomain: true
             success: (data) =>
                 if opts.authHeader
                     localStorage.setItem 'auth', opts.authHeader
@@ -42,5 +42,5 @@ class User
                 opts.fail()
                 return
 
-        $.ajax "https://authenticate.teamwork.com/authenticate.json", xhrOptions
+        $.ajax xhrOptions
         return

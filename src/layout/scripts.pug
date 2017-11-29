@@ -1,24 +1,22 @@
 script. 
     if (typeof module === 'object') {window.module = module; module = undefined;}
 
-script(src='js/jquery.min.js')
+script(src='js/zepto.min.js')
 script(src='js/moment.min.js')
-script(src='js/knockout.js')
-script(src='js/bootstrap.min.js')
-script(src='js/picker.js')
-script(src='js/picker.date.js')
-script(src='js/marked.js')
+script(src='js/knockout.min.js')
+script(src='js/marked.min.js')
 script.
     savedConsoleLog = console.log;
     console.log = function(){};
 script(src='js/HackTimer.min.js')
 script.
     console.log = savedConsoleLog;
-script(src='js/auth.js')
-script(src='js/app.js')
+script(src='js/auth.min.js')
+script(src='js/app.min.js')
 
 script.
     if (window.module) module = window.module;
+    
     if (window.require) {
         require('./renderer.js');
         var shell = require('electron').shell;
@@ -26,6 +24,17 @@ script.
         $(document).on('click', 'a[target="_blank"]', function(event) {
             event.preventDefault();
             shell.openExternal(this.href);
+        });
+
+        var currentVersion = window.require('electron').remote.app.getVersion()
+        $.ajax({
+            url: "https://teamwork.github.io/hackathon-tidytasks/package.json",
+            dataType: "json",
+            success: function (data) {
+                if(data.version && data.version != currentVersion) {
+                    alert('There is a new desktop version available! Visit the web version to download it.');
+                }
+            }
         });
     }
 

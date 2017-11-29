@@ -18,6 +18,7 @@ User = class User {
       opts.fail = function() {};
     }
     xhrOptions = {
+      url: 'https://authenticate.teamwork.com/authenticate.json',
       method: 'GET',
       beforeSend: function(xhr) {
         var authHeader;
@@ -28,7 +29,6 @@ User = class User {
         }
         xhr.setRequestHeader('Authorization', authHeader);
       },
-      crossDomain: true,
       success: (data) => {
         if (opts.authHeader) {
           localStorage.setItem('auth', opts.authHeader);
@@ -46,7 +46,7 @@ User = class User {
         opts.fail();
       }
     };
-    $.ajax("https://authenticate.teamwork.com/authenticate.json", xhrOptions);
+    $.ajax(xhrOptions);
   }
 
 };

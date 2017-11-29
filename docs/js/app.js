@@ -24,6 +24,7 @@ viewModel = function() {
   this.currentProjectId = ko.observable('');
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
+  this.prevResponse = '';
   this.creatingTask = ko.observable(false);
   this.loadingTasks = ko.observable(false);
   this.selectedTasklist = ko.observable();
@@ -41,9 +42,7 @@ viewModel = function() {
   this.backButton = ko.observable(false);
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
-  $("#start-date").pickadate();
-  $("#due-date").pickadate();
-  $(window).bind('mousemove touchmove keypress', () => {
+  document.addEventListener('mousemove', () => {
     if (this.autoRefresh) {
       clearInterval(this.autoRefresh);
     }
@@ -51,8 +50,36 @@ viewModel = function() {
       return this.getAllTasks();
     }, 60000);
   });
+  this.greeting = ko.pureComputed(() => {
+    var currentHour;
+    currentHour = moment(new Date()).format("HH");
+    if (currentHour < 4) {
+      return "Hey";
+    } else if (currentHour < 12) {
+      return "Good morning";
+    } else if (currentHour < 17) {
+      return "Good afternoon";
+    } else {
+      return "Good evening";
+    }
+  });
   this.totalTasks = ko.pureComputed(() => {
     return this.tasks().length;
+  });
+  this.totalLate = ko.pureComputed(() => {
+    return (ko.utils.arrayFilter(this.tasks(), function(task) {
+      return task.taskType === "late";
+    })).length;
+  });
+  this.totalToday = ko.pureComputed(() => {
+    return (ko.utils.arrayFilter(this.tasks(), function(task) {
+      return task.taskType === "today";
+    })).length;
+  });
+  this.totalUpcoming = ko.pureComputed(() => {
+    return (ko.utils.arrayFilter(this.tasks(), function(task) {
+      return task.taskType === "upcoming";
+    })).length;
   });
   this.searchResults = ko.pureComputed(() => {
     if (!this.searchTerm()) {
@@ -68,7 +95,6 @@ viewModel = function() {
   }, this, "beforeChange");
   this.currentPage.subscribe((value) => {
     if (['dashboard'].indexOf(value) > -1) {
-      $('html').addClass('blue-bg');
       this.showNav(true);
       this.lightNav(true);
       this.backButton(false);
@@ -78,9 +104,7 @@ viewModel = function() {
       this.showNav(true);
       this.lightNav(false);
       this.backButton(true);
-      $('html').removeClass('blue-bg');
     } else {
-      $('html').addClass('blue-bg');
       this.showNav(false);
     }
     setTimeout(function() {
@@ -168,7 +192,7 @@ viewModel = function() {
   };
   this.currentProjectId.subscribe((value) => {
     if (value) {
-      $('#project-id').val(value);
+      document.getElementById('project-id').value = value;
       this.getTasklists(value);
     }
   });
@@ -200,7 +224,7 @@ viewModel = function() {
   this.processLogin = function() {
     this.currentPage('splash');
     this.User.auth({
-      apiKey: $('#API-key').val(),
+      apiKey: document.getElementById('API-key').value,
       success: this.loginSuccess,
       fail: this.loginFail
     });
@@ -221,7 +245,8 @@ viewModel = function() {
     }
     this.loadingTasks(true);
     xhrOptions = {
-      method: 'GET',
+      url: this.domain() + 'tasks.json',
+      type: 'GET',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
@@ -233,11 +258,16 @@ viewModel = function() {
         'sort': 'duedate'
       },
       success: (data) => {
-        var cleanTask, cleanTasks, due, j, len, ref, start, task, type;
+        var cleanTask, cleanTasks, due, i, len, ref, start, task, type;
+        if (this.prevResponse === JSON.stringify(data)) {
+          this.loadingTasks(false);
+          return;
+        }
+        this.prevResponse = JSON.stringify(data);
         cleanTasks = [];
         ref = data['todo-items'];
-        for (j = 0, len = ref.length; j < len; j++) {
-          task = ref[j];
+        for (i = 0, len = ref.length; i < len; i++) {
+          task = ref[i];
           if (task['start-date'] || task['due-date']) {
             type = '';
             start = task["start-date"];
@@ -246,7 +276,7 @@ viewModel = function() {
               type = 'late';
             } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
               type = 'today';
-            } else if (start !== '' && start > this.today) {
+            } else if ((start !== '' && start > this.today) || start === '' && due > this.today) {
               type = 'upcoming';
             }
             cleanTask = {
@@ -280,12 +310,12 @@ viewModel = function() {
         this.loadingTasks(false);
       }
     };
-    return $.ajax(this.domain() + 'tasks.json', xhrOptions);
+    return $.ajax(xhrOptions);
   };
   this.getAllProjects = () => {
     var xhrOptions;
     xhrOptions = {
-      method: 'GET',
+      url: this.domain() + 'projects.json',
       data: {
         pageSize: 500
       },
@@ -293,17 +323,17 @@ viewModel = function() {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        $.each(data.projects, (i, project) => {
+        ko.utils.arrayForEach(data.projects, (project) => {
           project = {
             text: project.name,
             value: project.id
           };
           return this.allProjects.push(project);
         });
-        this.getTasklists($("#project-id").val());
+        this.getTasklists(document.getElementById("project-id").value);
       }
     };
-    $.ajax(this.domain() + 'projects.json', xhrOptions);
+    $.ajax(xhrOptions);
   };
   this.getTasklists = (projectId) => {
     var xhrOptions;
@@ -314,7 +344,7 @@ viewModel = function() {
       }
     ]);
     xhrOptions = {
-      method: 'GET',
+      url: this.domain() + 'projects/' + projectId + '/tasklists.json',
       data: {
         pageSize: 500
       },
@@ -323,7 +353,7 @@ viewModel = function() {
       },
       success: (data) => {
         this.allTasklists([]);
-        $.each(data.tasklists, (i, tasklist) => {
+        ko.utils.arrayForEach(data.tasklists, (tasklist) => {
           tasklist = {
             text: tasklist.name,
             value: tasklist.id
@@ -336,36 +366,43 @@ viewModel = function() {
         });
       }
     };
-    $.ajax(this.domain() + 'projects/' + projectId + '/tasklists.json', xhrOptions);
+    $.ajax(xhrOptions);
   };
   this.createTask = () => {
-    var dueDate, payload, startDate, tasklistPayload, tasklistXhrOptions, xhrOptions;
-    startDate = $('#start-date').val() ? moment($('#start-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
-    dueDate = $('#due-date').val() ? moment($('#due-date').val(), "DD MMMM, YYYY").format("YYYYMMDD") : '';
+    var dueDate, dueDateVal, projectId, startDate, startDateVal, taskName, taskPayload, taskXhrOptions, tasklistId, tasklistName, tasklistPayload, tasklistXhrOptions;
+    startDateVal = document.getElementById('start-date').value;
+    dueDateVal = document.getElementById('due-date').value;
+    startDate = startDateVal ? moment(startDateVal).format("YYYYMMDD") : '';
+    dueDate = dueDateVal ? moment(dueDateVal).format("YYYYMMDD") : '';
+    taskName = document.getElementById('task-name').value;
+    tasklistId = document.getElementById('tasklist-id').value;
+    tasklistName = document.getElementById('tasklist-name') ? document.getElementById('tasklist-name').value : null;
+    projectId = document.getElementById('project-id').value;
     if (dueDate && (startDate > dueDate)) {
       alert('The start date can\'t be before the due date');
       return false;
     }
-    payload = {
+    taskPayload = {
       'todo-item': {
         'responsible-party-id': this.userId(),
         'start-date': startDate,
         'due-date': dueDate,
-        'content': $('#task-name').val()
+        'content': taskName
       }
     };
-    xhrOptions = {
-      method: 'POST',
+    taskXhrOptions = {
+      url: this.domain() + "tasklists/" + tasklistId + "/tasks.json",
+      type: 'POST',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       contentType: "application/json",
       dataType: 'json',
-      data: JSON.stringify(payload),
+      data: JSON.stringify(taskPayload),
       success: (data) => {
         this.getAllTasks(false, function() {
+          this.getAllProjects();
           if (this.currentProjectId()) {
-            this.currentProjectId(projectId);
             this.currentPage('tasks-view');
           } else {
             this.currentPage('dashboard');
@@ -375,14 +412,15 @@ viewModel = function() {
       }
     };
     this.creatingTask(true);
-    if ($('#tasklist-name').val()) {
+    if (tasklistName) {
       tasklistPayload = {
         'todo-list': {
-          'name': $('#tasklist-name').val()
+          'name': tasklistName
         }
       };
       tasklistXhrOptions = {
-        method: 'POST',
+        url: this.domain() + "projects/" + projectId + "/tasklists.json",
+        type: 'POST',
         beforeSend: function(xhr) {
           xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
         },
@@ -390,48 +428,52 @@ viewModel = function() {
         dataType: 'json',
         data: JSON.stringify(tasklistPayload),
         success: (data) => {
-          $.ajax(this.domain() + "tasklists/" + data.TASKLISTID + "/tasks.json", xhrOptions);
+          taskXhrOptions.url = this.domain() + "tasklists/" + data.TASKLISTID + "/tasks.json";
+          $.ajax(taskXhrOptions);
         }
       };
-      $.ajax(this.domain() + "projects/" + $('#project-id').val() + "/tasklists.json", tasklistXhrOptions);
+      $.ajax(tasklistXhrOptions);
     } else {
-      $.ajax(this.domain() + "tasklists/" + $('#tasklist-id').val() + "/tasks.json", xhrOptions);
+      $.ajax(taskXhrOptions);
     }
   };
   this.completeTask = (taskId) => {
     var el, xhrOptions;
-    el = $('[data-task-id=' + taskId + ']');
-    el.addClass('completed');
+    el = document.querySelector('[data-task-id="' + taskId + '"]');
+    el.classList.add('completed');
     xhrOptions = {
-      method: 'PUT',
+      url: this.domain() + "tasks/" + taskId + "/complete.json",
+      type: 'PUT',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        el.delay(1000).animate({
-          height: 0,
-          opacity: 0
-        }, () => {
-          el.remove();
-          return this.getAllTasks();
-        });
+        this.getAllTasks();
       },
       error: function() {
-        el.removeClass('completed');
+        el.classList.remove('completed');
         return alert('There was an error completing the task');
       }
     };
-    $.ajax(this.domain() + "tasks/" + taskId + "/complete.json", xhrOptions);
+    $.ajax(xhrOptions);
   };
   this.highlightSubtasks = (taskId) => {
-    $.each(this.tasks(), (i, task) => {
+    ko.utils.arrayForEach(this.tasks(), (task) => {
+      var taskEl;
       if (parseInt(task.parentId) === parseInt(taskId)) {
-        $('[data-task-id=' + task.taskId + "]").toggleClass('highlight');
+        taskEl = document.querySelector('[data-task-id="' + task.taskId + '"]');
+        if (taskEl) {
+          taskEl.classList.toggle('highlight');
+        }
       }
     });
   };
   this.toggleDetails = function(data, event) {
-    $(event.target).next('.task-details').toggleClass('hidden');
+    var detailsEl;
+    detailsEl = event.target.nextSibling;
+    if (detailsEl) {
+      detailsEl.classList.toggle('hidden');
+    }
   };
 };
 
