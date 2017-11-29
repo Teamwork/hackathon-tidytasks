@@ -435,6 +435,4 @@ viewModel = ->
 
     return
 
-
-
 ko.applyBindings viewModel
