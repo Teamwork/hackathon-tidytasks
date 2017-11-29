@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "electron-compile": "rm -rf ./electron/TidyTasks-darwin-x64 && rm -rf ./docs/download && electron-packager docs --out electron --icon electron/app-icon.icns && mkdir docs/download"
+    "electron-compile": "rm -rf ./electron/TidyTasks-darwin-x64 && electron-packager docs --out electron --icon electron/app-icon.icns && electron-installer-dmg electron/TidyTasks-darwin-x64/TidyTasks.app TidyTasks --overwrite --out=docs/download"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "bower": "^1.8.2",
     "electron": "^1.7.9",
+    "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^10.1.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.9.0",

@@ -21,7 +21,7 @@ nav.navbar.navbar-dark(data-bind="visible: showNav, css: {'navbar-dark': !lightN
                 a.nav-link.dropdown-toggle(href='#', data-bind='click: function() { dropdown = document.getElementById("user-dropdown"); dropdown.style.display = dropdown.style.display === "block" ? "" : "block"; }')
                     img.user-icon(data-bind='attr:{src: userIcon}', src='')
                 .dropdown-menu#user-dropdown
-                    a.dropdown-item(href='download/TidyTasks.zip', data-bind='visible: !(window && window.process && window.process.type == "renderer")') Download for Mac
+                    a.dropdown-item(href='download/TidyTasks.dmg', data-bind='visible: !(window && window.process && window.process.type == "renderer")') Download for Mac
                     a.dropdown-item(href='#', target='_blank', data-bind='attr: {href: domain}') Go to Projects
                     .dropdown-divider
                     a.dropdown-item(href='#', data-bind='click: logout') Sign out
