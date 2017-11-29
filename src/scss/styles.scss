@@ -287,6 +287,18 @@ html, body {
             color: #969696;
             margin-right: 15px;
             transition: color 0.16s;
+
+            .label {
+                display: inline-block;
+
+                &::after {
+                    content: attr(title);
+                    display: block;
+                    height: 0;
+                    overflow: hidden;
+                    font-weight: 700;
+                }
+            }
             
             &.selected {
                 font-weight: 700;
