@@ -41,7 +41,7 @@ viewModel = ->
     @backButton = ko.observable false
     @loginError = ko.observable()
 
-    @today = moment(new Date()).format('YYYYMMDD')
+    @today = moment(new Date()).format 'YYYYMMDD'
 
     document.addEventListener 'mousemove', =>
         if @autoRefresh 
@@ -51,32 +51,32 @@ viewModel = ->
         , 60000
 
     @greeting = ko.pureComputed =>
-        currentHour = moment(new Date()).format("HH")
+        currentHour = moment(new Date()).format 'HH'
         if currentHour < 4 
-            return "Hey"
+            return 'Hey'
         else if currentHour < 12
-            return "Good morning"
+            return 'Good morning'
         else if currentHour < 17
-            return "Good afternoon"
+            return 'Good afternoon'
         else
-            return "Good evening"
+            return 'Good evening'
 
     @totalTasks = ko.pureComputed =>
         return @tasks().length
     
     @totalLate = ko.pureComputed =>
         return (ko.utils.arrayFilter @tasks(), (task) ->
-            return task.taskType is "late"
+            return task.taskType is 'late'
         ).length
     
     @totalToday = ko.pureComputed =>
         return (ko.utils.arrayFilter @tasks(), (task) ->
-            return task.taskType is "today"
+            return task.taskType is 'today'
         ).length
     
     @totalUpcoming = ko.pureComputed =>
         return (ko.utils.arrayFilter @tasks(), (task) ->
-            return task.taskType is "upcoming"
+            return task.taskType is 'upcoming'
         ).length
     
     @searchResults = ko.pureComputed =>
@@ -89,7 +89,7 @@ viewModel = ->
     @currentPage.subscribe (value) =>
         @previousPage value
         return
-    , this, "beforeChange"
+    , this, 'beforeChange'
 
     @currentPage.subscribe (value) =>
         if ['dashboard'].indexOf(value) > -1
@@ -130,9 +130,9 @@ viewModel = ->
                     projectId: task.projectId
                     projectName: task.projectName
                     taskCount: @getTaskCount task.projectId
-                    lateCount: @getTaskCount task.projectId, "late"
-                    todayCount: @getTaskCount task.projectId, "today"
-                    upcomingCount: @getTaskCount task.projectId, "upcoming"
+                    lateCount: @getTaskCount task.projectId, 'late'
+                    todayCount: @getTaskCount task.projectId, 'today'
+                    upcomingCount: @getTaskCount task.projectId, 'upcoming'
                     tasklists: @getProjectTasklists task.projectId
                 projectIds.push task.projectId
                 projectArray.push project
@@ -248,8 +248,8 @@ viewModel = ->
                     if task['start-date'] or task['due-date']
                     
                         type = ''
-                        start = task["start-date"]
-                        due = task["due-date"]
+                        start = task['start-date']
+                        due = task['due-date']
                         
                         if due != '' and due < @today
                             type = 'late'
@@ -304,14 +304,14 @@ viewModel = ->
                         text: project.name
                         value: project.id
                     @allProjects.push(project)
-                @getTasklists document.getElementById("project-id").value
+                @getTasklists document.getElementById('project-id').value
                 return
 
         $.ajax xhrOptions
         return
 
     @getTasklists = (projectId) =>
-        @allTasklists [{id:'',text:'Loading tasklists...'}]
+        @allTasklists [{id:'', text:'Loading tasklists...'}]
         xhrOptions = 
             url: @domain() + 'projects/' + projectId + '/tasklists.json'
             data: 
@@ -337,8 +337,8 @@ viewModel = ->
     @createTask = =>
         startDateVal = document.getElementById('start-date').value
         dueDateVal = document.getElementById('due-date').value
-        startDate = if startDateVal then moment(startDateVal).format("YYYYMMDD") else ''
-        dueDate = if dueDateVal then moment(dueDateVal).format("YYYYMMDD") else ''
+        startDate = if startDateVal then moment(startDateVal).format 'YYYYMMDD' else ''
+        dueDate = if dueDateVal then moment(dueDateVal).format 'YYYYMMDD' else ''
 
         taskName = document.getElementById('task-name').value
         tasklistId = document.getElementById('tasklist-id').value
@@ -355,12 +355,12 @@ viewModel = ->
                 'due-date': dueDate
                 'content': taskName
         taskXhrOptions = 
-            url: @domain() + "tasklists/" + tasklistId + "/tasks.json"
+            url: @domain() + 'tasklists/' + tasklistId + '/tasks.json'
             type: 'POST'
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
-            contentType: "application/json"
+            contentType: 'application/json'
             dataType: 'json'
             data: JSON.stringify taskPayload
                 
@@ -381,16 +381,16 @@ viewModel = ->
                 'todo-list':
                     'name': tasklistName
             tasklistXhrOptions =   
-                url: @domain() + "projects/" + projectId + "/tasklists.json" 
+                url: @domain() + 'projects/' + projectId + '/tasklists.json '
                 type: 'POST'
                 beforeSend: (xhr) ->
                     xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                     return
-                contentType: "application/json"
+                contentType: 'application/json'
                 dataType: 'json'
                 data: JSON.stringify tasklistPayload
                 success: (data) =>
-                    taskXhrOptions.url = @domain() + "tasklists/" + data.TASKLISTID + "/tasks.json"
+                    taskXhrOptions.url = @domain() + 'tasklists/' + data.TASKLISTID + '/tasks.json'
                     $.ajax taskXhrOptions
                     return
             $.ajax tasklistXhrOptions
@@ -403,7 +403,7 @@ viewModel = ->
         el.classList.add('completed')
 
         xhrOptions = 
-            url: @domain() + "tasks/" + taskId + "/complete.json"
+            url: @domain() + 'tasks/' + taskId + '/complete.json'
             type: 'PUT'
             beforeSend: (xhr) ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'

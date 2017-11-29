@@ -52,15 +52,15 @@ viewModel = function() {
   });
   this.greeting = ko.pureComputed(() => {
     var currentHour;
-    currentHour = moment(new Date()).format("HH");
+    currentHour = moment(new Date()).format('HH');
     if (currentHour < 4) {
-      return "Hey";
+      return 'Hey';
     } else if (currentHour < 12) {
-      return "Good morning";
+      return 'Good morning';
     } else if (currentHour < 17) {
-      return "Good afternoon";
+      return 'Good afternoon';
     } else {
-      return "Good evening";
+      return 'Good evening';
     }
   });
   this.totalTasks = ko.pureComputed(() => {
@@ -68,17 +68,17 @@ viewModel = function() {
   });
   this.totalLate = ko.pureComputed(() => {
     return (ko.utils.arrayFilter(this.tasks(), function(task) {
-      return task.taskType === "late";
+      return task.taskType === 'late';
     })).length;
   });
   this.totalToday = ko.pureComputed(() => {
     return (ko.utils.arrayFilter(this.tasks(), function(task) {
-      return task.taskType === "today";
+      return task.taskType === 'today';
     })).length;
   });
   this.totalUpcoming = ko.pureComputed(() => {
     return (ko.utils.arrayFilter(this.tasks(), function(task) {
-      return task.taskType === "upcoming";
+      return task.taskType === 'upcoming';
     })).length;
   });
   this.searchResults = ko.pureComputed(() => {
@@ -92,7 +92,7 @@ viewModel = function() {
   });
   this.currentPage.subscribe((value) => {
     this.previousPage(value);
-  }, this, "beforeChange");
+  }, this, 'beforeChange');
   this.currentPage.subscribe((value) => {
     if (['dashboard'].indexOf(value) > -1) {
       this.showNav(true);
@@ -137,9 +137,9 @@ viewModel = function() {
           projectId: task.projectId,
           projectName: task.projectName,
           taskCount: this.getTaskCount(task.projectId),
-          lateCount: this.getTaskCount(task.projectId, "late"),
-          todayCount: this.getTaskCount(task.projectId, "today"),
-          upcomingCount: this.getTaskCount(task.projectId, "upcoming"),
+          lateCount: this.getTaskCount(task.projectId, 'late'),
+          todayCount: this.getTaskCount(task.projectId, 'today'),
+          upcomingCount: this.getTaskCount(task.projectId, 'upcoming'),
           tasklists: this.getProjectTasklists(task.projectId)
         };
         projectIds.push(task.projectId);
@@ -270,8 +270,8 @@ viewModel = function() {
           task = ref[i];
           if (task['start-date'] || task['due-date']) {
             type = '';
-            start = task["start-date"];
-            due = task["due-date"];
+            start = task['start-date'];
+            due = task['due-date'];
             if (due !== '' && due < this.today) {
               type = 'late';
             } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
@@ -330,7 +330,7 @@ viewModel = function() {
           };
           return this.allProjects.push(project);
         });
-        this.getTasklists(document.getElementById("project-id").value);
+        this.getTasklists(document.getElementById('project-id').value);
       }
     };
     $.ajax(xhrOptions);
@@ -372,8 +372,8 @@ viewModel = function() {
     var dueDate, dueDateVal, projectId, startDate, startDateVal, taskName, taskPayload, taskXhrOptions, tasklistId, tasklistName, tasklistPayload, tasklistXhrOptions;
     startDateVal = document.getElementById('start-date').value;
     dueDateVal = document.getElementById('due-date').value;
-    startDate = startDateVal ? moment(startDateVal).format("YYYYMMDD") : '';
-    dueDate = dueDateVal ? moment(dueDateVal).format("YYYYMMDD") : '';
+    startDate = startDateVal ? moment(startDateVal).format('YYYYMMDD') : '';
+    dueDate = dueDateVal ? moment(dueDateVal).format('YYYYMMDD') : '';
     taskName = document.getElementById('task-name').value;
     tasklistId = document.getElementById('tasklist-id').value;
     tasklistName = document.getElementById('tasklist-name') ? document.getElementById('tasklist-name').value : null;
@@ -391,12 +391,12 @@ viewModel = function() {
       }
     };
     taskXhrOptions = {
-      url: this.domain() + "tasklists/" + tasklistId + "/tasks.json",
+      url: this.domain() + 'tasklists/' + tasklistId + '/tasks.json',
       type: 'POST',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
-      contentType: "application/json",
+      contentType: 'application/json',
       dataType: 'json',
       data: JSON.stringify(taskPayload),
       success: (data) => {
@@ -419,16 +419,16 @@ viewModel = function() {
         }
       };
       tasklistXhrOptions = {
-        url: this.domain() + "projects/" + projectId + "/tasklists.json",
+        url: this.domain() + 'projects/' + projectId + '/tasklists.json ',
         type: 'POST',
         beforeSend: function(xhr) {
           xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
         },
-        contentType: "application/json",
+        contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify(tasklistPayload),
         success: (data) => {
-          taskXhrOptions.url = this.domain() + "tasklists/" + data.TASKLISTID + "/tasks.json";
+          taskXhrOptions.url = this.domain() + 'tasklists/' + data.TASKLISTID + '/tasks.json';
           $.ajax(taskXhrOptions);
         }
       };
@@ -442,7 +442,7 @@ viewModel = function() {
     el = document.querySelector('[data-task-id="' + taskId + '"]');
     el.classList.add('completed');
     xhrOptions = {
-      url: this.domain() + "tasks/" + taskId + "/complete.json",
+      url: this.domain() + 'tasks/' + taskId + '/complete.json',
       type: 'PUT',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
