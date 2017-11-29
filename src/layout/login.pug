@@ -1,8 +1,8 @@
 .bs-component.login-container.blue-bg(data-bind="visible: currentPage() == 'login'")
     .container
-        img(src='images/projects-monotone-light.svg' alt='Teamwork Projects')
+        include ../images/projects-monotone-light.svg
         h2.heading Get focused today.
         form(data-bind='submit: processLogin')
             input#API-key.form-control.login-input(placeholder='API key')
             .error(data-bind='text: loginError()')
-            button#sign-in.enabled(type='submit') SIGN IN
+            button#sign-in.enabled(type='submit') Sign In

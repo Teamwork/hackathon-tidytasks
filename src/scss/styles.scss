@@ -110,13 +110,14 @@ html, body {
         margin: auto;
     }
 
-    img {
-        width: 150px;
+    svg {
+        width: 200px;
+        height: 30px;
         margin: 0 0 30px;
     }
     
     .heading {
-        margin: 0 0 100px;
+        margin: 0 0 30px;
     }
 
     form {
@@ -127,9 +128,15 @@ html, body {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            box-shadow: none;
+            border: 1px solid rgba(white,0.3);
+            border-radius: 4px;
+            padding: 0 15px;
 
             &:focus {
                 color: white;
+                box-shadow: none;
+                border-color: white;
             }
             
             &::placeholder {
@@ -546,7 +553,7 @@ html, body {
         color: #494e5e;
         box-shadow: none!important;
         border: solid 1px rgb(200, 200, 200);
-        border-radius: 3px;
+        border-radius: 4px;
         padding: 10px;
         margin: 0;
         background-color: transparent;
@@ -592,9 +599,9 @@ html, body {
         color: #494e5e;
         box-shadow: none!important;
         border: 1px solid rgb(200, 200, 200);
-        border-width: 0 0 1px 0;
-        border-radius: 0;
-        padding: 10px 0;
+        padding: 0 15px;
+        border-radius: 4px;
+        height: 48px;
         margin: 15px 0;
         line-height: 24px;
         background-color: transparent;
