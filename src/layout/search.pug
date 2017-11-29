@@ -1,8 +1,11 @@
 .bs-component.search-container(data-bind="visible: currentPage() == 'search'")
     .container
-        h2.heading Search tasks
-        input(id='search-term', placeholder='Search term...', data-bind='textInput: searchTerm, valueUpdate: "input"')
         
+        h2.heading Search tasks
+        // ko if: currentPage() == 'search'
+        input(id='search-term', placeholder='Search term...', data-bind='textInput: searchTerm, valueUpdate: "input", hasFocus: true')
+        // /ko
+
         // ko if: searchTerm() && !searchResults().length
         .no-results No results matched your search
         // /ko

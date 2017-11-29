@@ -1,9 +1,9 @@
 nav.navbar(data-bind="visible: showNav, css: {'navbar-dark': !lightNav()}")
     .container
-        a.back-button(href='#', data-bind='click: goBack, visible: backButton()')
+        a.back-button(href='#', data-bind='click: goBack, visible: currentPage() != "dashboard"')
             .svg-icon.svg-icon-dark(data-bind="css: {'svg-icon-white': lightNav}")
                 include ../images/icons/back.svg
-        .navbar-date(data-bind="text: moment(new Date()).format('D MMM YYYY'), visible: !backButton()")
+        .navbar-date(data-bind='text: moment(new Date()).format("D MMM YYYY"), visible: currentPage() == "dashboard"')
         ul.navbar-nav.navbar-right
             li.nav-item
                 a.refresh-tasks.nav-link(href='#', data-bind="click: getAllTasks, css: loadingTasks() ? 'loading' : ''", title="Refresh all tasks")

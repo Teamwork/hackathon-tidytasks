@@ -9,6 +9,14 @@ html, body {
     font-family: "Open Sans", sans-serif;
 }
 
+body {
+    opacity: 0;
+
+    &.visible {
+        opacity: 1;
+    }
+}
+
 #electron-titlebar {
     position: fixed;
     top: 0;

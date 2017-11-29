@@ -38,7 +38,6 @@ viewModel = ->
     @previousPage = ko.observable()
     @showNav = ko.observable false
     @lightNav = ko.observable false
-    @backButton = ko.observable false
     @loginError = ko.observable()
 
     @today = moment(new Date()).format 'YYYYMMDD'
@@ -92,24 +91,15 @@ viewModel = ->
     , this, 'beforeChange'
 
     @currentPage.subscribe (value) =>
+        @showNav true
         if ['dashboard'].indexOf(value) > -1
-            @showNav true
             @lightNav true
-            @backButton false
             @currentFilter 'all'
             @currentProjectId ''
         else if ['add-task','project','tasks-view','search'].indexOf(value) > -1
-            @showNav true
             @lightNav false
-            @backButton true
         else
             @showNav false
-        setTimeout ->
-            if value == 'search'
-                document.getElementById('search-term').focus()
-            else if value == 'add-task'
-                document.getElementById('task-name').focus()
-        , 50
         return
 
     @filteredTasks = ko.pureComputed =>
@@ -433,6 +423,8 @@ viewModel = ->
             detailsEl.classList.toggle('hidden')
         return
 
+    @initiated = true
+    
     return
 
 ko.applyBindings viewModel

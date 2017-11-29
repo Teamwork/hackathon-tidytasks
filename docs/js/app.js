@@ -39,7 +39,6 @@ viewModel = function() {
   this.previousPage = ko.observable();
   this.showNav = ko.observable(false);
   this.lightNav = ko.observable(false);
-  this.backButton = ko.observable(false);
   this.loginError = ko.observable();
   this.today = moment(new Date()).format('YYYYMMDD');
   document.addEventListener('mousemove', () => {
@@ -94,26 +93,16 @@ viewModel = function() {
     this.previousPage(value);
   }, this, 'beforeChange');
   this.currentPage.subscribe((value) => {
+    this.showNav(true);
     if (['dashboard'].indexOf(value) > -1) {
-      this.showNav(true);
       this.lightNav(true);
-      this.backButton(false);
       this.currentFilter('all');
       this.currentProjectId('');
     } else if (['add-task', 'project', 'tasks-view', 'search'].indexOf(value) > -1) {
-      this.showNav(true);
       this.lightNav(false);
-      this.backButton(true);
     } else {
       this.showNav(false);
     }
-    setTimeout(function() {
-      if (value === 'search') {
-        return document.getElementById('search-term').focus();
-      } else if (value === 'add-task') {
-        return document.getElementById('task-name').focus();
-      }
-    }, 50);
   });
   this.filteredTasks = ko.pureComputed(() => {
     return ko.utils.arrayFilter(this.tasks(), (task) => {
@@ -475,6 +464,7 @@ viewModel = function() {
       detailsEl.classList.toggle('hidden');
     }
   };
+  this.initiated = true;
 };
 
 ko.applyBindings(viewModel);

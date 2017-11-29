@@ -7,9 +7,11 @@
 
         form#add-task-form.add-task(data-bind='submit: createTask, visible: !creatingTask()')
             h3.heading Add task
+            // ko if: currentPage() == 'add-task'
             .form-group
                 label(for='task-name') Task title
-                input#task-name.text-input(required, placeholder='Walk the dog')
+                input#task-name.text-input(required, placeholder='Walk the dog', data-bind='hasFocus: true')
+            // /ko
             .form-group
                 label(for='project-id') Project
                 select#project-id(required, data-bind='options: allProjects, optionsText: "text", optionsValue: "value", event: {change: function () {getProjectTasklists($element.value)}}')
@@ -20,7 +22,7 @@
                     option(value='') Loading tasklists...
             // ko if: selectedTasklist() == -1
             .form-group
-                input#tasklist-name.text-input(placeholder='Tasklist name...', required, data-bind='value: ""')
+                input#tasklist-name.text-input(placeholder='Tasklist name...', required, data-bind='hasFocus: true')
             // /ko
             .double-group
                 .form-group

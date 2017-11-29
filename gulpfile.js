@@ -29,7 +29,8 @@ gulp.task('css', function () {
             /.today/,
             /.upcoming/,
             /.highlight/,
-            /.navbar-dark/
+            /.navbar-dark/,
+            /.visible/
         ]
     }))
     .pipe(gulp.dest('./docs/css/'));
@@ -75,7 +76,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('default', function(callback) {
-    return runSequence('libs','electron','html','css','js','images',callback);
+    return runSequence('libs','electron','css','js','images','html',callback);
 });
 
 gulp.task('watch', function () {
