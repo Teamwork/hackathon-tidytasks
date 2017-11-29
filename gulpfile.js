@@ -31,7 +31,8 @@ gulp.task('css', function () {
             /.selected/,
             /.late/,
             /.today/,
-            /.upcoming/
+            /.upcoming/,
+            /.highlight/
         ]
     }))
     .pipe(gulp.dest('./docs/css/uncss/'));
