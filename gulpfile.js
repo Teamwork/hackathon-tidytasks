@@ -77,7 +77,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('default', function(callback) {
-    return runSequence('libs','html','css','js','images',callback);
+    return runSequence('libs','electron','html','css','js','images',callback);
 });
 
 gulp.task('watch', function () {
