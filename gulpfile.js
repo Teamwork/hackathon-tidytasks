@@ -16,12 +16,8 @@ gulp.task('html', function () {
 });
 
 gulp.task('css', function () {
-    gulp.src('./src/scss/**/**.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(cleanCSS({compatibility: 'ie8'}))
-    .pipe(gulp.dest('./docs/css/'));
-
-    gulp.src('./docs/css/styles.css')
+    return gulp.src('./src/scss/styles.scss')
+    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(uncss({
         html: ['./docs/index.html'],
         ignore: [
@@ -36,7 +32,7 @@ gulp.task('css', function () {
             /.navbar-dark/
         ]
     }))
-    .pipe(gulp.dest('./docs/css/uncss/'));
+    .pipe(gulp.dest('./docs/css/'));
 });
 
 gulp.task('images', function() {
