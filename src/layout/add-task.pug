@@ -27,9 +27,9 @@
             .double-group
                 .form-group
                     label(for='start-date') Start date
-                    input#start-date.text-input(type='date', data-bind='value: moment(new Date()).format("YYYY-MM-DD")')
+                    input#start-date.text-input(type='date', data-bind='textInput: startDate')
                 .form-group
                     label(for='due-date') Due date
-                    input#due-date.text-input(type='date')
+                    input#due-date.text-input(type='date', data-bind='textInput: dueDate')
             .actions
                 button(type='submit') Save

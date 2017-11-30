@@ -25,6 +25,20 @@ viewModel = function() {
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.prevResponse = '';
+  this.startDate = ko.observable(moment(new Date()).format('YYYY-MM-DD'));
+  this.startDatePicker = flatpickr('#start-date', {
+    altInput: true,
+    defaultDate: 'today',
+    minDate: 'today'
+  });
+  this.dueDate = ko.observable();
+  this.dueDatePicker = flatpickr('#due-date', {
+    altInput: true,
+    minDate: 'today'
+  });
+  this.startDate.subscribe((date) => {
+    this.dueDatePicker.set('minDate', date);
+  });
   this.creatingTask = ko.observable(false);
   this.loadingTasks = ko.observable(false);
   this.selectedTasklist = ko.observable();
@@ -358,11 +372,7 @@ viewModel = function() {
     $.ajax(xhrOptions);
   };
   this.createTask = () => {
-    var dueDate, dueDateVal, projectId, startDate, startDateVal, taskName, taskPayload, taskXhrOptions, tasklistId, tasklistName, tasklistPayload, tasklistXhrOptions;
-    startDateVal = document.getElementById('start-date').value;
-    dueDateVal = document.getElementById('due-date').value;
-    startDate = startDateVal ? moment(startDateVal).format('YYYYMMDD') : '';
-    dueDate = dueDateVal ? moment(dueDateVal).format('YYYYMMDD') : '';
+    var projectId, taskName, taskPayload, taskXhrOptions, tasklistId, tasklistName, tasklistPayload, tasklistXhrOptions;
     taskName = document.getElementById('task-name').value;
     tasklistId = document.getElementById('tasklist-id').value;
     tasklistName = document.getElementById('tasklist-name') ? document.getElementById('tasklist-name').value : null;
@@ -374,8 +384,8 @@ viewModel = function() {
     taskPayload = {
       'todo-item': {
         'responsible-party-id': this.userId(),
-        'start-date': startDate,
-        'due-date': dueDate,
+        'start-date': this.startDate() ? moment(this.startDate()).format('YYYYMMDD') : '',
+        'due-date': this.dueDate() ? moment(this.dueDate()).format('YYYYMMDD') : '',
         'content': taskName
       }
     };

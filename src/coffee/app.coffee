@@ -21,7 +21,16 @@ viewModel = ->
     @allTasklists = ko.observableArray()
 
     @prevResponse = ''
+
+    @startDate = ko.observable moment(new Date()).format 'YYYY-MM-DD'
+    @startDatePicker = flatpickr '#start-date', {altInput: true, defaultDate: 'today', minDate: 'today'}
+    @dueDate = ko.observable()
+    @dueDatePicker = flatpickr '#due-date', {altInput: true, minDate: 'today'}
     
+    @startDate.subscribe (date) =>
+        @dueDatePicker.set 'minDate', date
+        return
+
     @creatingTask = ko.observable false
     @loadingTasks = ko.observable false
     
@@ -325,11 +334,6 @@ viewModel = ->
         return
 
     @createTask = =>
-        startDateVal = document.getElementById('start-date').value
-        dueDateVal = document.getElementById('due-date').value
-        startDate = if startDateVal then moment(startDateVal).format 'YYYYMMDD' else ''
-        dueDate = if dueDateVal then moment(dueDateVal).format 'YYYYMMDD' else ''
-
         taskName = document.getElementById('task-name').value
         tasklistId = document.getElementById('tasklist-id').value
         tasklistName = if document.getElementById('tasklist-name') then document.getElementById('tasklist-name').value else null
@@ -341,8 +345,8 @@ viewModel = ->
         taskPayload = 
             'todo-item':
                 'responsible-party-id': @userId()
-                'start-date': startDate
-                'due-date': dueDate
+                'start-date': if @startDate() then moment(@startDate()).format 'YYYYMMDD' else ''
+                'due-date': if @dueDate() then moment(@dueDate()).format 'YYYYMMDD' else ''
                 'content': taskName
         taskXhrOptions = 
             url: @domain() + 'tasklists/' + tasklistId + '/tasks.json'
