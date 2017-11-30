@@ -28,13 +28,11 @@ viewModel = function() {
   this.startDate = ko.observable(moment(new Date()).format('YYYY-MM-DD'));
   this.startDatePicker = flatpickr('#start-date', {
     altInput: true,
-    defaultDate: 'today',
-    minDate: 'today'
+    defaultDate: 'today'
   });
   this.dueDate = ko.observable();
   this.dueDatePicker = flatpickr('#due-date', {
-    altInput: true,
-    minDate: 'today'
+    altInput: true
   });
   this.startDate.subscribe((date) => {
     this.dueDatePicker.set('minDate', date);
