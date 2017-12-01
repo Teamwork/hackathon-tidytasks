@@ -24,8 +24,9 @@ viewModel = ->
 
     @startDate = ko.observable moment(new Date()).format 'YYYY-MM-DD'
     @startDatePicker = flatpickr '#start-date', {altInput: true, defaultDate: 'today'}
-    @dueDate = ko.observable()
-    @dueDatePicker = flatpickr '#due-date', {altInput: true, minDate: 'today'}
+    @dueDate = ko.observable ''
+    @dueDatePicker = flatpickr '#due-date', {altInput: true, minDate: 'today'} 
+    @dueDatePicker.clear()
     
     @startDate.subscribe (date) =>
         @dueDatePicker.set 'minDate', date

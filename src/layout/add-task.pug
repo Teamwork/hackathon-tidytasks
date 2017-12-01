@@ -27,10 +27,10 @@
             .double-group
                 .form-group
                     label(for='start-date') Start date
-                    input#start-date.text-input(type='date', data-bind='textInput: startDate')
+                    input#start-date.text-input(type='date', data-bind='textInput: startDate, valueUpdate: "input"')
                 .form-group
                     label(for='due-date') Due date
-                    input#due-date.text-input(type='date', data-bind='textInput: dueDate')
+                    input#due-date.text-input(value='', type='date', data-bind='textInput: dueDate, valueUpdate: "input"')
                     a.clear(href="#", data-bind="visible: dueDate, click: function(){dueDatePicker.clear()}")
                         include ../images/icons/plus.svg
             .actions

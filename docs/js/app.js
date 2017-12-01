@@ -30,11 +30,12 @@ viewModel = function() {
     altInput: true,
     defaultDate: 'today'
   });
-  this.dueDate = ko.observable();
+  this.dueDate = ko.observable('');
   this.dueDatePicker = flatpickr('#due-date', {
     altInput: true,
     minDate: 'today'
   });
+  this.dueDatePicker.clear();
   this.startDate.subscribe((date) => {
     this.dueDatePicker.set('minDate', date);
   });
