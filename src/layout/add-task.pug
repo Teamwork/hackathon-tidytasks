@@ -31,5 +31,7 @@
                 .form-group
                     label(for='due-date') Due date
                     input#due-date.text-input(type='date', data-bind='textInput: dueDate')
+                    a.clear(href="#", data-bind="visible: dueDate, click: function(){dueDatePicker.clear()}")
+                        include ../images/icons/plus.svg
             .actions
                 button(type='submit') Save
