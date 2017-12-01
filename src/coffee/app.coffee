@@ -1,6 +1,6 @@
 markedRenderer = new marked.Renderer()
 markedRenderer.link = (href, title, text) ->
-    return '<a target="_blank" href="' + href + '" title="' + title + '">' + text + '</a>'
+    return '<a target="_blank" href="' + href + '" title="' + title + '" onclick="event.stopPropagation(); if(window.electronShell){electronShell.openExternal(this.href); return false;}; return true;">' + text + '</a>'
 
 marked.setOptions
     renderer: markedRenderer
@@ -258,7 +258,8 @@ viewModel = ->
                             type = 'upcoming'
                         
                         cleanTask = 
-                            taskName: task.content
+                            taskName: marked.inlineLexer(task.content,['links'])
+                            taskNameRaw: task.content
                             taskId: task.id
                             tasklistId: task['todo-list-id']
                             tasklistName: task['todo-list-name']

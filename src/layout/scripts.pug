@@ -26,14 +26,16 @@ script.
 
 //- electron related stuff
 script.
+    var electronShell = null;
+    
     if (window.require) {
         require('./renderer.js');
-        var shell = require('electron').shell;
+        electronShell = require('electron').shell;
         
         // open links externally by default
         $(document).on('click', 'a[target="_blank"]', function(event) {
             event.preventDefault();
-            shell.openExternal(this.href);
+            electronShell.openExternal(this.href);
         });
 
         // check app version against current version and display alert if new one available

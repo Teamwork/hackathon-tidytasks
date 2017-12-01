@@ -30,7 +30,8 @@ gulp.task('css', function () {
             /.upcoming/,
             /.highlight/,
             /.navbar-dark/,
-            /.visible/
+            /.visible/,
+            /.flatpickr-calendar/
         ]
     }))
     .pipe(gulp.dest('./docs/css/'));

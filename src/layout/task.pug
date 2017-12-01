@@ -11,7 +11,7 @@
         // /ko
     
     .task-body
-        .task-name(data-bind='text: taskName, click: toggleDetails')
+        .task-name(data-bind='html: taskName, click: toggleDetails')
         
         .task-details.hidden
             .task-description(data-bind='html: taskDescription')

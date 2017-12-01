@@ -99,6 +99,23 @@ body {
     padding-top: 100px;
 }
 
+div.flatpickr-calendar {
+    padding: 15px;
+    width: auto;
+    box-shadow: 0 0 0 1px #c8c8c8, 0 2px 10px rgba(black,.1);
+
+    &.arrowBottom::before {
+        border-top-color: #c8c8c8;
+    }
+    &.arrowTop::before {
+        border-bottom-color: #c8c8c8;
+    }
+
+    .flatpickr-month {
+        margin-bottom: 10px;
+    }
+}
+
 .splash-container {
     font-size: 14px;
     display: flex;
@@ -389,6 +406,10 @@ body {
                 }
             }
         }
+
+        .task-body {
+            word-break: break-word;
+        }
     }
 }
 
@@ -490,8 +511,6 @@ body {
             flex-grow: 1;
 
             .task-name {
-                flex: 1 0 90%;
-                display: flex;
                 align-items: center;
                 color: #494e5e;
                 font-size: 15px;
