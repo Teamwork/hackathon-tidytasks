@@ -4,16 +4,16 @@
         h2.heading All tasks
         .task-count(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's') + ' today.'")
         .project-status
-            a.status.all(href='#', data-bind='css: {"selected": currentFilter().type == "all"}, click: function() { currentFilter("all") }')
+            a.status.all(href='#', data-bind='css: {"selected": currentFilter().type == "all"}, click: function() { currentFilter({projectId:"", type:"all"}) }')
                 .label(title='All') All
                 .status-count(data-bind='text: totalTasks')
-            a.status.late(href='#', data-bind='visible: totalLate, css: {"selected": currentFilter().type == "late"}, click: function() { currentFilter("late") }')
+            a.status.late(href='#', data-bind='visible: totalLate, css: {"selected": currentFilter().type == "late"}, click: function() { currentFilter({projectId:"", type:"late"}) }')
                 .label(title='Late') Late
                 .status-count(data-bind='text: totalLate')
-            a.status.today(href='#', data-bind='visible: totalToday, css: {"selected": currentFilter().type == "today"}, click: function() { currentFilter("today") }')
+            a.status.today(href='#', data-bind='visible: totalToday, css: {"selected": currentFilter().type == "today"}, click: function() { currentFilter({projectId:"", type:"today"}) }')
                 .label(title='Today') Today
                 .status-count(data-bind='text: totalToday')
-            a.status.upcoming(href='#', data-bind='visible: totalUpcoming, css: {"selected": currentFilter().type == "upcoming"}, click: function() { currentFilter("upcoming") }') 
+            a.status.upcoming(href='#', data-bind='visible: totalUpcoming, css: {"selected": currentFilter().type == "upcoming"}, click: function() { currentFilter({projectId:"", type:"upcoming"}) }') 
                 .label(title='Upcoming') Upcoming
                 .status-count(data-bind='text: totalUpcoming')
         // /ko
