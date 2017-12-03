@@ -39,8 +39,9 @@ viewModel = ->
     
     @selectedTasklist = ko.observable()
     
-    @searchTerm = ko.observable('').extend({ rateLimit: 500 })
-
+    @searchTerm = ko.observable('').extend
+        rateLimit: 500
+        
     @User = new User()
     @domain = ko.observable()
     @userId = ko.observable()
