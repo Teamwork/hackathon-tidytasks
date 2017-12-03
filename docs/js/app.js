@@ -135,7 +135,10 @@ viewModel = function() {
       return true;
     });
   }, this).extend({
-    rateLimit: 5
+    rateLimit: {
+      timeout: 0,
+      method: "notifyWhenChangesStop"
+    }
   });
   this.filteredTasks.subscribe((tasks) => {
     if (tasks.length === 0 && this.currentFilter().projectId !== '' && this.currentFilter().type !== 'all') {

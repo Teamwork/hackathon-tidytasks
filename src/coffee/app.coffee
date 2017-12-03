@@ -124,7 +124,9 @@ viewModel = ->
             return true
     , this 
     .extend 
-        rateLimit: 5
+        rateLimit: 
+            timeout: 0
+            method: "notifyWhenChangesStop"
 
     @filteredTasks.subscribe (tasks) =>
         if tasks.length is 0 and @currentFilter().projectId isnt '' and @currentFilter().type isnt 'all'
