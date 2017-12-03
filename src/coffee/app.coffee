@@ -15,21 +15,23 @@ marked.setOptions
 viewModel = ->
     @currentPage = ko.observable 'splash'
     @tasks = ko.observableArray()
-    @currentFilter = ko.observable 'all'
-    @currentProjectId = ko.observable ''
+    @currentFilter = ko.observable 
+        type: 'all'
+        projectId: ''
     @allProjects = ko.observableArray()
     @allTasklists = ko.observableArray()
 
     @prevResponse = ''
-
     @startDate = ko.observable moment(new Date()).format 'YYYY-MM-DD'
-    @startDatePicker = flatpickr '#start-date', {altInput: true, defaultDate: 'today'}
     @dueDate = ko.observable ''
-    @dueDatePicker = flatpickr '#due-date', {altInput: true, minDate: 'today'} 
-    @dueDatePicker.clear()
     
-    @startDate.subscribe (date) =>
-        @dueDatePicker.set 'minDate', date
+    @initDatePickers = =>
+        @startDatePicker = flatpickr '#start-date', {altInput: true, defaultDate: 'today'}
+        @dueDatePicker = flatpickr '#due-date', {altInput: true, minDate: 'today'} 
+        @dueDatePicker.clear()
+        @startDate.subscribe (date) =>
+            @dueDatePicker.set 'minDate', date
+            return
         return
 
     @creatingTask = ko.observable false
@@ -104,22 +106,42 @@ viewModel = ->
         @showNav true
         if ['dashboard'].indexOf(value) > -1
             @lightNav true
-            @currentFilter 'all'
-            @currentProjectId ''
+            @currentFilter 
+                type: 'all'
+                projectId: ''
         else if ['add-task','project','tasks-view','search'].indexOf(value) > -1
             @lightNav false
         else
             @showNav false
         return
 
-    @filteredTasks = ko.pureComputed =>
+    @filteredTasks = ko.computed =>
         return ko.utils.arrayFilter @tasks(), (task) =>
-            if @currentProjectId() isnt '' and @currentProjectId() isnt task.projectId
+            if @currentFilter().projectId isnt '' and @currentFilter().projectId isnt task.projectId
                 return false
-            if @currentFilter() isnt 'all' and @currentFilter() isnt task.taskType
+            if @currentFilter().type isnt 'all' and @currentFilter().type isnt task.taskType
                 return false
             return true
-    , this
+    , this 
+    .extend 
+        rateLimit: 5
+
+    @filteredTasks.subscribe (tasks) =>
+        if tasks.length is 0 and @currentFilter().projectId isnt '' and @currentFilter().type isnt 'all'
+            @currentFilter
+                type: 'all'
+                projectId: @currentFilter().projectId
+        else if tasks.length is 0 and @currentFilter().projectId isnt '' and @currentFilter().type is 'all'
+            @currentFilter
+                type: 'all'
+                projectId: ''
+        else if tasks.length is 0 and @currentFilter().projectId is '' and @currentFilter().type is 'all'
+            @currentFilter
+                type: 'all'
+                projectId: ''
+            @currentPage 'dashboard'
+        return
+
 
     @projects = ko.pureComputed =>
         projectIds = []
@@ -171,14 +193,14 @@ viewModel = ->
                 taskCount++
         return taskCount
 
-    @currentProjectId.subscribe (value) =>
-        if value
-            document.getElementById('project-id').value = value
-            @getTasklists value
+    @currentFilter.subscribe (value) =>
+        if value.projectId isnt ''
+            document.getElementById('project-id').value = value.projectId
+            @getTasklists value.projectId
         return
 
     @goBack = =>
-        if @currentPage() == 'add-task' and @currentProjectId()
+        if @currentPage() == 'add-task' and @currentFilter().projectId isnt ''
             @currentPage 'tasks-view'
         else
             @currentPage 'dashboard'
@@ -363,7 +385,7 @@ viewModel = ->
             success: (data) =>
                 @getAllTasks false, ->
                     @getAllProjects()
-                    if @currentProjectId()
+                    if @currentFilter().projectId isnt ''
                         @currentPage 'tasks-view'
                     else 
                         @currentPage 'dashboard'
@@ -434,3 +456,4 @@ viewModel = ->
     return
 
 ko.applyBindings viewModel
+initDatePickers()

@@ -4,10 +4,10 @@
             h2.heading #[span(data-bind='text: greeting()')], #[span(data-bind='text: userFirstname()')]
             p.total-tasks 
                 | You have #[span(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's')")] to work on today. #[span(data-bind='if: totalTasks() == 0') Go you!] 
-            a(href='#', data-bind='click: function () { currentPage("tasks-view"); currentFilter("all"); currentProjectId("") }, visible: totalTasks() != 0') View all tasks.
+            a(href='#', data-bind='click: function () { currentPage("tasks-view"); currentFilter({type:"all",projectId:""}) }, visible: totalTasks() != 0') View all tasks.
         .tasks-grid(data-bind='foreach: projects')
             .task-card
-                a.card.border-light(href='#', data-bind='click: function () { currentPage("tasks-view"); currentFilter("all"); currentProjectId(projectId) }')
+                a.card.border-light(href='#', data-bind='click: function () { currentPage("tasks-view"); currentFilter({type:"all",projectId:projectId}) }')
                     .title(data-bind='text: projectName')
                     .tasks
                         .status-count.late(data-bind='text: lateCount, visible: lateCount')

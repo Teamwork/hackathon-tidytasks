@@ -1,39 +1,39 @@
 .bs-component.project-container.white-bg(data-bind="visible: currentPage() == 'tasks-view'")
     .container
-        // ko if: !currentProjectId()
+        // ko if: !currentFilter().projectId
         h2.heading All tasks
         .task-count(data-bind="text: totalTasks() + ' task' + (totalTasks() == 1 ? '' : 's') + ' today.'")
         .project-status
-            a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { currentFilter("all") }')
+            a.status.all(href='#', data-bind='css: {"selected": currentFilter().type == "all"}, click: function() { currentFilter("all") }')
                 .label(title='All') All
                 .status-count(data-bind='text: totalTasks')
-            a.status.late(href='#', data-bind='visible: totalLate, css: {"selected": currentFilter() == "late"}, click: function() { currentFilter("late") }')
+            a.status.late(href='#', data-bind='visible: totalLate, css: {"selected": currentFilter().type == "late"}, click: function() { currentFilter("late") }')
                 .label(title='Late') Late
                 .status-count(data-bind='text: totalLate')
-            a.status.today(href='#', data-bind='visible: totalToday, css: {"selected": currentFilter() == "today"}, click: function() { currentFilter("today") }')
+            a.status.today(href='#', data-bind='visible: totalToday, css: {"selected": currentFilter().type == "today"}, click: function() { currentFilter("today") }')
                 .label(title='Today') Today
                 .status-count(data-bind='text: totalToday')
-            a.status.upcoming(href='#', data-bind='visible: totalUpcoming, css: {"selected": currentFilter() == "upcoming"}, click: function() { currentFilter("upcoming") }') 
+            a.status.upcoming(href='#', data-bind='visible: totalUpcoming, css: {"selected": currentFilter().type == "upcoming"}, click: function() { currentFilter("upcoming") }') 
                 .label(title='Upcoming') Upcoming
                 .status-count(data-bind='text: totalUpcoming')
         // /ko
         div(data-bind='foreach: projects')
-            .section(data-bind="if: !currentProjectId() || currentProjectId() == projectId, visible: !currentProjectId() || currentProjectId() == projectId")
+            .section(data-bind="if: !currentFilter().projectId || currentFilter().projectId == projectId, visible: !currentFilter().projectId || currentFilter().projectId == projectId")
                 
-                // ko if: currentProjectId()
+                // ko if: currentFilter().projectId
                 h2.heading(data-bind='text: projectName') Project
                 .task-count(data-bind="text: taskCount + ' task' + (taskCount == 1 ? '' : 's') + ' today.'")
                 .project-status
-                    a.status.all(href='#', data-bind='css: {"selected": currentFilter() == "all"}, click: function() { currentProjectId(projectId); currentFilter("all") }')
+                    a.status.all(href='#', data-bind='css: {"selected": currentFilter().type == "all"}, click: function() { currentFilter({type:"all",projectId:projectId}) }')
                         .label(title='All') All
                         .status-count(data-bind='text: taskCount')
-                    a.status.late(href='#', data-bind='visible: lateCount, css: {"selected": currentFilter() == "late"}, click: function() { currentProjectId(projectId); currentFilter("late") }')
+                    a.status.late(href='#', data-bind='visible: lateCount, css: {"selected": currentFilter().type == "late"}, click: function() { currentFilter({type:"late",projectId:projectId}) }')
                         .label(title='Late') Late
                         .status-count(data-bind='text: lateCount')
-                    a.status.today(href='#', data-bind='visible: todayCount, css: {"selected": currentFilter() == "today"}, click: function() { currentProjectId(projectId); currentFilter("today") }')
+                    a.status.today(href='#', data-bind='visible: todayCount, css: {"selected": currentFilter().type == "today"}, click: function() { currentFilter({type:"today",projectId:projectId}) }')
                         .label(title='Today') Today
                         .status-count(data-bind='text: todayCount')
-                    a.status.upcoming(href='#', data-bind='visible: upcomingCount, css: {"selected": currentFilter() == "upcoming"}, click: function() { currentProjectId(projectId); currentFilter("upcoming") }') 
+                    a.status.upcoming(href='#', data-bind='visible: upcomingCount, css: {"selected": currentFilter().type == "upcoming"}, click: function() { currentFilter({type:"upcoming",projectId:projectId}) }') 
                         .label(title='Upcoming') Upcoming
                         .status-count(data-bind='text: upcomingCount')
                 // /ko
@@ -42,8 +42,8 @@
                     .task-list(data-bind='visible: tasks.length')
                         .section-heading
                             .section-name(data-bind='text: tasklistName')
-                            // ko ifnot: currentProjectId()
-                            a.project-name(href="#", data-bind='text: $parent.projectName, click: function(){currentProjectId(projectId)}')
+                            // ko ifnot: currentFilter().projectId
+                            a.project-name(href="#", data-bind='text: $parent.projectName, click: function(){currentFilter({type:"all",projectId:projectId})}')
                             // /ko
                         .tasks-container(data-bind='foreach: tasks')
                             include task

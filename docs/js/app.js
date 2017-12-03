@@ -20,25 +20,29 @@ marked.setOptions({
 viewModel = function() {
   this.currentPage = ko.observable('splash');
   this.tasks = ko.observableArray();
-  this.currentFilter = ko.observable('all');
-  this.currentProjectId = ko.observable('');
+  this.currentFilter = ko.observable({
+    type: 'all',
+    projectId: ''
+  });
   this.allProjects = ko.observableArray();
   this.allTasklists = ko.observableArray();
   this.prevResponse = '';
   this.startDate = ko.observable(moment(new Date()).format('YYYY-MM-DD'));
-  this.startDatePicker = flatpickr('#start-date', {
-    altInput: true,
-    defaultDate: 'today'
-  });
   this.dueDate = ko.observable('');
-  this.dueDatePicker = flatpickr('#due-date', {
-    altInput: true,
-    minDate: 'today'
-  });
-  this.dueDatePicker.clear();
-  this.startDate.subscribe((date) => {
-    this.dueDatePicker.set('minDate', date);
-  });
+  this.initDatePickers = () => {
+    this.startDatePicker = flatpickr('#start-date', {
+      altInput: true,
+      defaultDate: 'today'
+    });
+    this.dueDatePicker = flatpickr('#due-date', {
+      altInput: true,
+      minDate: 'today'
+    });
+    this.dueDatePicker.clear();
+    this.startDate.subscribe((date) => {
+      this.dueDatePicker.set('minDate', date);
+    });
+  };
   this.creatingTask = ko.observable(false);
   this.loadingTasks = ko.observable(false);
   this.selectedTasklist = ko.observable();
@@ -110,25 +114,48 @@ viewModel = function() {
     this.showNav(true);
     if (['dashboard'].indexOf(value) > -1) {
       this.lightNav(true);
-      this.currentFilter('all');
-      this.currentProjectId('');
+      this.currentFilter({
+        type: 'all',
+        projectId: ''
+      });
     } else if (['add-task', 'project', 'tasks-view', 'search'].indexOf(value) > -1) {
       this.lightNav(false);
     } else {
       this.showNav(false);
     }
   });
-  this.filteredTasks = ko.pureComputed(() => {
+  this.filteredTasks = ko.computed(() => {
     return ko.utils.arrayFilter(this.tasks(), (task) => {
-      if (this.currentProjectId() !== '' && this.currentProjectId() !== task.projectId) {
+      if (this.currentFilter().projectId !== '' && this.currentFilter().projectId !== task.projectId) {
         return false;
       }
-      if (this.currentFilter() !== 'all' && this.currentFilter() !== task.taskType) {
+      if (this.currentFilter().type !== 'all' && this.currentFilter().type !== task.taskType) {
         return false;
       }
       return true;
     });
-  }, this);
+  }, this).extend({
+    rateLimit: 5
+  });
+  this.filteredTasks.subscribe((tasks) => {
+    if (tasks.length === 0 && this.currentFilter().projectId !== '' && this.currentFilter().type !== 'all') {
+      this.currentFilter({
+        type: 'all',
+        projectId: this.currentFilter().projectId
+      });
+    } else if (tasks.length === 0 && this.currentFilter().projectId !== '' && this.currentFilter().type === 'all') {
+      this.currentFilter({
+        type: 'all',
+        projectId: ''
+      });
+    } else if (tasks.length === 0 && this.currentFilter().projectId === '' && this.currentFilter().type === 'all') {
+      this.currentFilter({
+        type: 'all',
+        projectId: ''
+      });
+      this.currentPage('dashboard');
+    }
+  });
   this.projects = ko.pureComputed(() => {
     var projectArray, projectIds;
     projectIds = [];
@@ -193,14 +220,14 @@ viewModel = function() {
     });
     return taskCount;
   };
-  this.currentProjectId.subscribe((value) => {
-    if (value) {
-      document.getElementById('project-id').value = value;
-      this.getTasklists(value);
+  this.currentFilter.subscribe((value) => {
+    if (value.projectId !== '') {
+      document.getElementById('project-id').value = value.projectId;
+      this.getTasklists(value.projectId);
     }
   });
   this.goBack = () => {
-    if (this.currentPage() === 'add-task' && this.currentProjectId()) {
+    if (this.currentPage() === 'add-task' && this.currentFilter().projectId !== '') {
       return this.currentPage('tasks-view');
     } else {
       return this.currentPage('dashboard');
@@ -402,7 +429,7 @@ viewModel = function() {
       success: (data) => {
         this.getAllTasks(false, function() {
           this.getAllProjects();
-          if (this.currentProjectId()) {
+          if (this.currentFilter().projectId !== '') {
             this.currentPage('tasks-view');
           } else {
             this.currentPage('dashboard');
@@ -479,3 +506,5 @@ viewModel = function() {
 };
 
 ko.applyBindings(viewModel);
+
+initDatePickers();
