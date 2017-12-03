@@ -115,7 +115,7 @@ viewModel = ->
             @showNav false
         return
 
-    @filteredTasks = ko.computed =>
+    @filteredTasks = ko.pureComputed =>
         return ko.utils.arrayFilter @tasks(), (task) =>
             if @currentFilter().projectId isnt '' and @currentFilter().projectId isnt task.projectId
                 return false

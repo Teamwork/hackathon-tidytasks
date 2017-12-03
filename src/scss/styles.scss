@@ -123,7 +123,7 @@ div.flatpickr-calendar {
     }
 }
 
-.splash-container {
+.splash-container, .is-electron .splash-container {
     font-size: 14px;
     display: flex;
     align-items: center;

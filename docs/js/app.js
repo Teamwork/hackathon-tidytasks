@@ -124,7 +124,7 @@ viewModel = function() {
       this.showNav(false);
     }
   });
-  this.filteredTasks = ko.computed(() => {
+  this.filteredTasks = ko.pureComputed(() => {
     return ko.utils.arrayFilter(this.tasks(), (task) => {
       if (this.currentFilter().projectId !== '' && this.currentFilter().projectId !== task.projectId) {
         return false;
