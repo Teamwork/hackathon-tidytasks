@@ -149,7 +149,7 @@ viewModel = ->
     @projects = ko.pureComputed =>
         projectIds = []
         projectArray = []
-        ko.utils.arrayForEach @filteredTasks(), (task) =>
+        ko.utils.arrayForEach @tasks(), (task) =>
             if projectIds.indexOf(task.projectId) < 0
                 project = 
                     projectId: task.projectId
@@ -167,7 +167,7 @@ viewModel = ->
     @tasklists = ko.pureComputed =>
         tasklistIds = []
         tasklistsArray = []
-        ko.utils.arrayForEach @filteredTasks(), (task) =>
+        ko.utils.arrayForEach @tasks(), (task) =>
             if tasklistIds.indexOf(task.tasklistId) < 0
                 tasklist = 
                     tasklistId: task.tasklistId

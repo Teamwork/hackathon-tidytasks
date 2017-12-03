@@ -163,7 +163,7 @@ viewModel = function() {
     var projectArray, projectIds;
     projectIds = [];
     projectArray = [];
-    ko.utils.arrayForEach(this.filteredTasks(), (task) => {
+    ko.utils.arrayForEach(this.tasks(), (task) => {
       var project;
       if (projectIds.indexOf(task.projectId) < 0) {
         project = {
@@ -185,7 +185,7 @@ viewModel = function() {
     var tasklistIds, tasklistsArray;
     tasklistIds = [];
     tasklistsArray = [];
-    ko.utils.arrayForEach(this.filteredTasks(), (task) => {
+    ko.utils.arrayForEach(this.tasks(), (task) => {
       var tasklist;
       if (tasklistIds.indexOf(task.tasklistId) < 0) {
         tasklist = {
