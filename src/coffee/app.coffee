@@ -77,17 +77,17 @@ viewModel = ->
         return @tasks().length
     
     @totalLate = ko.pureComputed =>
-        return (ko.utils.arrayFilter @tasks(), (task) ->
+        return (@tasks().filter (task) ->
             return task.taskType is 'late'
         ).length
     
     @totalToday = ko.pureComputed =>
-        return (ko.utils.arrayFilter @tasks(), (task) ->
+        return (@tasks().filter (task) ->
             return task.taskType is 'today'
         ).length
     
     @totalUpcoming = ko.pureComputed =>
-        return (ko.utils.arrayFilter @tasks(), (task) ->
+        return (@tasks().filter (task) ->
             return task.taskType is 'upcoming'
         ).length
     
@@ -95,7 +95,7 @@ viewModel = ->
         if !@searchTerm() 
             return []
         else
-            return ko.utils.arrayFilter @tasks(), (task) ->
+            return @tasks().filter (task) ->
                 return task.taskName.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1 or task.taskDescriptionRaw.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1
     
     @currentPage.subscribe (value) =>
@@ -117,7 +117,7 @@ viewModel = ->
         return
 
     @filteredTasks = ko.pureComputed =>
-        return ko.utils.arrayFilter @tasks(), (task) =>
+        return @tasks().filter (task) =>
             if @currentFilter().projectId isnt '' and @currentFilter().projectId isnt task.projectId
                 return false
             if @currentFilter().type isnt 'all' and @currentFilter().type isnt task.taskType
@@ -149,7 +149,7 @@ viewModel = ->
     @projects = ko.pureComputed =>
         projectIds = []
         projectArray = []
-        ko.utils.arrayForEach @tasks(), (task) =>
+        @tasks().forEach (task) =>
             if projectIds.indexOf(task.projectId) < 0
                 project = 
                     projectId: task.projectId
@@ -167,7 +167,7 @@ viewModel = ->
     @tasklists = ko.pureComputed =>
         tasklistIds = []
         tasklistsArray = []
-        ko.utils.arrayForEach @tasks(), (task) =>
+        @tasks().forEach (task) =>
             if tasklistIds.indexOf(task.tasklistId) < 0
                 tasklist = 
                     tasklistId: task.tasklistId
@@ -180,16 +180,16 @@ viewModel = ->
     , this
 
     @getProjectTasklists = (projectId) =>
-        return ko.utils.arrayFilter @tasklists(), (tasklist) =>
+        return @tasklists().filter (tasklist) =>
             return tasklist.projectId is projectId
     
     @getTasklistTasks = (tasklistId) =>
-        return ko.utils.arrayFilter @filteredTasks(), (task) =>
+        return @filteredTasks().filter (task) =>
             return task.tasklistId is tasklistId
 
     @getTaskCount = (projectId,filter) =>
         taskCount = 0
-        ko.utils.arrayForEach @tasks(), (task) =>
+        @tasks().forEach (task) =>
             if filter and filter isnt task.taskType
                 return
             if task.projectId is projectId
@@ -268,10 +268,12 @@ viewModel = ->
                     return
                 
                 @prevResponse = JSON.stringify data
+                rawTasks = data['todo-items']
                 cleanTasks = []
-                for task in data['todo-items']
-                    if task['start-date'] or task['due-date']
+                
+                for task in rawTasks
                     
+                    if task['start-date'] or task['due-date']
                         type = ''
                         start = task['start-date']
                         due = task['due-date']
@@ -282,7 +284,7 @@ viewModel = ->
                             type = 'today'
                         else if (start != '' and start > @today) or start == '' and due > @today
                             type = 'upcoming'
-                        
+
                         cleanTask = 
                             taskName: marked.inlineLexer(task.content,['links'])
                             taskNameRaw: task.content
@@ -297,7 +299,6 @@ viewModel = ->
                             taskDueDate: due
                             taskType: type
                             subtaskCount: task.predecessors.length
-                            subtasks: task.predecessors
                             parentId: task.parentTaskId
                             attachmentCount: task['attachments-count']
                             commentCount: task['comments-count']
@@ -325,11 +326,13 @@ viewModel = ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) =>
-                ko.utils.arrayForEach data.projects, (project) =>
+                projects = []
+                data.projects.forEach (project) =>
                     project = 
                         text: project.name
                         value: project.id
-                    @allProjects.push(project)
+                    projects.push project
+                @allProjects projects
                 @getTasklists document.getElementById('project-id').value
                 return
 
@@ -346,12 +349,13 @@ viewModel = ->
                 xhr.setRequestHeader 'Authorization', localStorage.getItem 'auth'
                 return
             success: (data) =>
-                @allTasklists []
-                ko.utils.arrayForEach data.tasklists, (tasklist) =>
+                tasklists = []
+                data.tasklists.forEach (tasklist) =>
                     tasklist = 
                         text: tasklist.name
                         value: tasklist.id
-                    @allTasklists.push(tasklist)
+                    tasklists.push tasklist
+                @allTasklists tasklists
                 @allTasklists.push 
                     text: 'New tasklist...'
                     value: '-1'
@@ -420,8 +424,10 @@ viewModel = ->
         return
 
     @completeTask = (taskId) =>
-        el = document.querySelector('[data-task-id="' + taskId + '"]')
-        el.classList.add('completed')
+        taskEl = document.querySelectorAll('[data-task-id="' + taskId + '"]')
+        taskEl.forEach (el) ->
+            el.classList.add('completed')
+            return
 
         xhrOptions = 
             url: @domain() + 'tasks/' + taskId + '/complete.json'
@@ -433,23 +439,20 @@ viewModel = ->
                 @getAllTasks()
                 return
             error: ->
-                el.classList.remove('completed')
+                taskEl.forEach (el) ->
+                    el.classList.remove('completed')
+                    return
                 alert 'There was an error completing the task'
         
         $.ajax xhrOptions
         return
 
-    @highlightSubtasks = (taskId) =>
-        ko.utils.arrayForEach @tasks(), (task) =>
-            if parseInt(task.parentId) == parseInt(taskId)
-                taskEl = document.querySelector('[data-task-id="' + task.taskId + '"]')
-                if taskEl
-                    taskEl.classList.toggle('highlight')
-            return
-        return
+    @getSubtasks = (taskId) =>
+        return @tasks().filter (task) ->
+            return parseInt(task.parentId) is parseInt(taskId)
 
-    @toggleDetails = (data,event) ->
-        detailsEl = event.target.nextSibling
+    @toggleDetails = (taskId) ->
+        detailsEl = document.querySelector('[data-task-id="' + taskId + '"] .task-details')
         if detailsEl
             detailsEl.classList.toggle('hidden')
         return

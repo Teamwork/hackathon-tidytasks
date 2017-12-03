@@ -1,7 +1,7 @@
 .task(data-bind="attr: {'data-task-id' : taskId}")
     .image-container
         // ko if: subtaskCount
-        a.task-action(href='#', data-bind='click: function () {highlightSubtasks(taskId)}')
+        a.task-action(href='#', data-bind='click: function () {toggleDetails(taskId)}')
             span(class='subtask-count', data-bind='text: subtaskCount, css: taskType')
         // /ko
         // ko ifnot: subtaskCount
@@ -11,7 +11,7 @@
         // /ko
     
     .task-body
-        .task-name(data-bind='html: taskName, click: toggleDetails')
+        .task-name(data-bind='html: taskName, click:  function () {toggleDetails(taskId)}')
         
         .task-details.hidden
             .task-description(data-bind='html: taskDescription')
@@ -58,3 +58,24 @@
                     .actions
                         a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}", href='#', target='_blank')
                             | View in Projects
+
+                // ko if: getSubtasks(taskId).length
+                .subtasks(data-bind="foreach: getSubtasks(taskId)")
+                    .task(data-bind="attr: {'data-task-id': taskId}")
+                        .image-container
+                            // ko if: subtaskCount
+                            a.task-action(href='#', data-bind='click: function () {}')
+                                span(class='subtask-count', data-bind='text: subtaskCount, css: taskType')
+                            // /ko
+                            // ko ifnot: subtaskCount
+                            a.task-action(href='#', data-bind='click: function () {completeTask(taskId)}')
+                                .check(data-bind='css: taskType')
+                                    include ../images/icons/task.svg
+                            // /ko
+                        .task-body
+                            .task-name(data-bind='html: taskName, click:  function () {toggleDetails(taskId)}')
+
+                // /ko
+                // ko if: subtaskCount != getSubtasks(taskId).length
+                .subtasks-else One or more subtasks belong to someone else
+                // /ko

@@ -84,17 +84,17 @@ viewModel = function() {
     return this.tasks().length;
   });
   this.totalLate = ko.pureComputed(() => {
-    return (ko.utils.arrayFilter(this.tasks(), function(task) {
+    return (this.tasks().filter(function(task) {
       return task.taskType === 'late';
     })).length;
   });
   this.totalToday = ko.pureComputed(() => {
-    return (ko.utils.arrayFilter(this.tasks(), function(task) {
+    return (this.tasks().filter(function(task) {
       return task.taskType === 'today';
     })).length;
   });
   this.totalUpcoming = ko.pureComputed(() => {
-    return (ko.utils.arrayFilter(this.tasks(), function(task) {
+    return (this.tasks().filter(function(task) {
       return task.taskType === 'upcoming';
     })).length;
   });
@@ -102,7 +102,7 @@ viewModel = function() {
     if (!this.searchTerm()) {
       return [];
     } else {
-      return ko.utils.arrayFilter(this.tasks(), function(task) {
+      return this.tasks().filter(function(task) {
         return task.taskName.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1 || task.taskDescriptionRaw.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1;
       });
     }
@@ -125,7 +125,7 @@ viewModel = function() {
     }
   });
   this.filteredTasks = ko.pureComputed(() => {
-    return ko.utils.arrayFilter(this.tasks(), (task) => {
+    return this.tasks().filter((task) => {
       if (this.currentFilter().projectId !== '' && this.currentFilter().projectId !== task.projectId) {
         return false;
       }
@@ -163,7 +163,7 @@ viewModel = function() {
     var projectArray, projectIds;
     projectIds = [];
     projectArray = [];
-    ko.utils.arrayForEach(this.tasks(), (task) => {
+    this.tasks().forEach((task) => {
       var project;
       if (projectIds.indexOf(task.projectId) < 0) {
         project = {
@@ -185,7 +185,7 @@ viewModel = function() {
     var tasklistIds, tasklistsArray;
     tasklistIds = [];
     tasklistsArray = [];
-    ko.utils.arrayForEach(this.tasks(), (task) => {
+    this.tasks().forEach((task) => {
       var tasklist;
       if (tasklistIds.indexOf(task.tasklistId) < 0) {
         tasklist = {
@@ -201,19 +201,19 @@ viewModel = function() {
     return tasklistsArray;
   }, this);
   this.getProjectTasklists = (projectId) => {
-    return ko.utils.arrayFilter(this.tasklists(), (tasklist) => {
+    return this.tasklists().filter((tasklist) => {
       return tasklist.projectId === projectId;
     });
   };
   this.getTasklistTasks = (tasklistId) => {
-    return ko.utils.arrayFilter(this.filteredTasks(), (task) => {
+    return this.filteredTasks().filter((task) => {
       return task.tasklistId === tasklistId;
     });
   };
   this.getTaskCount = (projectId, filter) => {
     var taskCount;
     taskCount = 0;
-    ko.utils.arrayForEach(this.tasks(), (task) => {
+    this.tasks().forEach((task) => {
       if (filter && filter !== task.taskType) {
         return;
       }
@@ -291,16 +291,16 @@ viewModel = function() {
         'sort': 'duedate'
       },
       success: (data) => {
-        var cleanTask, cleanTasks, due, i, len, ref, start, task, type;
+        var cleanTask, cleanTasks, due, i, len, rawTasks, start, task, type;
         if (this.prevResponse === JSON.stringify(data)) {
           this.loadingTasks(false);
           return;
         }
         this.prevResponse = JSON.stringify(data);
+        rawTasks = data['todo-items'];
         cleanTasks = [];
-        ref = data['todo-items'];
-        for (i = 0, len = ref.length; i < len; i++) {
-          task = ref[i];
+        for (i = 0, len = rawTasks.length; i < len; i++) {
+          task = rawTasks[i];
           if (task['start-date'] || task['due-date']) {
             type = '';
             start = task['start-date'];
@@ -326,7 +326,6 @@ viewModel = function() {
               taskDueDate: due,
               taskType: type,
               subtaskCount: task.predecessors.length,
-              subtasks: task.predecessors,
               parentId: task.parentTaskId,
               attachmentCount: task['attachments-count'],
               commentCount: task['comments-count']
@@ -357,13 +356,16 @@ viewModel = function() {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        ko.utils.arrayForEach(data.projects, (project) => {
+        var projects;
+        projects = [];
+        data.projects.forEach((project) => {
           project = {
             text: project.name,
             value: project.id
           };
-          return this.allProjects.push(project);
+          return projects.push(project);
         });
+        this.allProjects(projects);
         this.getTasklists(document.getElementById('project-id').value);
       }
     };
@@ -386,14 +388,16 @@ viewModel = function() {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        this.allTasklists([]);
-        ko.utils.arrayForEach(data.tasklists, (tasklist) => {
+        var tasklists;
+        tasklists = [];
+        data.tasklists.forEach((tasklist) => {
           tasklist = {
             text: tasklist.name,
             value: tasklist.id
           };
-          return this.allTasklists.push(tasklist);
+          return tasklists.push(tasklist);
         });
+        this.allTasklists(tasklists);
         this.allTasklists.push({
           text: 'New tasklist...',
           value: '-1'
@@ -468,9 +472,11 @@ viewModel = function() {
     }
   };
   this.completeTask = (taskId) => {
-    var el, xhrOptions;
-    el = document.querySelector('[data-task-id="' + taskId + '"]');
-    el.classList.add('completed');
+    var taskEl, xhrOptions;
+    taskEl = document.querySelectorAll('[data-task-id="' + taskId + '"]');
+    taskEl.forEach(function(el) {
+      el.classList.add('completed');
+    });
     xhrOptions = {
       url: this.domain() + 'tasks/' + taskId + '/complete.json',
       type: 'PUT',
@@ -481,26 +487,22 @@ viewModel = function() {
         this.getAllTasks();
       },
       error: function() {
-        el.classList.remove('completed');
+        taskEl.forEach(function(el) {
+          el.classList.remove('completed');
+        });
         return alert('There was an error completing the task');
       }
     };
     $.ajax(xhrOptions);
   };
-  this.highlightSubtasks = (taskId) => {
-    ko.utils.arrayForEach(this.tasks(), (task) => {
-      var taskEl;
-      if (parseInt(task.parentId) === parseInt(taskId)) {
-        taskEl = document.querySelector('[data-task-id="' + task.taskId + '"]');
-        if (taskEl) {
-          taskEl.classList.toggle('highlight');
-        }
-      }
+  this.getSubtasks = (taskId) => {
+    return this.tasks().filter(function(task) {
+      return parseInt(task.parentId) === parseInt(taskId);
     });
   };
-  this.toggleDetails = function(data, event) {
+  this.toggleDetails = function(taskId) {
     var detailsEl;
-    detailsEl = event.target.nextSibling;
+    detailsEl = document.querySelector('[data-task-id="' + taskId + '"] .task-details');
     if (detailsEl) {
       detailsEl.classList.toggle('hidden');
     }
