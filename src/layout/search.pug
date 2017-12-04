@@ -11,4 +11,4 @@
         // /ko
 
         .tasks-container(data-bind='foreach: searchResults, visible: searchTerm() && searchResults().length')
-            include task
+            task.task(data-bind="attr: {'data-task-id' : taskId}", params="task: $data")

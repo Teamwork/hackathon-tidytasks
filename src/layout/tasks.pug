@@ -46,4 +46,4 @@
                             a.project-name(href="#", data-bind='text: $parent.projectName, click: function(){currentFilter({type:"all",projectId:projectId})}')
                             // /ko
                         .tasks-container(data-bind='foreach: tasks')
-                            include task
+                            task.task(data-bind="attr: {'data-task-id' : taskId}", params="task: $data")

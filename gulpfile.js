@@ -10,9 +10,13 @@ var uncss = require('gulp-uncss');
 var runSequence = require('run-sequence').use(gulp)
 
 gulp.task('html', function () {
-    return gulp.src('./src/**.pug')
+    gulp.src('./src/index.pug')
     .pipe(pug())
     .pipe(gulp.dest('./docs/'));
+    
+    gulp.src('./src/components/**/*.pug')
+    .pipe(pug())
+    .pipe(gulp.dest('./docs/components/'));
 });
 
 gulp.task('css', function () {
@@ -31,7 +35,8 @@ gulp.task('css', function () {
             /.highlight/,
             /.navbar-dark/,
             /.visible/,
-            /.flatpickr-calendar/
+            /.flatpickr-calendar/,
+            /.task/
         ]
     }))
     .pipe(gulp.dest('./docs/css/'));

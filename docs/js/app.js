@@ -84,17 +84,17 @@ viewModel = function() {
     return this.tasks().length;
   });
   this.totalLate = ko.pureComputed(() => {
-    return (this.tasks().filter(function(task) {
+    return (ko.utils.arrayFilter(this.tasks(), function(task) {
       return task.taskType === 'late';
     })).length;
   });
   this.totalToday = ko.pureComputed(() => {
-    return (this.tasks().filter(function(task) {
+    return (ko.utils.arrayFilter(this.tasks(), function(task) {
       return task.taskType === 'today';
     })).length;
   });
   this.totalUpcoming = ko.pureComputed(() => {
-    return (this.tasks().filter(function(task) {
+    return (ko.utils.arrayFilter(this.tasks(), function(task) {
       return task.taskType === 'upcoming';
     })).length;
   });
@@ -102,7 +102,7 @@ viewModel = function() {
     if (!this.searchTerm()) {
       return [];
     } else {
-      return this.tasks().filter(function(task) {
+      return ko.utils.arrayFilter(this.tasks(), function(task) {
         return task.taskName.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1 || task.taskDescriptionRaw.toLowerCase().indexOf(searchTerm().toLowerCase()) > -1;
       });
     }
@@ -125,7 +125,10 @@ viewModel = function() {
     }
   });
   this.filteredTasks = ko.pureComputed(() => {
-    return this.tasks().filter((task) => {
+    return ko.utils.arrayFilter(this.tasks(), (task) => {
+      if (task.hasParent) {
+        return false;
+      }
       if (this.currentFilter().projectId !== '' && this.currentFilter().projectId !== task.projectId) {
         return false;
       }
@@ -160,11 +163,12 @@ viewModel = function() {
     }
   });
   this.projects = ko.pureComputed(() => {
-    var projectArray, projectIds;
+    var i, len, project, projectArray, projectIds, ref, task;
     projectIds = [];
     projectArray = [];
-    this.tasks().forEach((task) => {
-      var project;
+    ref = this.tasks();
+    for (i = 0, len = ref.length; i < len; i++) {
+      task = ref[i];
       if (projectIds.indexOf(task.projectId) < 0) {
         project = {
           projectId: task.projectId,
@@ -176,17 +180,18 @@ viewModel = function() {
           tasklists: this.getProjectTasklists(task.projectId)
         };
         projectIds.push(task.projectId);
-        return projectArray.push(project);
+        projectArray.push(project);
       }
-    });
+    }
     return projectArray;
   }, this);
   this.tasklists = ko.pureComputed(() => {
-    var tasklistIds, tasklistsArray;
+    var i, len, ref, task, tasklist, tasklistIds, tasklistsArray;
     tasklistIds = [];
     tasklistsArray = [];
-    this.tasks().forEach((task) => {
-      var tasklist;
+    ref = this.tasks();
+    for (i = 0, len = ref.length; i < len; i++) {
+      task = ref[i];
       if (tasklistIds.indexOf(task.tasklistId) < 0) {
         tasklist = {
           tasklistId: task.tasklistId,
@@ -195,32 +200,33 @@ viewModel = function() {
           tasks: this.getTasklistTasks(task.tasklistId)
         };
         tasklistIds.push(task.tasklistId);
-        return tasklistsArray.push(tasklist);
+        tasklistsArray.push(tasklist);
       }
-    });
+    }
     return tasklistsArray;
   }, this);
   this.getProjectTasklists = (projectId) => {
-    return this.tasklists().filter((tasklist) => {
+    return ko.utils.arrayFilter(this.tasklists(), (tasklist) => {
       return tasklist.projectId === projectId;
     });
   };
   this.getTasklistTasks = (tasklistId) => {
-    return this.filteredTasks().filter((task) => {
+    return ko.utils.arrayFilter(this.filteredTasks(), (task) => {
       return task.tasklistId === tasklistId;
     });
   };
   this.getTaskCount = (projectId, filter) => {
-    var taskCount;
+    var i, len, ref, task, taskCount;
     taskCount = 0;
-    this.tasks().forEach((task) => {
-      if (filter && filter !== task.taskType) {
-        return;
+    ref = this.tasks();
+    for (i = 0, len = ref.length; i < len; i++) {
+      task = ref[i];
+      if (!(filter && filter !== task.taskType)) {
+        if (task.projectId === projectId) {
+          taskCount++;
+        }
       }
-      if (task.projectId === projectId) {
-        return taskCount++;
-      }
-    });
+    }
     return taskCount;
   };
   this.currentFilter.subscribe((value) => {
@@ -291,7 +297,7 @@ viewModel = function() {
         'sort': 'duedate'
       },
       success: (data) => {
-        var cleanTask, cleanTasks, due, i, len, rawTasks, start, task, type;
+        var cleanTask, cleanTasks, due, hasParent, i, j, len, len1, rawTasks, start, task, taskIds, type;
         if (this.prevResponse === JSON.stringify(data)) {
           this.loadingTasks(false);
           return;
@@ -299,12 +305,18 @@ viewModel = function() {
         this.prevResponse = JSON.stringify(data);
         rawTasks = data['todo-items'];
         cleanTasks = [];
+        taskIds = [];
         for (i = 0, len = rawTasks.length; i < len; i++) {
           task = rawTasks[i];
+          taskIds.push(task.id);
+        }
+        for (j = 0, len1 = rawTasks.length; j < len1; j++) {
+          task = rawTasks[j];
           if (task['start-date'] || task['due-date']) {
             type = '';
             start = task['start-date'];
             due = task['due-date'];
+            hasParent = taskIds.indexOf(parseInt(task.parentTaskId)) > -1;
             if (due !== '' && due < this.today) {
               type = 'late';
             } else if ((start !== '' && start <= this.today) || (due !== '' && due === this.today)) {
@@ -328,7 +340,8 @@ viewModel = function() {
               subtaskCount: task.predecessors.length,
               parentId: task.parentTaskId,
               attachmentCount: task['attachments-count'],
-              commentCount: task['comments-count']
+              commentCount: task['comments-count'],
+              hasParent: hasParent
             };
             cleanTasks.push(cleanTask);
           }
@@ -356,15 +369,17 @@ viewModel = function() {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        var projects;
+        var i, len, project, projects, ref;
         projects = [];
-        data.projects.forEach((project) => {
+        ref = data.projects;
+        for (i = 0, len = ref.length; i < len; i++) {
+          project = ref[i];
           project = {
             text: project.name,
             value: project.id
           };
-          return projects.push(project);
-        });
+          projects.push(project);
+        }
         this.allProjects(projects);
         this.getTasklists(document.getElementById('project-id').value);
       }
@@ -388,15 +403,17 @@ viewModel = function() {
         xhr.setRequestHeader('Authorization', localStorage.getItem('auth'));
       },
       success: (data) => {
-        var tasklists;
+        var i, len, ref, tasklist, tasklists;
         tasklists = [];
-        data.tasklists.forEach((tasklist) => {
+        ref = data.tasklists;
+        for (i = 0, len = ref.length; i < len; i++) {
+          tasklist = ref[i];
           tasklist = {
             text: tasklist.name,
             value: tasklist.id
           };
-          return tasklists.push(tasklist);
-        });
+          tasklists.push(tasklist);
+        }
         this.allTasklists(tasklists);
         this.allTasklists.push({
           text: 'New tasklist...',
@@ -472,11 +489,12 @@ viewModel = function() {
     }
   };
   this.completeTask = (taskId) => {
-    var taskEl, xhrOptions;
+    var el, i, len, taskEl, xhrOptions;
     taskEl = document.querySelectorAll('[data-task-id="' + taskId + '"]');
-    taskEl.forEach(function(el) {
+    for (i = 0, len = taskEl.length; i < len; i++) {
+      el = taskEl[i];
       el.classList.add('completed');
-    });
+    }
     xhrOptions = {
       url: this.domain() + 'tasks/' + taskId + '/complete.json',
       type: 'PUT',
@@ -487,24 +505,29 @@ viewModel = function() {
         this.getAllTasks();
       },
       error: function() {
-        taskEl.forEach(function(el) {
+        var j, len1;
+        for (j = 0, len1 = taskEl.length; j < len1; j++) {
+          el = taskEl[j];
           el.classList.remove('completed');
-        });
+        }
         return alert('There was an error completing the task');
       }
     };
     $.ajax(xhrOptions);
   };
   this.getSubtasks = (taskId) => {
-    return this.tasks().filter(function(task) {
+    return ko.utils.arrayFilter(this.tasks(), function(task) {
       return parseInt(task.parentId) === parseInt(taskId);
     });
   };
   this.toggleDetails = function(taskId) {
-    var detailsEl;
-    detailsEl = document.querySelector('[data-task-id="' + taskId + '"] .task-details');
-    if (detailsEl) {
-      detailsEl.classList.toggle('hidden');
+    var detailsEl, el, i, len;
+    detailsEl = document.querySelectorAll('[data-task-id="' + taskId + '"] > .task-body > .task-details');
+    if (detailsEl.length) {
+      for (i = 0, len = detailsEl.length; i < len; i++) {
+        el = detailsEl[i];
+        el.classList.toggle('hidden');
+      }
     }
   };
   this.initiated = true;
@@ -513,3 +536,13 @@ viewModel = function() {
 ko.applyBindings(viewModel);
 
 initDatePickers();
+
+$.ajax({
+  url: 'components/task.html',
+  success: function(html) {
+    return ko.components.register('task', {
+      template: html
+    });
+  },
+  contentType: 'text/html'
+});
