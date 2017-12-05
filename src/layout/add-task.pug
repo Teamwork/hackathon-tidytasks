@@ -14,7 +14,7 @@
             // /ko
             .form-group
                 label(for='project-id') Project
-                select#project-id(required, data-bind='options: allProjects, optionsText: "text", optionsValue: "value", event: {change: function () {getProjectTasklists($element.value)}}')
+                select#project-id(required, data-bind='options: allProjects, optionsText: "text", optionsValue: "value", event: {change: function () {getTasklists($element.value)}}')
                     option(value='') Loading projects...
             .form-group
                 label(for='tasklist-id') Tasklist
