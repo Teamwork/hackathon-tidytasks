@@ -48,7 +48,7 @@
                     .icon
                         include ../images/icons/comments.svg
                 .actions
-                    a.link(data-bind="attr: {href: domain() + '#tasks/' + taskId}, text: task.commentCount + ' comment' + (task.commentCount == 1 ? '' : 's')", href='#', target='_blank')
+                    a.link(data-bind="attr: {href: domain() + '#tasks/' + task.taskId}, text: task.commentCount + ' comment' + (task.commentCount == 1 ? '' : 's')", href='#', target='_blank')
             // /ko
             .open-in-projects.control
                 .image-container
