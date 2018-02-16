@@ -22,22 +22,22 @@
   "homepage": "https://teamwork.github.io/hackathon-tidytasks/",
   "devDependencies": {
     "bower": "^1.8.2",
-    "electron": "^1.7.9",
+    "electron": "^1.8.2",
     "electron-installer-dmg": "^0.2.1",
-    "electron-packager": "^10.1.0",
+    "electron-packager": "^10.1.2",
     "gulp": "^3.9.1",
-    "gulp-clean-css": "^3.9.0",
+    "gulp-clean-css": "^3.9.2",
     "gulp-minify": "^2.1.0",
     "gulp-uncss": "^1.0.6",
     "gulp-watch": "^4.3.11",
     "gutil": "^1.6.4"
   },
   "dependencies": {
-    "coffeescript": "^2.0.2",
+    "coffeescript": "^2.2.1",
     "gulp-coffeescript": "0.0.15",
     "gulp-pug": "^3.3.0",
     "gulp-sass": "^3.1.0",
     "pug": "^2.0.0-rc.4",
-    "run-sequence": "^2.2.0"
+    "run-sequence": "^2.2.1"
   }
 }
